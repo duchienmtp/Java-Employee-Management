@@ -1,10 +1,16 @@
 package FrontEnd.EmployeeContentUI;
 
+import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
+import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class UserInformationForm extends javax.swing.JFrame implements ActionListener {
@@ -13,6 +19,13 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
     public UserInformationForm() {
         initComponents();
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        DatePickerSettings pickerSettings = new DatePickerSettings();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        pickerSettings.setFormatForDatesCommonEra(dtf);
+        birthdateDatePicker.setSettings(pickerSettings);
+        birthdateDatePicker.setDateToToday();
+        
         fileChooser = new JFileChooser();
 
         // Optional: Set a filter for specific file types
@@ -25,7 +38,9 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         fileChooser.setFileFilter(imageFilter);
 
         fileChooserButton.addActionListener(this);
-        setVisible(true);
+//        birthdateDatePicker.addDateChangeListener(this);
+        confirmButton.addActionListener(this);
+        declineButton.addActionListener(this);
     }
 
     @Override
@@ -45,28 +60,31 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                 JOptionPane.showMessageDialog(this, "Selected file: " + fileName,
                         "File Selected", JOptionPane.INFORMATION_MESSAGE);
             }
+        } else if (e.getSource() == confirmButton) {
+            dispose();
+        } else if (e.getSource() == declineButton) {
+            dispose();
         }
     }
 
     public void showFormWithData(ArrayList<Object> data) {
         if (data != null) {
-//            employeeNameTextField.setText();
-//            if (data.get(2) != null) {
+            employeeNameTextField.setText((String) data.get(2));
+            if (data.get(2) != null) {
 //                avatarLabel.setIcon(icon);
-//            } else {
-//                avatarLabel.setText("Không có ảnh");
-//            }
-//            genderComboBox.setSelectedItem();
-//            birthdateTextField.setText();
-//            birthdateTextField.setText();
-//            phoneNumberTextField.setText();
-//            ethicGroupComboBox.setSelectedItem();
-//            religionComboBox.setSelectedItem();
-//            nationComboBox.setSelectedItem();
-//            specialtyComboBox.setSelectedItem();
-//            degreeComboBox.setSelectedItem();
-//            positionComboBox.setSelectedItem();
-//            employeeTypeComboBox.setSelectedItem();
+            } else {
+                avatarLabel.setText("Không có ảnh");
+            }
+            genderComboBox.setSelectedItem(data.get(3));
+            birthdateDatePicker.setText((String) data.get(4));
+            phoneNumberTextField.setText("");
+            ethicGroupComboBox.setSelectedItem("");
+            religionComboBox.setSelectedItem("");
+            nationComboBox.setSelectedItem("");
+            specialtyComboBox.setSelectedItem("");
+            degreeComboBox.setSelectedItem("");
+            positionComboBox.setSelectedItem(data.get(5));
+            employeeTypeComboBox.setSelectedItem(data.get(6));
         }
     }
 
@@ -84,7 +102,6 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         genderLabel = new javax.swing.JLabel();
         genderComboBox = new javax.swing.JComboBox<>();
         birthdateLabel = new javax.swing.JLabel();
-        birthdateTextField = new javax.swing.JTextField();
         phoneNumberLabel = new javax.swing.JLabel();
         phoneNumberTextField = new javax.swing.JTextField();
         ethicGroupLabel = new javax.swing.JLabel();
@@ -103,6 +120,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         employeeTypeComboBox = new javax.swing.JComboBox<>();
         confirmButton = new javax.swing.JButton();
         declineButton = new javax.swing.JButton();
+        birthdateDatePicker = new com.github.lgooddatepicker.components.DatePicker();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("THÊM MỚI");
@@ -168,14 +186,9 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
         birthdateLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         birthdateLabel.setForeground(new java.awt.Color(0, 0, 0));
-        birthdateLabel.setLabelFor(birthdateTextField);
+        birthdateLabel.setLabelFor(birthdateDatePicker);
         birthdateLabel.setText("Ngày Sinh :");
         birthdateLabel.setName("birthdateLabel"); // NOI18N
-
-        birthdateTextField.setBackground(new java.awt.Color(204, 204, 204));
-        birthdateTextField.setForeground(new java.awt.Color(0, 0, 0));
-        birthdateTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        birthdateTextField.setName("birthdateTextField"); // NOI18N
 
         phoneNumberLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         phoneNumberLabel.setForeground(new java.awt.Color(0, 0, 0));
@@ -282,6 +295,8 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         declineButton.setText("Hủy Bỏ");
         declineButton.setName("declineButton"); // NOI18N
 
+        birthdateDatePicker.setName("birthdateDatePicker"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -291,7 +306,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(religionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(religionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -307,8 +322,8 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                                             .addGap(0, 0, Short.MAX_VALUE))
                                         .addComponent(nationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(positionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(birthdateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(birthdateDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(30, 30, 30)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(genderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -362,10 +377,11 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                     .addComponent(phoneNumberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ethicGroupLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(phoneNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(birthdateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ethicGroupComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(birthdateDatePicker, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(phoneNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ethicGroupComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(42, 42, 42)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -390,7 +406,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(declineButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addGap(49, 49, 49))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -410,8 +426,8 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel avatarLabel;
+    private com.github.lgooddatepicker.components.DatePicker birthdateDatePicker;
     private javax.swing.JLabel birthdateLabel;
-    private javax.swing.JTextField birthdateTextField;
     private javax.swing.JButton confirmButton;
     private javax.swing.JButton declineButton;
     private javax.swing.JComboBox<String> degreeComboBox;
@@ -440,4 +456,13 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
     private javax.swing.JLabel specialtyLabel;
     // End of variables declaration//GEN-END:variables
 
+//    @Override
+//    public void dateChanged(DateChangeEvent dce) {
+//        LocalDate localDate = birthdateDatePicker.getDate();
+//        if (localDate != null) {
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//            String formattedDate = localDate.format(formatter); // Use format() on the date
+//            birthdateDatePicker.setText(formattedDate); // Set the displayed text
+//        }
+//    }
 }

@@ -20,12 +20,16 @@ import javax.swing.table.DefaultTableModel;
 public class EmployeeManagementContentPanel extends javax.swing.JPanel implements MouseListener, ActionListener, ListSelectionListener {
 
     UserInformationForm userInfoForm;
+    int selectedRow = -1;
+    Object[] selectedRowData;
 
     public EmployeeManagementContentPanel() {
         initComponents();
+        userInfoForm = new UserInformationForm();
 
         addButton.addActionListener(this);
         editButton.addActionListener(this);
+        deleteButton.addActionListener(this);
 
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 2), // Line color and stroke size
@@ -49,61 +53,69 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
     }
 
     public void tableInit() {
-        Object[] newRowData = {1, "NV001", "Trần Đức Hiển", "23/09/2004", "Trưởng phòng", "Đang làm việc"};
+        Object[] newRowData = {1, "NV001", "Trần Đức Hiển", "Nam", "23/09/2004", "Trưởng phòng", "Đang làm việc"};
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         for (int i = 0; i < 10; i++) {
             model.addRow(newRowData);
         }
     }
 
-    public void deleteTableRow() {
-        int selectedRowIndex = jTable1.getSelectedRow();
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        if (selectedRowIndex != -1) {
-            int confirmation = JOptionPane.showConfirmDialog(this,
-                    "Are you sure you want to remove the selected row?",
-                    "Confirm Removal",
-                    JOptionPane.YES_NO_OPTION);
+    public void updateTableRow(Object[] rowData, String employeeID) {
+        // Create a new ArrayList
+        ArrayList<Object> dataList = new ArrayList<>(rowData.length);
 
-            if (confirmation == JOptionPane.YES_OPTION) {
-                model.removeRow(selectedRowIndex);
-                jTable1.revalidate();
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Please select a row to remove!", "No Selection", JOptionPane.INFORMATION_MESSAGE);
+        // Add all elements from the array to the ArrayList
+        dataList.addAll(Arrays.asList(rowData));
+        userInfoForm.showFormWithData(dataList);
+    }
+
+    public void deleteTableRow(int selectedRow, String employeeID) {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn xóa bỏ nhân viên với ID " + employeeID + " ?",
+                "XÓA BỎ ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            model.removeRow(selectedRow);
+            jTable1.revalidate();
         }
     }
 
     @Override
     public void valueChanged(ListSelectionEvent event) {
         if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
-            int selectedRow = jTable1.getSelectedRow();
+            selectedRow = jTable1.getSelectedRow();
             if (selectedRow >= 0) {  // Check if a row is selected
-                Object[] rowData = new Object[jTable1.getColumnCount()];
+                selectedRowData = new Object[jTable1.getColumnCount()];
                 for (int i = 0; i < jTable1.getColumnCount(); i++) {
-                    rowData[i] = jTable1.getValueAt(selectedRow, i);
+                    selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
                 }
-
-                // Create a new ArrayList
-                ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-
-                // Add all elements from the array to the ArrayList
-                dataList.addAll(Arrays.asList(rowData));
-                userInfoForm.showFormWithData(dataList);
-            } else {
-                JOptionPane.showMessageDialog(this, "Please select a row first!", "No Selection", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String employeeID = "";
+        if (selectedRowData != null) {
+            employeeID = (String) selectedRowData[1];
+        }
         if (e.getSource() == addButton) {
-            userInfoForm = new UserInformationForm();
+            userInfoForm.setVisible(true);
         } else if (e.getSource() == deleteButton) {
-
+            if (selectedRow >= 0) {
+                deleteTableRow(selectedRow, employeeID);
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == editButton) {
-            userInfoForm = new UserInformationForm();
+            if (selectedRow >= 0) {
+                updateTableRow(selectedRowData, employeeID);
+                userInfoForm.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == importExcel) {
 
         } else if (e.getSource() == exportExcel) {
@@ -131,6 +143,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        addButton.setForeground(new java.awt.Color(255, 255, 255));
         addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
         addButton.setText("Thêm");
         addButton.setIconTextGap(10);
@@ -138,12 +151,14 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
 
         deleteButton.setBackground(new java.awt.Color(220, 53, 69));
         deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        deleteButton.setForeground(new java.awt.Color(255, 255, 255));
         deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
         deleteButton.setText("Xóa");
         deleteButton.setIconTextGap(10);
         deleteButton.setName("deleteButton"); // NOI18N
 
         editButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        editButton.setForeground(new java.awt.Color(255, 255, 255));
         editButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
         editButton.setText("Sửa");
         editButton.setIconTextGap(10);
@@ -151,6 +166,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
 
         importExcel.setBackground(new java.awt.Color(13, 110, 253));
         importExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        importExcel.setForeground(new java.awt.Color(255, 255, 255));
         importExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
         importExcel.setText("Nhập ");
         importExcel.setIconTextGap(10);
@@ -158,6 +174,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
 
         exportExcel.setBackground(new java.awt.Color(13, 202, 240));
         exportExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        exportExcel.setForeground(new java.awt.Color(255, 255, 255));
         exportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
         exportExcel.setText("Xuất");
         exportExcel.setIconTextGap(10);
@@ -201,6 +218,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setRowHeight(30);
         jScrollPane2.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setResizable(false);
@@ -250,8 +268,8 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(133, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(226, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

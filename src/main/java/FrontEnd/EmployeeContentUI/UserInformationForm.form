@@ -50,7 +50,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
+                              <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="religionComboBox" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
                                       <Component id="religionLabel" alignment="0" min="-2" pref="130" max="-2" attributes="0"/>
@@ -71,8 +71,8 @@
                                       </Group>
                                   </Group>
                               </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="birthdateTextField" min="-2" pref="200" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="birthdateDatePicker" min="-2" pref="200" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="genderLabel" min="-2" pref="130" max="-2" attributes="0"/>
@@ -145,10 +145,12 @@
                       <Component id="ethicGroupLabel" alignment="3" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="phoneNumberTextField" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="birthdateTextField" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="ethicGroupComboBox" alignment="3" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="birthdateDatePicker" alignment="1" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="phoneNumberTextField" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                          <Component id="ethicGroupComboBox" alignment="3" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -179,7 +181,7 @@
                       <Component id="confirmButton" min="-2" pref="50" max="-2" attributes="0"/>
                       <Component id="declineButton" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="49" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -187,16 +189,16 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="employeeNameLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="employeeNameTextField"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="H&#x1ecd; v&#xe0; T&#xea;n :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="employeeNameTextField"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="H&#x1ecd; v&#xe0; T&#xea;n :"/>
             <Property name="name" type="java.lang.String" value="employeeNameLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -205,10 +207,10 @@
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
             </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+            <Property name="caretColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="caretColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
             <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
@@ -219,16 +221,16 @@
         </Component>
         <Component class="javax.swing.JLabel" name="avatarLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="fileChooserPanel"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="&#x1ea2;nh &#x111;&#x1ea1;i di&#x1ec7;n (N&#x1ebf;u c&#xf3;) :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="fileChooserPanel"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="&#x1ea2;nh &#x111;&#x1ea1;i di&#x1ec7;n (N&#x1ebf;u c&#xf3;) :"/>
             <Property name="name" type="java.lang.String" value="avatarLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -274,26 +276,26 @@
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
+                <Property name="text" type="java.lang.String" value="Kh&#xf4;ng c&#xf3; t&#x1ec7;p n&#xe0;o &#x111;&#x1b0;&#x1ee3;c ch&#x1ecd;n"/>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="0" red="0" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Kh&#xf4;ng c&#xf3; t&#x1ec7;p n&#xe0;o &#x111;&#x1b0;&#x1ee3;c ch&#x1ecd;n"/>
               </Properties>
             </Component>
           </SubComponents>
         </Container>
         <Component class="javax.swing.JLabel" name="genderLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="genderComboBox"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Gi&#x1edb;i T&#xed;nh :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="genderComboBox"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Gi&#x1edb;i T&#xed;nh :"/>
             <Property name="name" type="java.lang.String" value="genderLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -323,45 +325,31 @@
         </Component>
         <Component class="javax.swing.JLabel" name="birthdateLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="birthdateDatePicker"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Ng&#xe0;y Sinh :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="birthdateTextField"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Ng&#xe0;y Sinh :"/>
             <Property name="name" type="java.lang.String" value="birthdateLabel" noResource="true"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="birthdateTextField">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="cc" red="cc" type="rgb"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
-            <Property name="caretColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
-            <Property name="name" type="java.lang.String" value="birthdateTextField" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="phoneNumberLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="phoneNumberTextField"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="S&#x1ed1; &#x110;i&#x1ec7;n Tho&#x1ea1;i :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="phoneNumberTextField"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="S&#x1ed1; &#x110;i&#x1ec7;n Tho&#x1ea1;i :"/>
             <Property name="name" type="java.lang.String" value="phoneNumberLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -370,10 +358,10 @@
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
             </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+            <Property name="caretColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="caretColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
             <Property name="name" type="java.lang.String" value="phoneNumberTextField" noResource="true"/>
@@ -384,16 +372,16 @@
         </Component>
         <Component class="javax.swing.JLabel" name="ethicGroupLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="ethicGroupComboBox"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="D&#xe2;n T&#x1ed9;c :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="ethicGroupComboBox"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="D&#xe2;n T&#x1ed9;c :"/>
             <Property name="name" type="java.lang.String" value="ethicGroupLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -426,16 +414,16 @@
         </Component>
         <Component class="javax.swing.JLabel" name="religionLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="religionComboBox"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="T&#xf4;n gi&#xe1;o :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="religionComboBox"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="T&#xf4;n gi&#xe1;o :"/>
             <Property name="name" type="java.lang.String" value="religionLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -465,16 +453,16 @@
         </Component>
         <Component class="javax.swing.JLabel" name="nationLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="nationComboBox"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Qu&#x1ed1;c T&#x1ecb;ch :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="nationComboBox"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Qu&#x1ed1;c T&#x1ecb;ch :"/>
             <Property name="name" type="java.lang.String" value="nationLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -507,16 +495,16 @@
         </Component>
         <Component class="javax.swing.JLabel" name="degreeLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="degreeComboBox"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="B&#x1eb1;ng C&#x1ea5;p :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="degreeComboBox"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="B&#x1eb1;ng C&#x1ea5;p :"/>
             <Property name="name" type="java.lang.String" value="degreeLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -548,31 +536,31 @@
         </Component>
         <Component class="javax.swing.JLabel" name="positionLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="positionComboBox"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Ch&#x1ee9;c v&#x1ee5; :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="positionComboBox"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Ch&#x1ee9;c v&#x1ee5; :"/>
             <Property name="name" type="java.lang.String" value="positionLabel" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="specialtyLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="specialtyComboBox"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Chuy&#xea;n Ng&#xe0;nh :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="specialtyComboBox"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Chuy&#xea;n Ng&#xe0;nh :"/>
             <Property name="name" type="java.lang.String" value="specialtyLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -605,12 +593,6 @@
         </Component>
         <Component class="javax.swing.JComboBox" name="positionComboBox">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="cc" red="cc" type="rgb"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="6">
                 <StringItem index="0" value="Nh&#xe2;n Vi&#xea;n"/>
@@ -621,6 +603,12 @@
                 <StringItem index="5" value="T&#x1ed5;ng Gi&#xe1;m &#x110;&#x1ed1;c"/>
               </StringArray>
             </Property>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="cc" green="cc" red="cc" type="rgb"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="positionComboBox" noResource="true"/>
           </Properties>
           <AuxValues>
@@ -629,16 +617,16 @@
         </Component>
         <Component class="javax.swing.JLabel" name="employeeTypeLabel">
           <Properties>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="employeeTypeComboBox"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Lo&#x1ea1;i Nh&#xe2;n Vi&#xea;n :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="employeeTypeComboBox"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Lo&#x1ea1;i Nh&#xe2;n Vi&#xea;n :"/>
             <Property name="name" type="java.lang.String" value="employeeTypeLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -669,23 +657,28 @@
         </Component>
         <Component class="javax.swing.JButton" name="confirmButton">
           <Properties>
+            <Property name="text" type="java.lang.String" value="X&#xe1;c Nh&#x1ead;n"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fd" green="6e" red="d" type="rgb"/>
             </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="X&#xe1;c Nh&#x1ead;n"/>
             <Property name="name" type="java.lang.String" value="confirmButton" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="declineButton">
           <Properties>
+            <Property name="text" type="java.lang.String" value="H&#x1ee7;y B&#x1ecf;"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="H&#x1ee7;y B&#x1ecf;"/>
             <Property name="name" type="java.lang.String" value="declineButton" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.github.lgooddatepicker.components.DatePicker" name="birthdateDatePicker">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="birthdateDatePicker" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>

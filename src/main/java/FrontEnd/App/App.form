@@ -93,30 +93,29 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jSeparator2" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="jSeparator3" min="-2" pref="227" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
-                          <Component id="menuRewardItem" alignment="1" max="32767" attributes="0"/>
-                          <Component id="menuSalaryItem" alignment="1" max="32767" attributes="0"/>
-                          <Component id="menuDepartmentItem" alignment="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="menuEmployeeItem" alignment="1" pref="0" max="32767" attributes="0"/>
-                          <Component id="menuTravelItem" alignment="0" max="32767" attributes="0"/>
-                          <Component id="menuLogoutItem" alignment="0" max="32767" attributes="0"/>
-                          <Component id="menuCriticItem" alignment="0" max="32767" attributes="0"/>
-                          <Component id="jSeparator4" alignment="1" max="32767" attributes="0"/>
-                          <Component id="jSeparator5" max="32767" attributes="0"/>
-                          <Component id="jSeparator6" max="32767" attributes="0"/>
-                          <Component id="jSeparator7" max="32767" attributes="0"/>
-                          <Component id="jSeparator8" max="32767" attributes="0"/>
-                          <Component id="userAvatarLabel" alignment="1" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                  <Component id="jSeparator2" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="jSeparator3" min="-2" pref="227" max="-2" attributes="0"/>
                   </Group>
+                  <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
+                  <Component id="menuRewardItem" alignment="1" max="32767" attributes="0"/>
+                  <Component id="menuSalaryItem" alignment="1" max="32767" attributes="0"/>
+                  <Component id="menuDepartmentItem" alignment="0" pref="0" max="32767" attributes="0"/>
+                  <Component id="menuEmployeeItem" alignment="1" pref="0" max="32767" attributes="0"/>
+                  <Component id="menuTravelItem" alignment="0" max="32767" attributes="0"/>
+                  <Component id="menuLogoutItem" alignment="0" max="32767" attributes="0"/>
+                  <Component id="menuCriticItem" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jSeparator4" alignment="1" max="32767" attributes="0"/>
+                  <Component id="jSeparator5" max="32767" attributes="0"/>
+                  <Component id="jSeparator6" max="32767" attributes="0"/>
+                  <Component id="jSeparator7" max="32767" attributes="0"/>
+                  <Component id="jSeparator8" max="32767" attributes="0"/>
+                  <Component id="userAvatarLabel" alignment="1" max="32767" attributes="0"/>
+                  <Component id="menuAccountItem" max="32767" attributes="0"/>
+                  <Component id="jSeparator9" max="32767" attributes="0"/>
+                  <Component id="menuStatisticItem" max="32767" attributes="0"/>
+                  <Component id="jSeparator10" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -150,7 +149,15 @@
                       <Component id="menuCriticItem" min="-2" pref="65" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="jSeparator8" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="204" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Component id="menuAccountItem" min="-2" pref="65" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Component id="jSeparator9" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Component id="menuStatisticItem" min="-2" pref="65" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Component id="jSeparator10" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="68" max="32767" attributes="0"/>
                       <Component id="jSeparator2" min="-2" pref="3" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="menuLogoutItem" min="-2" pref="65" max="-2" attributes="0"/>
@@ -436,6 +443,52 @@
                   <Color id="Hand Cursor"/>
                 </Property>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="menuAccountItem">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="33" red="33" type="rgb"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0"/>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/images/account.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Qu&#x1ea3;n L&#xfd; T&#xe0;i Kho&#x1ea3;n"/>
+                <Property name="alignmentY" type="float" value="0.0"/>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
+                <Property name="iconTextGap" type="int" value="19"/>
+                <Property name="name" type="java.lang.String" value="menuAccountItem" noResource="true"/>
+                <Property name="opaque" type="boolean" value="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSeparator" name="jSeparator9">
+            </Component>
+            <Component class="javax.swing.JLabel" name="menuStatisticItem">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="33" red="33" type="rgb"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0"/>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/images/statistic.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Th&#x1ed1;ng K&#xea;"/>
+                <Property name="alignmentY" type="float" value="0.0"/>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
+                <Property name="iconTextGap" type="int" value="19"/>
+                <Property name="name" type="java.lang.String" value="menuStatisticItem" noResource="true"/>
+                <Property name="opaque" type="boolean" value="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSeparator" name="jSeparator10">
             </Component>
           </SubComponents>
         </Container>
