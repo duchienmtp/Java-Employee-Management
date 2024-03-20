@@ -120,8 +120,6 @@ public class App extends javax.swing.JFrame implements MouseListener {
     }
 
     private void showUserInfoContentPanel() {
-        // Not sure what panel you want to show for user info, replace "userInfoContentPanel" with appropriate panel
-        System.out.println("Hello UserInfoContentPanel");
         clearAppContentPanel();
         appContentPanel.add(userInfoContentPanel);
         validate();

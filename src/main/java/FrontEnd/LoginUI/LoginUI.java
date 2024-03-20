@@ -114,12 +114,6 @@ public class LoginUI extends javax.swing.JFrame {
         passwordTextField.setBorder(null);
         passwordTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         passwordTextField.setName("passwordTextField"); // NOI18N
-        passwordTextField.setPreferredSize(new java.awt.Dimension(64, 20));
-        passwordTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passwordTextFieldActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout passwordPanelLayout = new javax.swing.GroupLayout(passwordPanel);
         passwordPanel.setLayout(passwordPanelLayout);
@@ -196,10 +190,6 @@ public class LoginUI extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void passwordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_passwordTextFieldActionPerformed
 
 //    public static void main(String args[]) {
 //        /* Set the Nimbus look and feel */
