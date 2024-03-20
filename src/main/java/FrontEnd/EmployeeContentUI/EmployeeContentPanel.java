@@ -33,7 +33,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         degreeButton.addActionListener(this);
         positionButton.addActionListener(this);
         specialtyButton.addActionListener(this);
-        employeeButton.addActionListener(this);
+        employeeTypeButton.addActionListener(this);
 
         setVisible(true);
     }
@@ -93,7 +93,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         appSubMenu = new javax.swing.JPanel();
         specialtyButton = new javax.swing.JButton();
         degreeButton = new javax.swing.JButton();
-        employeeButton = new javax.swing.JButton();
+        employeeTypeButton = new javax.swing.JButton();
         positionButton = new javax.swing.JButton();
         employeeContainer = new javax.swing.JPanel();
 
@@ -121,12 +121,12 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         degreeButton.setIconTextGap(10);
         degreeButton.setName("degreeButton"); // NOI18N
 
-        employeeButton.setBackground(new java.awt.Color(45, 64, 80));
-        employeeButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/employee.png"))); // NOI18N
-        employeeButton.setText("Nhân Viên");
-        employeeButton.setIconTextGap(10);
-        employeeButton.setName("employeeButton"); // NOI18N
+        employeeTypeButton.setBackground(new java.awt.Color(45, 64, 80));
+        employeeTypeButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        employeeTypeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/employee.png"))); // NOI18N
+        employeeTypeButton.setText("Loại NViên");
+        employeeTypeButton.setIconTextGap(10);
+        employeeTypeButton.setName("employeeTypeButton"); // NOI18N
 
         positionButton.setBackground(new java.awt.Color(45, 64, 80));
         positionButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -141,7 +141,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
             appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(appSubMenuLayout.createSequentialGroup()
                 .addGap(76, 76, 76)
-                .addComponent(employeeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(employeeTypeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(66, 66, 66)
                 .addComponent(positionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
@@ -157,7 +157,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
                 .addGroup(appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(specialtyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(degreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(employeeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(employeeTypeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(positionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
@@ -198,8 +198,8 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel appSubMenu;
     private javax.swing.JButton degreeButton;
-    private javax.swing.JButton employeeButton;
     private javax.swing.JPanel employeeContainer;
+    private javax.swing.JButton employeeTypeButton;
     private javax.swing.JButton positionButton;
     private javax.swing.JButton specialtyButton;
     // End of variables declaration//GEN-END:variables

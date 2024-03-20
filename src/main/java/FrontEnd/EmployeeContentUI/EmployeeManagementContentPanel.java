@@ -16,6 +16,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class EmployeeManagementContentPanel extends javax.swing.JPanel implements MouseListener, ActionListener, ListSelectionListener {
 
@@ -46,9 +47,10 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         jTable1.setDefaultRenderer(String.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
+
         tableInit();
         jTable1.getSelectionModel().addListSelectionListener(this);
-
+        jTable1.addMouseListener(this);
         setVisible(true);
     }
 
@@ -207,7 +209,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -218,7 +220,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setRowHeight(30);
+        jTable1.setRowHeight(40);
         jScrollPane2.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setResizable(false);
@@ -286,6 +288,14 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2) {
+            // Get the selected row index
+            selectedRow = jTable1.getSelectedRow();
+            if (selectedRow != -1) {
+                // Open a new frame with information from the selected row
+                System.out.println("Hello");
+            }
+        }
     }
 
     @Override
