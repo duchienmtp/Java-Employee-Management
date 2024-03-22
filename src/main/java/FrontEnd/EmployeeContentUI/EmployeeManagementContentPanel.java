@@ -1,6 +1,7 @@
 package FrontEnd.EmployeeContentUI;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,12 +22,15 @@ import javax.swing.table.DefaultTableModel;
 public class EmployeeManagementContentPanel extends javax.swing.JPanel implements MouseListener, ActionListener, ListSelectionListener {
 
     UserInformationForm userInfoForm;
+    UserInformationFrame userInfoFrame;
     int selectedRow = -1;
     Object[] selectedRowData;
+    boolean selectionConfirmed;
 
     public EmployeeManagementContentPanel() {
         initComponents();
         userInfoForm = new UserInformationForm();
+        userInfoFrame = new UserInformationFrame();
 
         addButton.addActionListener(this);
         editButton.addActionListener(this);
@@ -56,6 +60,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
         tableInit();
         jTable1.getSelectionModel().addListSelectionListener(this);
         jTable1.addMouseListener(this);
+        addMouseListener(this);
         setVisible(true);
     }
 
@@ -92,6 +97,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
     @Override
     public void valueChanged(ListSelectionEvent event) {
         if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
+            selectionConfirmed = true;
             selectedRow = jTable1.getSelectedRow();
             if (selectedRow >= 0) {  // Check if a row is selected
                 selectedRowData = new Object[jTable1.getColumnCount()];
@@ -367,12 +373,20 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == 2) {
-            // Get the selected row index
-            selectedRow = jTable1.getSelectedRow();
-            if (selectedRow != -1) {
-                // Open a new frame with information from the selected row
-                System.out.println("Hello");
+        if (e.getSource() == jTable1) {
+            if (e.getClickCount() == 2) {
+                // Get the selected row index
+                selectedRow = jTable1.getSelectedRow();
+                if (selectedRow != -1) {
+                    // Open a new frame with information from the selected row
+                    userInfoFrame.setVisible(true);
+                }
+            }
+        } else {
+            Component clickedComponent = this.getComponentAt(this.getMousePosition());
+            if (clickedComponent != jTable1 && selectionConfirmed) {
+                jTable1.getSelectionModel().clearSelection();
+                selectionConfirmed = false;
             }
         }
     }

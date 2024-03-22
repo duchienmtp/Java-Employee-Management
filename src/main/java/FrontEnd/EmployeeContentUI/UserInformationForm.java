@@ -268,7 +268,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         positionLabel.setName("positionLabel"); // NOI18N
 
         specialtyLabel.setLabelFor(specialtyComboBox);
-        specialtyLabel.setText("Chuyên Ngành :");
+        specialtyLabel.setText("Chuyên Môn :");
         specialtyLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         specialtyLabel.setForeground(new java.awt.Color(0, 0, 0));
         specialtyLabel.setName("specialtyLabel"); // NOI18N

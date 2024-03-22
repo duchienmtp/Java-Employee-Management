@@ -22,6 +22,7 @@ BackEnd\SpecialtySalary\SpecialtyDAO.class
 BackEnd\EmployeeSalary\EmployeeSalary.class
 BackEnd\BusinessTravelManagemennt\BusinessTravelDAO.class
 BackEnd\ConnectDB\ConnectDB.class
+FrontEnd\EmployeeContentUI\UserInformationFrame.class
 FrontEnd\AccountContentUI\AccountContentPanel.class
 FrontEnd\StatisticsContentUI\StatisticsContentPanel.class
 BackEnd\AssignmentManagement\Assignment.class
@@ -46,7 +47,6 @@ FrontEnd\EmployeeContentUI\EmployeeManagementContentPanel$1.class
 BackEnd\EmployeeTypeManagement\EmployeeType.class
 BackEnd\SpecialtyManagement\SpecialtyBUS.class
 BackEnd\RelativesManagement\RelativesDAO.class
-FrontEnd\EmployeeContentUI\DegreeContentPanel$2.class
 BackEnd\AccountManagement\Account.class
 BackEnd\PositionManagement\PositionDAO.class
 FrontEnd\EmployeeContentUI\DegreeContentPanel.class
