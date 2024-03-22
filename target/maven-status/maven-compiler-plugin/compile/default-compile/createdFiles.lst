@@ -3,6 +3,7 @@ BackEnd\EmployeeManagement\Employee.class
 BackEnd\EmployeeSalary\EmployeeSalaryDAO.class
 BackEnd\PositionManagement\PositionBUS.class
 BackEnd\CriticismManagement\CriticismBUS.class
+FrontEnd\EmployeeContentUI\PositionContentPanel$1.class
 BackEnd\DegreeManagement\DegreeBUS.class
 BackEnd\SpecialtyManagement\SpecialtyDAO.class
 BackEnd\RewardManagement\RewardBUS.class
@@ -14,6 +15,7 @@ FrontEnd\EmployeeContentUI\SpecialtyContentPanel.class
 BackEnd\EmployeesRewardsCriticismManagement\EmployeesRewardsCriticismBUS.class
 FrontEnd\EmployeeContentUI\PositionContentPanel.class
 BackEnd\BusinessTravelManagemennt\BusinessTravel.class
+FrontEnd\EmployeeContentUI\SpecialtyContentPanel$1.class
 BackEnd\RelativesManagement\Relatives.class
 BackEnd\SpecialtySalary\Specialty.class
 BackEnd\SpecialtySalary\SpecialtyDAO.class
@@ -26,6 +28,7 @@ BackEnd\AssignmentManagement\Assignment.class
 BackEnd\EmployeesRewardsCriticismManagement\EmployeesRewardsCriticismDAO.class
 BackEnd\DepartmentManagement\Department.class
 BackEnd\EmployeesRewardsCriticismManagement\EmployeesRewardsCriticism.class
+FrontEnd\EmployeeContentUI\DegreeContentPanel$1.class
 BackEnd\CriticismManagement\Criticism.class
 BackEnd\EmployeeManagement\EmployeeBUS.class
 BackEnd\DegreeManagement\DegreeDAO.class
@@ -39,11 +42,11 @@ BackEnd\EmployeeTypeManagement\EmployeeTypeDAO.class
 BackEnd\PositionSalary\PositionSalaryBUS.class
 FrontEnd\EmployeeContentUI\UserInformationForm.class
 BackEnd\PositionSalary\PositionSalary.class
-FrontEnd\CustomizeTable\CustomJTable.class
 FrontEnd\EmployeeContentUI\EmployeeManagementContentPanel$1.class
 BackEnd\EmployeeTypeManagement\EmployeeType.class
 BackEnd\SpecialtyManagement\SpecialtyBUS.class
 BackEnd\RelativesManagement\RelativesDAO.class
+FrontEnd\EmployeeContentUI\DegreeContentPanel$2.class
 BackEnd\AccountManagement\Account.class
 BackEnd\PositionManagement\PositionDAO.class
 FrontEnd\EmployeeContentUI\DegreeContentPanel.class

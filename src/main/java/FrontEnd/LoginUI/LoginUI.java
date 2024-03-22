@@ -65,7 +65,7 @@ public class LoginUI extends javax.swing.JFrame {
         emailPanel.setName("emailPanel"); // NOI18N
 
         emailLabel.setBackground(new java.awt.Color(255, 255, 255));
-        emailLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        emailLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         emailLabel.setForeground(new java.awt.Color(0, 0, 0));
         emailLabel.setLabelFor(emailTextField);
         emailLabel.setText("EMAIL:");
@@ -102,7 +102,7 @@ public class LoginUI extends javax.swing.JFrame {
         passwordPanel.setName("passwordPanel"); // NOI18N
 
         passwordLabel.setBackground(new java.awt.Color(255, 255, 255));
-        passwordLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        passwordLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         passwordLabel.setForeground(new java.awt.Color(0, 0, 0));
         passwordLabel.setLabelFor(passwordTextField);
         passwordLabel.setText("PASSWORD:");
@@ -158,7 +158,7 @@ public class LoginUI extends javax.swing.JFrame {
                             .addComponent(passwordPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(emailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(loginButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         loginPanelLayout.setVerticalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
