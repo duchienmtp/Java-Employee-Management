@@ -131,20 +131,16 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         employeeNameLabel.setLabelFor(employeeNameTextField);
         employeeNameLabel.setText("Họ và Tên :");
         employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameLabel.setName("employeeNameLabel"); // NOI18N
 
         employeeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         employeeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
-        employeeNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        employeeNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameTextField.setHighlighter(null);
         employeeNameTextField.setName("employeeNameTextField"); // NOI18N
 
         avatarLabel.setLabelFor(fileChooserPanel);
         avatarLabel.setText("Ảnh đại diện (Nếu có) :");
         avatarLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        avatarLabel.setForeground(new java.awt.Color(0, 0, 0));
         avatarLabel.setName("avatarLabel"); // NOI18N
 
         fileChooserPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -159,7 +155,6 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
         jLabel1.setText("Không có tệp nào được chọn");
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
 
         javax.swing.GroupLayout fileChooserPanelLayout = new javax.swing.GroupLayout(fileChooserPanel);
         fileChooserPanel.setLayout(fileChooserPanelLayout);
@@ -179,12 +174,10 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         genderLabel.setLabelFor(genderComboBox);
         genderLabel.setText("Giới Tính :");
         genderLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        genderLabel.setForeground(new java.awt.Color(0, 0, 0));
         genderLabel.setName("genderLabel"); // NOI18N
 
         genderComboBox.setBackground(new java.awt.Color(204, 204, 204));
         genderComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        genderComboBox.setForeground(new java.awt.Color(0, 0, 0));
         genderComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nam ", "Nữ", " " }));
         genderComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         genderComboBox.setName("genderComboBox"); // NOI18N
@@ -192,31 +185,25 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         birthdateLabel.setLabelFor(birthdateDatePicker);
         birthdateLabel.setText("Ngày Sinh :");
         birthdateLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        birthdateLabel.setForeground(new java.awt.Color(0, 0, 0));
         birthdateLabel.setName("birthdateLabel"); // NOI18N
 
         phoneNumberLabel.setLabelFor(phoneNumberTextField);
         phoneNumberLabel.setText("Số Điện Thoại :");
         phoneNumberLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        phoneNumberLabel.setForeground(new java.awt.Color(0, 0, 0));
         phoneNumberLabel.setName("phoneNumberLabel"); // NOI18N
 
         phoneNumberTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         phoneNumberTextField.setBackground(new java.awt.Color(204, 204, 204));
-        phoneNumberTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        phoneNumberTextField.setForeground(new java.awt.Color(0, 0, 0));
         phoneNumberTextField.setName("phoneNumberTextField"); // NOI18N
         phoneNumberTextField.setPreferredSize(new java.awt.Dimension(230, 26));
 
         ethicGroupLabel.setLabelFor(ethicGroupComboBox);
         ethicGroupLabel.setText("Dân Tộc :");
         ethicGroupLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        ethicGroupLabel.setForeground(new java.awt.Color(0, 0, 0));
         ethicGroupLabel.setName("ethicGroupLabel"); // NOI18N
 
         ethicGroupComboBox.setBackground(new java.awt.Color(204, 204, 204));
         ethicGroupComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        ethicGroupComboBox.setForeground(new java.awt.Color(0, 0, 0));
         ethicGroupComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kinh", "Tày", "Mường" }));
         ethicGroupComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         ethicGroupComboBox.setName("ethicGroupComboBox"); // NOI18N
@@ -225,12 +212,10 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         religionLabel.setLabelFor(religionComboBox);
         religionLabel.setText("Tôn giáo :");
         religionLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        religionLabel.setForeground(new java.awt.Color(0, 0, 0));
         religionLabel.setName("religionLabel"); // NOI18N
 
         religionComboBox.setBackground(new java.awt.Color(204, 204, 204));
         religionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        religionComboBox.setForeground(new java.awt.Color(0, 0, 0));
         religionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Phật Giáo", "Thiên Chúa Giáo", "Công Giáo" }));
         religionComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         religionComboBox.setName("religionComboBox"); // NOI18N
@@ -238,12 +223,10 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         nationLabel.setLabelFor(nationComboBox);
         nationLabel.setText("Quốc Tịch :");
         nationLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        nationLabel.setForeground(new java.awt.Color(0, 0, 0));
         nationLabel.setName("nationLabel"); // NOI18N
 
         nationComboBox.setBackground(new java.awt.Color(204, 204, 204));
         nationComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        nationComboBox.setForeground(new java.awt.Color(0, 0, 0));
         nationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Việt Nam", "Hoa Kỳ", "Canada", "Nhật Bản", "Hàn Quốc", " " }));
         nationComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         nationComboBox.setName("nationComboBox"); // NOI18N
@@ -251,12 +234,10 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         degreeLabel.setLabelFor(degreeComboBox);
         degreeLabel.setText("Bằng Cấp :");
         degreeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        degreeLabel.setForeground(new java.awt.Color(0, 0, 0));
         degreeLabel.setName("degreeLabel"); // NOI18N
 
         degreeComboBox.setBackground(new java.awt.Color(204, 204, 204));
         degreeComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        degreeComboBox.setForeground(new java.awt.Color(0, 0, 0));
         degreeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bằng Cử Nhân", "Bằng Kỹ Sư", "Bằng Thạc Sĩ", "Bằng Tiến Sĩ", " " }));
         degreeComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         degreeComboBox.setName("degreeComboBox"); // NOI18N
@@ -264,18 +245,15 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         positionLabel.setLabelFor(positionComboBox);
         positionLabel.setText("Chức vụ :");
         positionLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        positionLabel.setForeground(new java.awt.Color(0, 0, 0));
         positionLabel.setName("positionLabel"); // NOI18N
 
         specialtyLabel.setLabelFor(specialtyComboBox);
         specialtyLabel.setText("Chuyên Môn :");
         specialtyLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        specialtyLabel.setForeground(new java.awt.Color(0, 0, 0));
         specialtyLabel.setName("specialtyLabel"); // NOI18N
 
         specialtyComboBox.setBackground(new java.awt.Color(204, 204, 204));
         specialtyComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        specialtyComboBox.setForeground(new java.awt.Color(0, 0, 0));
         specialtyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kế Toán", "Lập Trình Viên", "Quản Lý Dự Án", "Quản Lý Nhân Sự", "Phân Tích Dữ Liệu Doanh Nghiệp", "Designer" }));
         specialtyComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         specialtyComboBox.setName("specialtyComboBox"); // NOI18N
@@ -283,18 +261,15 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nhân Viên", "Phó Phòng", "Trưởng Phòng", "Thư Ký", "Phó Giám Đốc", "Tổng Giám Đốc" }));
         positionComboBox.setBackground(new java.awt.Color(204, 204, 204));
         positionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        positionComboBox.setForeground(new java.awt.Color(0, 0, 0));
         positionComboBox.setName("positionComboBox"); // NOI18N
 
         employeeTypeLabel.setLabelFor(employeeTypeComboBox);
         employeeTypeLabel.setText("Loại Nhân Viên :");
         employeeTypeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeTypeLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeTypeLabel.setName("employeeTypeLabel"); // NOI18N
 
         employeeTypeComboBox.setBackground(new java.awt.Color(204, 204, 204));
         employeeTypeComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        employeeTypeComboBox.setForeground(new java.awt.Color(0, 0, 0));
         employeeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nhân Viên Chính Thức", "Nhân Viên Bán Thời Gian", "Thực Tập Sinh", " " }));
         employeeTypeComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         employeeTypeComboBox.setName("employeeTypeComboBox"); // NOI18N
@@ -312,7 +287,6 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         declineButton.setName("declineButton"); // NOI18N
 
         birthdateDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        birthdateDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         birthdateDatePicker.setName("birthdateDatePicker"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
