@@ -10,10 +10,14 @@ public class RewardContentPanel extends javax.swing.JPanel implements ActionList
     
     public RewardContentPanel() {
         initComponents();
+        
        typeRewardBtn.addActionListener(this);
        rewardEmployeeBtn.addActionListener(this);
-  
+       typeRewardContentPanel1 = new TypeRewardContentPanel1();
+       rewardEmployeeContentPanel = new RewardEmployeeContentPanel();
        
+                   //showTypeRewardContentPanel();
+
         setVisible(true);
     }
      @Override

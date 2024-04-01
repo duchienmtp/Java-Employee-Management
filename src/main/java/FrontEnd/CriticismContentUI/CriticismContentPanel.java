@@ -10,8 +10,12 @@ public class CriticismContentPanel extends javax.swing.JPanel implements ActionL
     CriticismEmployeeContentPanel criticismEmployeeContentPanel;
     public CriticismContentPanel() {
         initComponents();
+//         typeCriticismContentPanel = new TypeCriticismContentPanel();
+//       criticismContainer.setLayout(new GridLayout(1, 1));
+//       showTypeCriticismContentPanel();
         typeCriticismBtn.addActionListener(this);
         criticismEmployeeBtn.addActionListener(this);
+        
         
         setVisible(true);
     }
@@ -32,7 +36,7 @@ public class CriticismContentPanel extends javax.swing.JPanel implements ActionL
 
     private void showTypeCriticismContentPanel() {
         clearPanel();
-       
+       typeCriticismContentPanel = new TypeCriticismContentPanel();
         criticismContainer.add(typeCriticismContentPanel);
         criticismContainer.revalidate();
         criticismContainer.repaint();
