@@ -1,12 +1,48 @@
 package FrontEnd.RewardContentUI;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-
-public class RewardContentPanel extends javax.swing.JPanel {
-
+public class RewardContentPanel extends javax.swing.JPanel implements ActionListener {
+     TypeRewardContentPanel1 typeRewardContentPanel1;
+     RewardEmployeeContentPanel rewardEmployeeContentPanel;
     
     public RewardContentPanel() {
         initComponents();
+       typeRewardBtn.addActionListener(this);
+       rewardEmployeeBtn.addActionListener(this);
+  
+       
         setVisible(true);
+    }
+     @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == typeRewardContentPanel1) {
+            showTypeRewardContentPanel();
+        } else if (e.getSource() == rewardEmployeeContentPanel) {
+            showRewardEmployeeContentPanel();
+        }
+    }
+    private void clearPanel() {
+        rewardContainer.removeAll();
+        rewardContainer.revalidate();
+        rewardContainer.repaint();
+    }
+    private void showTypeRewardContentPanel() {
+         clearPanel();
+        typeRewardContentPanel1 = new TypeRewardContentPanel1();
+        rewardContainer.add(typeRewardContentPanel1);
+        rewardContainer.revalidate();
+        rewardContainer.repaint();
+    }
+
+    private void showRewardEmployeeContentPanel() {
+        clearPanel();
+        rewardEmployeeContentPanel = new RewardEmployeeContentPanel();
+        rewardContainer.add(rewardEmployeeContentPanel);
+        rewardContainer.revalidate();
+        rewardContainer.repaint();
     }
  
     @SuppressWarnings("unchecked")
@@ -16,7 +52,7 @@ public class RewardContentPanel extends javax.swing.JPanel {
         jpanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         rewardContainer = new javax.swing.JPanel();
-        appMenu = new javax.swing.JPanel();
+        addMenu = new javax.swing.JPanel();
         typeRewardBtn = new javax.swing.JButton();
         rewardEmployeeBtn = new javax.swing.JButton();
 
@@ -36,12 +72,14 @@ public class RewardContentPanel extends javax.swing.JPanel {
         rewardContainer.setLayout(rewardContainerLayout);
         rewardContainerLayout.setHorizontalGroup(
             rewardContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1500, Short.MAX_VALUE)
+            .addGap(0, 1485, Short.MAX_VALUE)
         );
         rewardContainerLayout.setVerticalGroup(
             rewardContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 608, Short.MAX_VALUE)
         );
+
+        addMenu.setBackground(new java.awt.Color(255, 255, 255));
 
         typeRewardBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         typeRewardBtn.setIcon(new javax.swing.ImageIcon("C:\\Users\\admin\\OneDrive\\Documents\\NetBeansProjects\\Employee-Management\\Java-Employee-Management\\src\\main\\resources\\images\\add.png")); // NOI18N
@@ -61,22 +99,22 @@ public class RewardContentPanel extends javax.swing.JPanel {
             }
         });
 
-        javax.swing.GroupLayout appMenuLayout = new javax.swing.GroupLayout(appMenu);
-        appMenu.setLayout(appMenuLayout);
-        appMenuLayout.setHorizontalGroup(
-            appMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(appMenuLayout.createSequentialGroup()
-                .addContainerGap()
+        javax.swing.GroupLayout addMenuLayout = new javax.swing.GroupLayout(addMenu);
+        addMenu.setLayout(addMenuLayout);
+        addMenuLayout.setHorizontalGroup(
+            addMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(addMenuLayout.createSequentialGroup()
+                .addGap(57, 57, 57)
                 .addComponent(typeRewardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(127, 127, 127)
+                .addGap(76, 76, 76)
                 .addComponent(rewardEmployeeBtn)
-                .addContainerGap(963, Short.MAX_VALUE))
+                .addContainerGap(957, Short.MAX_VALUE))
         );
-        appMenuLayout.setVerticalGroup(
-            appMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(appMenuLayout.createSequentialGroup()
+        addMenuLayout.setVerticalGroup(
+            addMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(addMenuLayout.createSequentialGroup()
                 .addContainerGap(34, Short.MAX_VALUE)
-                .addGroup(appMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(addMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(typeRewardBtn)
                     .addComponent(rewardEmployeeBtn))
                 .addGap(29, 29, 29))
@@ -86,20 +124,25 @@ public class RewardContentPanel extends javax.swing.JPanel {
         jpanel1.setLayout(jpanel1Layout);
         jpanel1Layout.setHorizontalGroup(
             jpanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1506, Short.MAX_VALUE)
             .addGroup(jpanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jpanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(appMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rewardContainer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanel1Layout.createSequentialGroup()
+                        .addComponent(rewardContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(15, 15, 15))
+                    .addGroup(jpanel1Layout.createSequentialGroup()
+                        .addComponent(addMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         jpanel1Layout.setVerticalGroup(
             jpanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpanel1Layout.createSequentialGroup()
-                .addComponent(appMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(addMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rewardContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -107,21 +150,22 @@ public class RewardContentPanel extends javax.swing.JPanel {
         add(jpanel1);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void typeRewardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeRewardBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_typeRewardBtnActionPerformed
-
     private void rewardEmployeeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rewardEmployeeBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rewardEmployeeBtnActionPerformed
 
+    private void typeRewardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeRewardBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_typeRewardBtnActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel appMenu;
+    private javax.swing.JPanel addMenu;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jpanel1;
     private javax.swing.JPanel rewardContainer;
     private javax.swing.JButton rewardEmployeeBtn;
     private javax.swing.JButton typeRewardBtn;
     // End of variables declaration//GEN-END:variables
+
 
 }

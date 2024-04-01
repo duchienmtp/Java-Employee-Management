@@ -90,7 +90,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                              <Component id="CriticismEmployeeForm" pref="0" max="32767" attributes="0"/>
+                              <Component id="CriticismEmployeeForm" max="32767" attributes="0"/>
                           </Group>
                           <Component id="criticismEmployeeLabel" pref="374" max="32767" attributes="0"/>
                       </Group>
@@ -135,90 +135,57 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="criticismNameLabel" max="32767" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="criticismNameTextField" min="-2" pref="226" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="criticismIDLabel" max="32767" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="CriticismIDTextField" min="-2" pref="226" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="criticismNumLabel" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="criticismNumTextField" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="criticismNameEmployeeLabel" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="typeCriticismNameLabel1" alignment="0" max="32767" attributes="0"/>
-                              <Component id="EmployeeComboBox" alignment="0" max="32767" attributes="0"/>
-                              <Component id="typeCriticismComboBox" alignment="0" max="32767" attributes="0"/>
-                              <Component id="cancelBtn" alignment="0" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="typeCriticismNameLabel1" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="EmployeeComboBox" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="typeCriticismComboBox" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="cancelBtn" alignment="0" max="32767" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="addButton" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="deleteButton" min="-2" pref="105" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                                          <Component id="updateButton" pref="120" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <Component id="criticismNameEmployeeLabel" max="32767" attributes="0"/>
+                                  <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                              </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="moneyCriticismLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="moneyTextField" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="moneyCriticismSpinner" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="addButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="deleteButton" min="-2" pref="105" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                                  <Component id="updateButton" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="criticismIDLabel" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                              <Component id="CriticismIDTextField" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="criticismNameLabel" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                              <Component id="criticismNameTextField" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="criticismNumLabel" min="-2" pref="40" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="criticismNumTextField" min="-2" pref="32" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="criticismNameEmployeeLabel" min="-2" pref="40" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="EmployeeComboBox" min="-2" pref="46" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="typeCriticismNameLabel1" min="-2" pref="40" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="typeCriticismComboBox" min="-2" pref="39" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="moneyCriticismSpinner" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
-                              <Component id="moneyCriticismLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="cancelBtn" min="-2" pref="50" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="moneyCriticismLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="moneyTextField" alignment="3" min="-2" pref="48" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                          <Component id="cancelBtn" min="-2" pref="50" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="addButton" alignment="3" min="-2" pref="50" max="-2" attributes="0"/>
                               <Component id="deleteButton" alignment="3" min="-2" pref="50" max="-2" attributes="0"/>
@@ -230,30 +197,6 @@
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="criticismIDLabel">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Segoe UI" size="14" style="1"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="M&#xe3; K&#x1ef7; Lu&#x1ead;t:"/>
-                    <Property name="name" type="java.lang.String" value="criticismIDLabel" noResource="true"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="CriticismIDTextField">
-                  <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="cc" green="cc" red="cc" type="rgb"/>
-                    </Property>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Segoe UI" size="12" style="1"/>
-                    </Property>
-                    <Property name="enabled" type="boolean" value="false"/>
-                    <Property name="name" type="java.lang.String" value="CriticismIDTextField" noResource="true"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CriticismIDTextFieldActionPerformed"/>
-                  </Events>
-                </Component>
                 <Component class="javax.swing.JButton" name="addButton">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -316,26 +259,6 @@
                     <Property name="opaque" type="boolean" value="true"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="criticismNameLabel">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Segoe UI" size="14" style="1"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="T&#xea;n K&#x1ef7; Lu&#x1ead;t :"/>
-                    <Property name="name" type="java.lang.String" value="criticismNameLabel" noResource="true"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="criticismNameTextField">
-                  <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="cc" green="cc" red="cc" type="rgb"/>
-                    </Property>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Segoe UI" size="12" style="1"/>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="criticismNameTextField" noResource="true"/>
-                  </Properties>
-                </Component>
                 <Component class="javax.swing.JButton" name="cancelBtn">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -349,26 +272,6 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="H&#x1ee7;y B&#x1ecf;"/>
                     <Property name="name" type="java.lang.String" value="cancelBtn" noResource="true"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="criticismNumLabel">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Segoe UI" size="14" style="1"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="S&#x1ed1; Quy&#x1ebf;t &#x110;&#x1ecb;nh :"/>
-                    <Property name="name" type="java.lang.String" value="typeRewardNameLabel" noResource="true"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="criticismNumTextField">
-                  <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="cc" green="cc" red="cc" type="rgb"/>
-                    </Property>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Segoe UI" size="12" style="1"/>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="typeRewardNameTextField" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="typeCriticismNameLabel1">
@@ -437,7 +340,15 @@
                     <Property name="text" type="java.lang.String" value="S&#x1ed1; Ti&#x1ec1;n Ph&#x1ea1;t:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JSpinner" name="moneyCriticismSpinner">
+                <Component class="javax.swing.JTextField" name="moneyTextField">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Segoe UI" size="14" style="1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="500,000"/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
@@ -523,34 +434,16 @@
                     <Component class="javax.swing.JTable" name="CriticismEmployeeTable">
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="8" rowCount="0">
+                          <Table columnCount="5" rowCount="0">
                             <Column editable="false" title="STT" type="java.lang.Integer"/>
-                            <Column editable="false" title="M&#xe3; K&#x1ef7; Lu&#x1ead;t" type="java.lang.String"/>
-                            <Column editable="false" title="T&#xea;n K&#x1ef7; Lu&#x1ead;t" type="java.lang.String"/>
+                            <Column editable="false" title="M&#xe3; Lo&#x1ea1;i K&#x1ef7; Lu&#x1ead;t" type="java.lang.String"/>
                             <Column editable="false" title="T&#xea;n Nh&#xe2;n Vi&#xea;n" type="java.lang.String"/>
-                            <Column editable="true" title="M&#xe3; Lo&#x1ea1;i K&#x1ef7; Lu&#x1ead;t" type="java.lang.String"/>
-                            <Column editable="true" title="S&#x1ed1; Quy&#x1ebf;t &#x110;&#x1ecb;nh" type="java.lang.String"/>
-                            <Column editable="true" title="S&#x1ed1; Ti&#x1ec1;n Ph&#x1ea1;t" type="java.lang.Object"/>
+                            <Column editable="false" title="S&#x1ed1; Ti&#x1ec1;n Ph&#x1ea1;t" type="java.lang.Object"/>
                             <Column editable="true" title="Ng&#xe0;y T&#x1ea1;o" type="java.lang.Object"/>
                           </Table>
                         </Property>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                           <TableColumnModel selectionModel="0">
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                              <Title/>
-                              <Editor/>
-                              <Renderer/>
-                            </Column>
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                              <Title/>
-                              <Editor/>
-                              <Renderer/>
-                            </Column>
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                              <Title/>
-                              <Editor/>
-                              <Renderer/>
-                            </Column>
                             <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                               <Title/>
                               <Editor/>

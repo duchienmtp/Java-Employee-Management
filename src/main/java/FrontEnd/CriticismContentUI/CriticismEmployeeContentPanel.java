@@ -30,22 +30,16 @@ public class CriticismEmployeeContentPanel extends javax.swing.JFrame {
         criticismEmployeeFormContainer = new javax.swing.JPanel();
         criticismEmployeeLabel = new javax.swing.JLabel();
         CriticismEmployeeForm = new javax.swing.JPanel();
-        criticismIDLabel = new javax.swing.JLabel();
-        CriticismIDTextField = new javax.swing.JTextField();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         updateButton = new javax.swing.JButton();
-        criticismNameLabel = new javax.swing.JLabel();
-        criticismNameTextField = new javax.swing.JTextField();
         cancelBtn = new javax.swing.JButton();
-        criticismNumLabel = new javax.swing.JLabel();
-        criticismNumTextField = new javax.swing.JTextField();
         typeCriticismNameLabel1 = new javax.swing.JLabel();
         EmployeeComboBox = new javax.swing.JComboBox<>();
         criticismNameEmployeeLabel = new javax.swing.JLabel();
         typeCriticismComboBox = new javax.swing.JComboBox<>();
         moneyCriticismLabel = new javax.swing.JLabel();
-        moneyCriticismSpinner = new javax.swing.JSpinner();
+        moneyTextField = new javax.swing.JTextField();
         criticismEmployeeTableContainer = new javax.swing.JPanel();
         CriticismEmployeeTableLabel = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -69,20 +63,6 @@ public class CriticismEmployeeContentPanel extends javax.swing.JFrame {
 
         CriticismEmployeeForm.setBackground(new java.awt.Color(255, 255, 255));
         CriticismEmployeeForm.setName("CriticismEmployeeForm"); // NOI18N
-
-        criticismIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        criticismIDLabel.setText("Mã Kỷ Luật:");
-        criticismIDLabel.setName("criticismIDLabel"); // NOI18N
-
-        CriticismIDTextField.setBackground(new java.awt.Color(204, 204, 204));
-        CriticismIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        CriticismIDTextField.setEnabled(false);
-        CriticismIDTextField.setName("CriticismIDTextField"); // NOI18N
-        CriticismIDTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CriticismIDTextFieldActionPerformed(evt);
-            }
-        });
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -115,27 +95,11 @@ public class CriticismEmployeeContentPanel extends javax.swing.JFrame {
         updateButton.setName("updateButton"); // NOI18N
         updateButton.setOpaque(true);
 
-        criticismNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        criticismNameLabel.setText("Tên Kỷ Luật :");
-        criticismNameLabel.setName("criticismNameLabel"); // NOI18N
-
-        criticismNameTextField.setBackground(new java.awt.Color(204, 204, 204));
-        criticismNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        criticismNameTextField.setName("criticismNameTextField"); // NOI18N
-
         cancelBtn.setBackground(new java.awt.Color(108, 117, 125));
         cancelBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         cancelBtn.setForeground(new java.awt.Color(255, 255, 255));
         cancelBtn.setText("Hủy Bỏ");
         cancelBtn.setName("cancelBtn"); // NOI18N
-
-        criticismNumLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        criticismNumLabel.setText("Số Quyết Định :");
-        criticismNumLabel.setName("typeRewardNameLabel"); // NOI18N
-
-        criticismNumTextField.setBackground(new java.awt.Color(204, 204, 204));
-        criticismNumTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        criticismNumTextField.setName("typeRewardNameTextField"); // NOI18N
 
         typeCriticismNameLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         typeCriticismNameLabel1.setText("Chọn Loại Kỷ Luật:");
@@ -160,79 +124,57 @@ public class CriticismEmployeeContentPanel extends javax.swing.JFrame {
         moneyCriticismLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         moneyCriticismLabel.setText("Số Tiền Phạt:");
 
+        moneyTextField.setEditable(false);
+        moneyTextField.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        moneyTextField.setText("500,000");
+        moneyTextField.setEnabled(false);
+
         javax.swing.GroupLayout CriticismEmployeeFormLayout = new javax.swing.GroupLayout(CriticismEmployeeForm);
         CriticismEmployeeForm.setLayout(CriticismEmployeeFormLayout);
         CriticismEmployeeFormLayout.setHorizontalGroup(
             CriticismEmployeeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CriticismEmployeeFormLayout.createSequentialGroup()
-                .addGroup(CriticismEmployeeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, CriticismEmployeeFormLayout.createSequentialGroup()
-                        .addComponent(criticismNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(criticismNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
-                        .addComponent(criticismIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(CriticismIDTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(52, 52, 52))
-            .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
-                .addComponent(criticismNumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
-                .addComponent(criticismNumTextField)
-                .addContainerGap())
-            .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
-                .addComponent(criticismNameEmployeeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
             .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(CriticismEmployeeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(typeCriticismNameLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(EmployeeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(typeCriticismComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cancelBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
+                        .addGroup(CriticismEmployeeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(typeCriticismNameLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(EmployeeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(typeCriticismComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cancelBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
+                                .addComponent(addButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
+                        .addComponent(criticismNameEmployeeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(14, 14, 14))
                     .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
                         .addComponent(moneyCriticismLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(moneyCriticismSpinner))
-                    .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
-                        .addComponent(addButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(moneyTextField)
+                        .addContainerGap())))
         );
         CriticismEmployeeFormLayout.setVerticalGroup(
             CriticismEmployeeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CriticismEmployeeFormLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(CriticismEmployeeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(criticismIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CriticismIDTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(CriticismEmployeeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(criticismNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(criticismNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(criticismNumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(criticismNumTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(criticismNameEmployeeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(EmployeeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(typeCriticismNameLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(typeCriticismComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(CriticismEmployeeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(moneyCriticismSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(moneyCriticismLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addGroup(CriticismEmployeeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(moneyCriticismLabel)
+                    .addComponent(moneyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
                 .addGroup(CriticismEmployeeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -249,7 +191,7 @@ public class CriticismEmployeeContentPanel extends javax.swing.JFrame {
                 .addGroup(criticismEmployeeFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(criticismEmployeeFormContainerLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(CriticismEmployeeForm, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addComponent(CriticismEmployeeForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(criticismEmployeeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -278,14 +220,14 @@ public class CriticismEmployeeContentPanel extends javax.swing.JFrame {
 
             },
             new String [] {
-                "STT", "Mã Kỷ Luật", "Tên Kỷ Luật", "Tên Nhân Viên", "Mã Loại Kỷ Luật", "Số Quyết Định", "Số Tiền Phạt", "Ngày Tạo"
+                "STT", "Mã Loại Kỷ Luật", "Tên Nhân Viên", "Số Tiền Phạt", "Ngày Tạo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, true, true, true
+                false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -369,10 +311,6 @@ public class CriticismEmployeeContentPanel extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void CriticismIDTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CriticismIDTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_CriticismIDTextFieldActionPerformed
-
     private void typeCriticismComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeCriticismComboBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_typeCriticismComboBoxActionPerformed
@@ -420,25 +358,19 @@ public class CriticismEmployeeContentPanel extends javax.swing.JFrame {
     private javax.swing.JPanel CriticismEmployeeForm;
     private javax.swing.JTable CriticismEmployeeTable;
     private javax.swing.JLabel CriticismEmployeeTableLabel;
-    private javax.swing.JTextField CriticismIDTextField;
     private javax.swing.JComboBox<String> EmployeeComboBox;
     private javax.swing.JButton addButton;
     private javax.swing.JButton cancelBtn;
     private javax.swing.JPanel criticismEmployeeFormContainer;
     private javax.swing.JLabel criticismEmployeeLabel;
     private javax.swing.JPanel criticismEmployeeTableContainer;
-    private javax.swing.JLabel criticismIDLabel;
     private javax.swing.JLabel criticismNameEmployeeLabel;
-    private javax.swing.JLabel criticismNameLabel;
-    private javax.swing.JTextField criticismNameTextField;
-    private javax.swing.JLabel criticismNumLabel;
-    private javax.swing.JTextField criticismNumTextField;
     private javax.swing.JButton deleteButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel moneyCriticismLabel;
-    private javax.swing.JSpinner moneyCriticismSpinner;
+    private javax.swing.JTextField moneyTextField;
     private javax.swing.JComboBox<String> typeCriticismComboBox;
     private javax.swing.JLabel typeCriticismNameLabel1;
     private javax.swing.JButton updateButton;

@@ -38,6 +38,8 @@ public class TypeRewardContentPanel1 extends javax.swing.JFrame {
         typeRewardNameLabel = new javax.swing.JLabel();
         typeRewardNameTextField = new javax.swing.JTextField();
         cancelBtn = new javax.swing.JButton();
+        moneyRewardLabel1 = new javax.swing.JLabel();
+        moneyRewardNameTextField1 = new javax.swing.JTextField();
         typeRewardTableContainer = new javax.swing.JPanel();
         typeRewardTableLabel = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -111,6 +113,14 @@ public class TypeRewardContentPanel1 extends javax.swing.JFrame {
         cancelBtn.setText("Hủy Bỏ");
         cancelBtn.setName("cancelBtn"); // NOI18N
 
+        moneyRewardLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        moneyRewardLabel1.setText("Số Tiền Thưởng :");
+        moneyRewardLabel1.setName("typeRewardNameLabel"); // NOI18N
+
+        moneyRewardNameTextField1.setBackground(new java.awt.Color(204, 204, 204));
+        moneyRewardNameTextField1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        moneyRewardNameTextField1.setName("typeRewardNameTextField"); // NOI18N
+
         javax.swing.GroupLayout typeRewardFormLayout = new javax.swing.GroupLayout(typeRewardForm);
         typeRewardForm.setLayout(typeRewardFormLayout);
         typeRewardFormLayout.setHorizontalGroup(
@@ -126,6 +136,11 @@ public class TypeRewardContentPanel1 extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
             .addComponent(cancelBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(moneyRewardLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(typeRewardFormLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(moneyRewardNameTextField1)
+                .addContainerGap())
         );
         typeRewardFormLayout.setVerticalGroup(
             typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,9 +153,13 @@ public class TypeRewardContentPanel1 extends javax.swing.JFrame {
                 .addComponent(typeRewardNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(typeRewardNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(moneyRewardLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(9, 9, 9)
+                .addComponent(moneyRewardNameTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -185,14 +204,14 @@ public class TypeRewardContentPanel1 extends javax.swing.JFrame {
 
             },
             new String [] {
-                "STT", "ID", "Tên Khen Thưởng", "Ngày Tạo"
+                "STT", "ID", "Tên Khen Thưởng", "Số Tiền Thưởng", "Ngày Tạo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -277,7 +296,7 @@ public class TypeRewardContentPanel1 extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(46, 46, 46)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -327,6 +346,8 @@ public class TypeRewardContentPanel1 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel moneyRewardLabel1;
+    private javax.swing.JTextField moneyRewardNameTextField1;
     private javax.swing.JPanel typeRewardForm;
     private javax.swing.JPanel typeRewardFormContainer;
     private javax.swing.JLabel typeRewardIDLabel;
