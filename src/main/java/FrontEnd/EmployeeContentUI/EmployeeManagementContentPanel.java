@@ -130,7 +130,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == importExcel) {
-
+            
         } else if (e.getSource() == exportExcel) {
 
         }
@@ -155,7 +155,6 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
         jTable1 = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setForeground(new java.awt.Color(0, 0, 0));
         setAlignmentX(0.0F);
         setAlignmentY(0.0F);
         setPreferredSize(new java.awt.Dimension(1055, 640));
@@ -167,6 +166,11 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
         addButton.setText("Thêm");
         addButton.setIconTextGap(10);
         addButton.setName("addButton"); // NOI18N
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
 
         deleteButton.setBackground(new java.awt.Color(220, 53, 69));
         deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -200,7 +204,6 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
         exportExcel.setName("exportExcel"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setForeground(new java.awt.Color(0, 0, 0));
 
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
@@ -208,10 +211,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
-        searchTextField.setBackground(new java.awt.Color(255, 255, 255));
         searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        searchTextField.setForeground(new java.awt.Color(0, 0, 0));
-        searchTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
 
@@ -247,11 +247,9 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
 
         tableContainer.setBackground(new java.awt.Color(255, 255, 255));
         tableContainer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        tableContainer.setForeground(new java.awt.Color(0, 0, 0));
         tableContainer.setName("tableContainer"); // NOI18N
 
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
         tableLabel.setText("Danh sách nhân viên");
         tableLabel.setName("tableLabel"); // NOI18N
 
@@ -326,7 +324,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
                     .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
+                        .addGap(63, 63, 63)
                         .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -354,6 +352,10 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
                 .addContainerGap(62, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
