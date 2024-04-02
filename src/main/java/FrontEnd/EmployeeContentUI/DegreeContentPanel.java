@@ -3,11 +3,8 @@ package FrontEnd.EmployeeContentUI;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -15,7 +12,6 @@ import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -35,6 +31,7 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         addButton.addActionListener(this);
         updateButton.addActionListener(this);
         deleteButton.addActionListener(this);
+        cancelButton.addActionListener(this);
 
         jTable1.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -135,6 +132,8 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
+        } else if (e.getSource() == cancelButton) {
+            clearFormContent();
         }
     }
 
@@ -169,27 +168,27 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         degreeFormContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         degreeFormContainer.setName("degreeFormContainer"); // NOI18N
 
+        degreeLabel.setText("Bằng Cấp");
         degreeLabel.setBackground(new java.awt.Color(255, 255, 255));
         degreeLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         degreeLabel.setForeground(new java.awt.Color(0, 0, 0));
-        degreeLabel.setText("Bằng Cấp");
         degreeLabel.setName("degreeLabel"); // NOI18N
         degreeLabel.setOpaque(true);
 
         degreeForm.setBackground(new java.awt.Color(255, 255, 255));
         degreeForm.setName("degreeForm"); // NOI18N
 
-        degreeIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        degreeIDLabel.setForeground(new java.awt.Color(0, 0, 0));
         degreeIDLabel.setLabelFor(degreeIDTextField);
         degreeIDLabel.setText("Mã Bằng Cấp :");
+        degreeIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        degreeIDLabel.setForeground(new java.awt.Color(0, 0, 0));
         degreeIDLabel.setName("degreeIDLabel"); // NOI18N
 
-        degreeIDTextField.setBackground(new java.awt.Color(204, 204, 204));
         degreeIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        degreeIDTextField.setForeground(new java.awt.Color(0, 0, 0));
+        degreeIDTextField.setBackground(new java.awt.Color(204, 204, 204));
         degreeIDTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         degreeIDTextField.setEnabled(false);
+        degreeIDTextField.setForeground(new java.awt.Color(0, 0, 0));
         degreeIDTextField.setName("degreeIDTextField"); // NOI18N
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
@@ -211,30 +210,30 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         deleteButton.setName("deleteButton"); // NOI18N
         deleteButton.setOpaque(true);
 
-        updateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        updateButton.setForeground(new java.awt.Color(255, 255, 255));
         updateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
         updateButton.setText("Sửa");
+        updateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        updateButton.setForeground(new java.awt.Color(255, 255, 255));
         updateButton.setIconTextGap(10);
         updateButton.setName("updateButton"); // NOI18N
         updateButton.setOpaque(true);
 
-        degreeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        degreeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         degreeNameLabel.setLabelFor(degreeNameTextField);
         degreeNameLabel.setText("Tên Bằng Cấp :");
+        degreeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        degreeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         degreeNameLabel.setName("degreeNameLabel"); // NOI18N
 
-        degreeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         degreeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        degreeNameTextField.setForeground(new java.awt.Color(0, 0, 0));
+        degreeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         degreeNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        degreeNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         degreeNameTextField.setName("degreeNameTextField"); // NOI18N
 
+        cancelButton.setText("Hủy Bỏ");
         cancelButton.setBackground(new java.awt.Color(108, 117, 125));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         cancelButton.setForeground(new java.awt.Color(255, 255, 255));
-        cancelButton.setText("Hủy Bỏ");
         cancelButton.setName("cancelButton"); // NOI18N
 
         javax.swing.GroupLayout degreeFormLayout = new javax.swing.GroupLayout(degreeForm);
@@ -300,10 +299,10 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         degreeTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         degreeTableContainer.setName("degreeTableContainer"); // NOI18N
 
+        degreeTableLabel.setText("Bằng Cấp");
         degreeTableLabel.setBackground(new java.awt.Color(255, 255, 255));
         degreeTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         degreeTableLabel.setForeground(new java.awt.Color(0, 0, 0));
-        degreeTableLabel.setText("Bằng Cấp");
         degreeTableLabel.setName("degreeTableLabel"); // NOI18N
         degreeTableLabel.setOpaque(true);
 

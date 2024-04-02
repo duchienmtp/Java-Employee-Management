@@ -31,6 +31,7 @@ public class SpecialtyContentPanel extends javax.swing.JPanel implements ActionL
         addButton.addActionListener(this);
         updateButton.addActionListener(this);
         deleteButton.addActionListener(this);
+        cancelButton.addActionListener(this);
 
         jTable1.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -396,6 +397,8 @@ public class SpecialtyContentPanel extends javax.swing.JPanel implements ActionL
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
+        } else if (e.getSource() == cancelButton) {
+            clearFormContent();
         }
     }
 
