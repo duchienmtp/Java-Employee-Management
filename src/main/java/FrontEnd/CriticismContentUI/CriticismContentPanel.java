@@ -6,13 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 public class CriticismContentPanel extends javax.swing.JPanel implements ActionListener {
 
-    TypeCriticismContentPanel typeCriticismContentPanel;
-    CriticismEmployeeContentPanel criticismEmployeeContentPanel;
+    TypeCriticismPanel typeCriticismContentPanel;
+    CriticismEmployeePanel criticismEmployeeContentPanel;
     public CriticismContentPanel() {
         initComponents();
 //         typeCriticismContentPanel = new TypeCriticismContentPanel();
-//       criticismContainer.setLayout(new GridLayout(1, 1));
-//       showTypeCriticismContentPanel();
+       criticismContainer.setLayout(new GridLayout(1, 1));
+       showTypeCriticismContentPanel();
         typeCriticismBtn.addActionListener(this);
         criticismEmployeeBtn.addActionListener(this);
         
@@ -36,7 +36,7 @@ public class CriticismContentPanel extends javax.swing.JPanel implements ActionL
 
     private void showTypeCriticismContentPanel() {
         clearPanel();
-       typeCriticismContentPanel = new TypeCriticismContentPanel();
+       typeCriticismContentPanel = new TypeCriticismPanel();
         criticismContainer.add(typeCriticismContentPanel);
         criticismContainer.revalidate();
         criticismContainer.repaint();
@@ -44,7 +44,7 @@ public class CriticismContentPanel extends javax.swing.JPanel implements ActionL
 
     private void showCriticismEmployeeContentPanel() {
         clearPanel();
-        criticismEmployeeContentPanel = new CriticismEmployeeContentPanel();
+        criticismEmployeeContentPanel = new CriticismEmployeePanel();
         criticismContainer.add(criticismEmployeeContentPanel);
         criticismContainer.revalidate();
         criticismContainer.repaint();
@@ -73,28 +73,7 @@ public class CriticismContentPanel extends javax.swing.JPanel implements ActionL
         criticismEmployeeBtn.setIcon(new javax.swing.ImageIcon("C:\\Users\\admin\\OneDrive\\Documents\\NetBeansProjects\\Employee-Management\\Java-Employee-Management\\src\\main\\resources\\images\\hammer.png")); // NOI18N
         criticismEmployeeBtn.setText("Tạo Kỷ Luật");
 
-        javax.swing.GroupLayout addCriticismLayout = new javax.swing.GroupLayout(addCriticism);
-        addCriticism.setLayout(addCriticismLayout);
-        addCriticismLayout.setHorizontalGroup(
-            addCriticismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(addCriticismLayout.createSequentialGroup()
-                .addGap(54, 54, 54)
-                .addComponent(typeCriticismBtn)
-                .addGap(70, 70, 70)
-                .addComponent(criticismEmployeeBtn)
-                .addContainerGap(548, Short.MAX_VALUE))
-        );
-        addCriticismLayout.setVerticalGroup(
-            addCriticismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addCriticismLayout.createSequentialGroup()
-                .addContainerGap(39, Short.MAX_VALUE)
-                .addGroup(addCriticismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(typeCriticismBtn)
-                    .addComponent(criticismEmployeeBtn))
-                .addGap(24, 24, 24))
-        );
-
-        criticismContainer.setBackground(new java.awt.Color(255, 204, 204));
+        criticismContainer.setBackground(new java.awt.Color(255, 255, 255));
         criticismContainer.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout criticismContainerLayout = new javax.swing.GroupLayout(criticismContainer);
@@ -105,7 +84,31 @@ public class CriticismContentPanel extends javax.swing.JPanel implements ActionL
         );
         criticismContainerLayout.setVerticalGroup(
             criticismContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
+            .addGap(0, 570, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout addCriticismLayout = new javax.swing.GroupLayout(addCriticism);
+        addCriticism.setLayout(addCriticismLayout);
+        addCriticismLayout.setHorizontalGroup(
+            addCriticismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(addCriticismLayout.createSequentialGroup()
+                .addGap(64, 64, 64)
+                .addComponent(typeCriticismBtn)
+                .addGap(72, 72, 72)
+                .addComponent(criticismEmployeeBtn)
+                .addContainerGap(536, Short.MAX_VALUE))
+            .addComponent(criticismContainer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        addCriticismLayout.setVerticalGroup(
+            addCriticismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addCriticismLayout.createSequentialGroup()
+                .addContainerGap(33, Short.MAX_VALUE)
+                .addGroup(addCriticismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(typeCriticismBtn)
+                    .addComponent(criticismEmployeeBtn))
+                .addGap(18, 18, 18)
+                .addComponent(criticismContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -113,14 +116,12 @@ public class CriticismContentPanel extends javax.swing.JPanel implements ActionL
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(addCriticism, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(criticismContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(addCriticism, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(criticismContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
  

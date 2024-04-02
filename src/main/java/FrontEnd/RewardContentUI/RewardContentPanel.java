@@ -3,28 +3,26 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 public class RewardContentPanel extends javax.swing.JPanel implements ActionListener {
-     TypeRewardContentPanel1 typeRewardContentPanel1;
-     RewardEmployeeContentPanel rewardEmployeeContentPanel;
+     TypeRewardPanel typeRewardContentPanel1;
+     RewardEmployeePanel rewardEmployeeContentPanel;
     
     public RewardContentPanel() {
         initComponents();
-        
+        //setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        rewardContainer.setLayout(new GridLayout(1, 1));
+        showTypeRewardContentPanel();
+
        typeRewardBtn.addActionListener(this);
        rewardEmployeeBtn.addActionListener(this);
-       typeRewardContentPanel1 = new TypeRewardContentPanel1();
-       rewardEmployeeContentPanel = new RewardEmployeeContentPanel();
        
-                   //showTypeRewardContentPanel();
-
         setVisible(true);
     }
      @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == typeRewardContentPanel1) {
+        if (e.getSource() == typeRewardBtn) {
             showTypeRewardContentPanel();
-        } else if (e.getSource() == rewardEmployeeContentPanel) {
+        } else if (e.getSource() == rewardEmployeeBtn) {
             showRewardEmployeeContentPanel();
         }
     }
@@ -35,7 +33,7 @@ public class RewardContentPanel extends javax.swing.JPanel implements ActionList
     }
     private void showTypeRewardContentPanel() {
          clearPanel();
-        typeRewardContentPanel1 = new TypeRewardContentPanel1();
+        typeRewardContentPanel1 = new TypeRewardPanel();
         rewardContainer.add(typeRewardContentPanel1);
         rewardContainer.revalidate();
         rewardContainer.repaint();
@@ -43,7 +41,7 @@ public class RewardContentPanel extends javax.swing.JPanel implements ActionList
 
     private void showRewardEmployeeContentPanel() {
         clearPanel();
-        rewardEmployeeContentPanel = new RewardEmployeeContentPanel();
+        rewardEmployeeContentPanel = new RewardEmployeePanel();
         rewardContainer.add(rewardEmployeeContentPanel);
         rewardContainer.revalidate();
         rewardContainer.repaint();
