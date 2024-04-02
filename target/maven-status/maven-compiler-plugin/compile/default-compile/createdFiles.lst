@@ -32,6 +32,7 @@ BackEnd\RelativesManagement\RelativesDAO.class
 FrontEnd\EmployeeContentUI\DegreeContentPanel.class
 BackEnd\DepartmentManagement\DepartmentDAO.class
 BackEnd\BusinessTravelManagemennt\BusinessTravelBUS.class
+FrontEnd\EmployeeContentUI\EmployeeManagementContentPanel$2.class
 BackEnd\DepartmentManagement\DepartmentBUS.class
 BackEnd\PositionSalary\PositionSalaryDAO.class
 BackEnd\DegreeManagement\Degree.class
@@ -39,8 +40,10 @@ BackEnd\EmployeeTypeManagement\EmployeeTypeBUS.class
 BackEnd\EmployeeManagement\Employee.class
 BackEnd\EmployeeSalary\EmployeeSalaryDAO.class
 BackEnd\PositionManagement\PositionBUS.class
+FrontEnd\TravelContentUI\UserInformationBusinessTravel.class
 BackEnd\CriticismManagement\CriticismBUS.class
 FrontEnd\EmployeeContentUI\PositionContentPanel$1.class
+FrontEnd\TravelContentUI\TravelContentPanel$8.class
 BackEnd\SpecialtyManagement\SpecialtyDAO.class
 BackEnd\RewardManagement\RewardBUS.class
 BackEnd\EmployeeManagement\EmployeeDAO.class
@@ -56,15 +59,17 @@ FrontEnd\AccountContentUI\AccountContentPanel.class
 BackEnd\AssignmentManagement\Assignment.class
 BackEnd\DepartmentManagement\Department.class
 BackEnd\EmployeesRewardsCriticismManagement\EmployeesRewardsCriticism.class
-FrontEnd\TravelContentUI\businessTravelForm$2.class
+FrontEnd\TravelContentUI\TravelContentPanel$5.class
 BackEnd\DegreeManagement\DegreeDAO.class
 BackEnd\CriticismManagement\CriticismDAO.class
+FrontEnd\TravelContentUI\TravelContentPanel$6.class
 BackEnd\EmployeeSalary\EmployeeSalaryBUS.class
 FrontEnd\TravelContentUI\businessTravelForm.class
 FrontEnd\EmployeeContentUI\UserInformationForm$1.class
 BackEnd\checkDate\check.class
 BackEnd\AccountManagement\Account.class
 BackEnd\PositionManagement\PositionDAO.class
+FrontEnd\TravelContentUI\TravelContentPanel$7.class
 BackEnd\AccountManagement\AccountDAO.class
 FrontEnd\TravelContentUI\businessTravelFrame.class
 BackEnd\PositionManagement\Position.class

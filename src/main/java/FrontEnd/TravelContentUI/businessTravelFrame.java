@@ -22,6 +22,7 @@ public class businessTravelFrame extends javax.swing.JFrame implements ActionLis
      */
     public businessTravelFrame() {
         initComponents();
+//        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         btnClose.addActionListener(this);
         btnConfirm.addActionListener(this);
     }
@@ -50,6 +51,9 @@ public class businessTravelFrame extends javax.swing.JFrame implements ActionLis
     public  JTextField gettxtPlace(){
         return txtPlace;
     }
+    public JTextField gettxtBusinessTravelID(){
+        return txtBusinessTravelID;
+    }
     @Override
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == btnClose){
@@ -65,9 +69,13 @@ public class businessTravelFrame extends javax.swing.JFrame implements ActionLis
             btnConfirmClicked = true;
             int i = TravelContentPanel.gettbTravel().getSelectedRow();
             DefaultTableModel model = (DefaultTableModel) TravelContentPanel.gettbTravel().getModel();
-            model.setValueAt(txtID.getText().toString(), i, 1);
-            model.setValueAt(txtHoten.getText().toString(), i, 2);
+            model.setValueAt(txtBusinessTravelID.getText(), i, 1);
+            model.setValueAt(txtID.getText(), i, 2);
+            model.setValueAt(txtHoten.getText(), i, 3);
+            model.setValueAt(txtBeginAt.getText(), i, 4);
+            model.setValueAt(txtCompleteAt.getText(), i, 5);
             TravelContentPanel.gettbTravel().setModel(model);
+            dispose();
         }
     }
     /**
@@ -93,6 +101,8 @@ public class businessTravelFrame extends javax.swing.JFrame implements ActionLis
         txtPurpose = new javax.swing.JTextField();
         btnConfirm = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        txtBusinessTravelID = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -114,13 +124,16 @@ public class businessTravelFrame extends javax.swing.JFrame implements ActionLis
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel6.setText("Mục đích công tác : ");
 
-        btnConfirm.setBackground(new java.awt.Color(0, 51, 153));
+        btnConfirm.setBackground(new java.awt.Color(45, 64, 80));
         btnConfirm.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnConfirm.setText("Xác nhận");
 
-        btnClose.setBackground(new java.awt.Color(0, 51, 153));
+        btnClose.setBackground(new java.awt.Color(45, 64, 80));
         btnClose.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnClose.setText("Hủy bỏ");
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel7.setText("Mã công tác : ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -145,10 +158,17 @@ public class businessTravelFrame extends javax.swing.JFrame implements ActionLis
                             .addComponent(txtID)
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
                             .addComponent(txtCompleteAt))
-                        .addGap(60, 60, 60)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPlace, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(60, 60, 60)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtPlace, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(45, 45, 45)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtBusinessTravelID, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(39, 39, 39))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(297, 297, 297)
@@ -160,20 +180,21 @@ public class businessTravelFrame extends javax.swing.JFrame implements ActionLis
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtHoten, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(txtID)
+                    .addComponent(txtBusinessTravelID))
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtHoten, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                            .addComponent(txtID))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(96, 96, 96)
+                        .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -190,7 +211,7 @@ public class businessTravelFrame extends javax.swing.JFrame implements ActionLis
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnConfirm, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
 
         pack();
@@ -209,7 +230,9 @@ public class businessTravelFrame extends javax.swing.JFrame implements ActionLis
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     public static javax.swing.JTextField txtBeginAt;
+    private javax.swing.JTextField txtBusinessTravelID;
     public static javax.swing.JTextField txtCompleteAt;
     public static javax.swing.JTextField txtHoten;
     public static javax.swing.JTextField txtID;

@@ -166,6 +166,11 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
         addButton.setText("Thêm");
         addButton.setIconTextGap(10);
         addButton.setName("addButton"); // NOI18N
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
 
         deleteButton.setBackground(new java.awt.Color(220, 53, 69));
         deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -347,6 +352,10 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
                 .addContainerGap(62, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
