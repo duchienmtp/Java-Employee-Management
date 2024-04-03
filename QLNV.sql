@@ -105,20 +105,20 @@ CREATE TABLE [Departments] (
 )
 GO
 
-CREATE TABLE [BusinessTravels] (
-  [businessTravelId] nvarchar(255) PRIMARY KEY,
+CREATE TABLE [Projects] (
+  [projectId] nvarchar(255) PRIMARY KEY,
+  [projectName] nvarchar(255) not null,
   [departmentId] nvarchar(255) not null,
   [beginAt] DATETIME not null,
   [completedAt] DATETIME not null,
   [place] nvarchar(255) not null,
-  [purpose] nvarchar(max)
 )
 GO
 
 CREATE TABLE [Assignments] (
   [employeeId] nvarchar(255),
-  [businessTravelId] nvarchar(255),
-  PRIMARY KEY ([employeeId], [businessTravelId])
+  [projectId] nvarchar(255),
+  PRIMARY KEY ([employeeId], [projectId])
 )
 GO
 
@@ -160,11 +160,11 @@ GO
 ALTER TABLE [Departments] ADD FOREIGN KEY ([departmentLeader]) REFERENCES [Employees] ([id])
 GO
 
-ALTER TABLE [BusinessTravels] ADD FOREIGN KEY ([departmentId]) REFERENCES [Departments] ([departmentId])
+ALTER TABLE [Projects] ADD FOREIGN KEY ([departmentId]) REFERENCES [Departments] ([departmentId])
 GO
 
 ALTER TABLE [Assignments] ADD FOREIGN KEY ([employeeId]) REFERENCES [Employees] ([id])
 GO
 
-ALTER TABLE [Assignments] ADD FOREIGN KEY ([businessTravelId]) REFERENCES [BusinessTravels] ([businessTravelId])
+ALTER TABLE [Assignments] ADD FOREIGN KEY ([projectId]) REFERENCES [Projects] ([projectId])
 GO

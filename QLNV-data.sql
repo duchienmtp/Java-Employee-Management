@@ -161,10 +161,10 @@ VALUES
 ('EM031', 'Võ Văn Hiếu', '1976-05-14', '0832156408', 'Nam', 'Kinh', 'Không', 'Việt Nam', 'PO005', 'SP021', 'DE007', 'DP007', 'ET001', '1'),
 ('ADM001', 'Trần Đức Hiển', '2004-09-23', '0123456789', 'Nam', 'Kinh', 'Phật Giáo', 'Việt Nam', 'PO001', 'SP005', 'DE004', 'DP007', 'ET001', '1');
 
-INSERT INTO [QLNV].[dbo].[BusinessTravels] ([businessTravelId], [departmentId], [beginAt], [completedAt], [place], [purpose])
+INSERT INTO [QLNV].[dbo].[Projects] ([projectId], [projectName], [departmentId], [beginAt], [completedAt], [place])
 VALUES 
-('BT001', 'DP004', GETDATE(), DATEADD(MONTH, 6, GETDATE()), 'TPHCM', 'Dự án phát triển web bán hàng Shopee'),
-('BT002', 'DP005', GETDATE(), DATEADD(MONTH, 6, GETDATE()), 'Hà Nội', 'Dự án phát triển ứng dụng quản lý bệnh viện');
+('PJ001', 'Dự án phát triển web bán hàng Shopee', 'DP004', GETDATE(), DATEADD(MONTH, 6, GETDATE()), 'TPHCM'),
+('PJ002', 'Dự án phát triển ứng dụng quản lý bệnh viện', 'DP005', GETDATE(), DATEADD(MONTH, 6, GETDATE()), 'Hà Nội');
 
 
 INSERT INTO [QLNV].[dbo].[Account] ([userId], [username], [password], [email], [avatar], [authorization], [createdAt])
@@ -202,22 +202,22 @@ VALUES
 ('EM031', 'vovanhieu', '123456', 'vovanhieu@example.com', '', 'employee', GETDATE()),
 ('ADM001', 'admin', 'admin', 'tranduchien@example.com', '', 'admin', GETDATE());
 
-INSERT INTO [QLNV].[dbo].[Assignments] ([employeeId], [businessTravelId])
+INSERT INTO [QLNV].[dbo].[Assignments] ([employeeId], [projectId])
 VALUES 
-('EM001', 'BT001'),
-('EM003', 'BT002'),
-('EM012', 'BT001'),
-('EM016', 'BT001'),
-('EM017', 'BT002'),
-('EM018', 'BT002'),
-('EM019', 'BT002'),
-('EM020', 'BT001'),
-('EM022', 'BT001'),
-('EM023', 'BT001'),
-('EM027', 'BT002'),
-('EM028', 'BT001'),
-('EM029', 'BT002'),
-('EM030', 'BT002');
+('EM001', 'PJ001'),
+('EM003', 'PJ002'),
+('EM012', 'PJ001'),
+('EM016', 'PJ001'),
+('EM017', 'PJ002'),
+('EM018', 'PJ002'),
+('EM019', 'PJ002'),
+('EM020', 'PJ001'),
+('EM022', 'PJ001'),
+('EM023', 'PJ001'),
+('EM027', 'PJ002'),
+('EM028', 'PJ001'),
+('EM029', 'PJ002'),
+('EM030', 'PJ002');
 
 INSERT INTO [QLNV].[dbo].[EmployeesRewardsCriticism] ([employeeId], [rewardId], [criticismId], [faultCount], [rewardCount], [createdAt])
 VALUES 

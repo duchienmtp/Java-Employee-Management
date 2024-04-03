@@ -1,6 +1,5 @@
 package FrontEnd.SalaryContentUI;
 
-import FrontEnd.EmployeeContentUI.DetailSalaryInfo;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -52,6 +51,7 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         jTable1.getSelectionModel().addListSelectionListener(this);
 //        jTable1.addMouseListener(this);
         jPanel1.addMouseListener(this);
+
         setVisible(true);
     }
 
@@ -60,6 +60,28 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         for (int i = 0; i < 10; i++) {
             model.addRow(newRowData);
+        }
+    }
+
+    public void insertTableRow() {
+        String employeeID = (String) employeeIDComboBox.getSelectedItem();
+        String employeeName = employeeNameTextField.getText();
+        int monthOfSalary = Integer.parseInt((String) monthPickerComboBox.getSelectedItem());
+        double salary = Double.parseDouble((String) salarySumTextField.getText());
+
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn thêm mới dữ liệu nhân viên với ID " + employeeID + " ?",
+                "CẬP NHẬT ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+//            // Create a new ArrayList
+//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
+//
+//            // Add all elements from the array to the ArrayList
+//            dataList.addAll(Arrays.asList(rowData));
+            jTable1.revalidate();
+
         }
     }
 
@@ -92,7 +114,7 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         }
     }
 
-    public void fillDataDegreeForm(Object[] selectedRowData) {
+    public void fillDataSalaryForm(Object[] selectedRowData) {
         employeeIDComboBox.setSelectedItem((String) selectedRowData[1]);
         employeeNameTextField.setText((String) selectedRowData[2]);
         monthPickerComboBox.setSelectedItem(Integer.toString((int) selectedRowData[3]));
@@ -116,7 +138,7 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
                 for (int i = 0; i < jTable1.getColumnCount(); i++) {
                     selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
                 }
-                fillDataDegreeForm(selectedRowData);
+                fillDataSalaryForm(selectedRowData);
             }
         }
     }
@@ -212,7 +234,7 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         salaryFormContainer.setBackground(new java.awt.Color(255, 255, 255));
         salaryFormContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         salaryFormContainer.setName("salaryFormContainer"); // NOI18N
-        salaryFormContainer.setPreferredSize(new java.awt.Dimension(396, 545));
+        salaryFormContainer.setPreferredSize(new java.awt.Dimension(396, 540));
 
         salaryLabel.setBackground(new java.awt.Color(255, 255, 255));
         salaryLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -293,10 +315,10 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         monthPickerLabel.setName("monthPickerLabel"); // NOI18N
         monthPickerLabel.setOpaque(true);
 
-        monthPickerComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " " }));
         monthPickerComboBox.setBackground(new java.awt.Color(204, 204, 204));
         monthPickerComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         monthPickerComboBox.setForeground(new java.awt.Color(0, 0, 0));
+        monthPickerComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " " }));
         monthPickerComboBox.setName("monthPickerComboBox"); // NOI18N
         monthPickerComboBox.setOpaque(true);
 
@@ -384,7 +406,7 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
                 .addGroup(salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(detailButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, Short.MAX_VALUE)
                 .addGroup(salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(updateButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -396,6 +418,7 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         salaryTableContainer.setBackground(new java.awt.Color(255, 255, 255));
         salaryTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         salaryTableContainer.setName("salaryTableContainer"); // NOI18N
+        salaryTableContainer.setPreferredSize(new java.awt.Dimension(537, 540));
 
         salaryTableLabel.setBackground(new java.awt.Color(255, 255, 255));
         salaryTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -444,16 +467,16 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
                 .addContainerGap()
                 .addGroup(salaryTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(salaryTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE))
                 .addContainerGap())
         );
         salaryTableContainerLayout.setVerticalGroup(
             salaryTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(salaryTableContainerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(salaryTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(salaryTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 465, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -464,18 +487,18 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addComponent(salaryFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addComponent(salaryTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(50, 50, 50))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
+                .addGap(50, 50, 50)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(salaryFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(salaryTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                    .addComponent(salaryTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(salaryFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -486,7 +509,7 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

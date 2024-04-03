@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 public class ConnectDB {
 
+    // Tự setting theo máy của mỗi người
     private static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     private static final String DB_URL = "jdbc:sqlserver://KAGAMI\\SQLEXPRESS01:1433;databaseName=QLNV;encrypt=true;trustServerCertificate=true";
     private static final String USER = "sa";

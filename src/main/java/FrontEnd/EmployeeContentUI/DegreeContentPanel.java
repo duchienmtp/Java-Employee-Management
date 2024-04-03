@@ -12,6 +12,7 @@ import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -25,6 +26,7 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
 
     public DegreeContentPanel() {
         initComponents();
+
         degreeLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         degreeTableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 
@@ -41,6 +43,7 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         jTable1.setDefaultRenderer(Object.class, centerRenderer);
 
         tableInit();
+
         jTable1.getSelectionModel().addListSelectionListener(this);
 //        jTable1.addMouseListener(this);
         jPanel1.addMouseListener(this);
@@ -55,9 +58,29 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         }
     }
 
-    public void updateTableRow(Object[] rowData, String employeeID) {
+    public void insertTableRow() {
+        String degreeID = degreeIDTextField.getText();
+        String degreeName = degreeNameTextField.getText();
+
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn cập nhật dữ liệu nhân viên với ID " + employeeID + " ?",
+                "Bạn có muốn thêm mới dữ liệu nhân viên với ID " + degreeID + " ?",
+                "CẬP NHẬT ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+//            // Create a new ArrayList
+//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
+//
+//            // Add all elements from the array to the ArrayList
+//            dataList.addAll(Arrays.asList(rowData));
+            jTable1.revalidate();
+
+        }
+    }
+
+    public void updateTableRow(Object[] rowData, String degreeID) {
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn cập nhật dữ liệu nhân viên với ID " + degreeID + " ?",
                 "CẬP NHẬT ?",
                 JOptionPane.YES_NO_OPTION);
 
@@ -71,10 +94,10 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         }
     }
 
-    public void deleteTableRow(int selectedRow, String employeeID) {
+    public void deleteTableRow(int selectedRow, String degreeID) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn xóa bỏ nhân viên với ID " + employeeID + " ?",
+                "Bạn có muốn xóa bỏ nhân viên với ID " + degreeID + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
@@ -113,22 +136,24 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String employeeID = "";
+        String degreeID = "";
         if (selectedRowData != null) {
-            employeeID = (String) selectedRowData[1];
+            degreeID = (String) selectedRowData[1];
+        } else {
+            degreeID = degreeIDTextField.getText();
         }
 
         if (e.getSource() == addButton) {
-
+            insertTableRow();
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
-                deleteTableRow(selectedRow, employeeID);
+                deleteTableRow(selectedRow, degreeID);
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == updateButton) {
             if (selectedRow >= 0) {
-                updateTableRow(selectedRowData, employeeID);
+                updateTableRow(selectedRowData, degreeID);
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -168,27 +193,27 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         degreeFormContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         degreeFormContainer.setName("degreeFormContainer"); // NOI18N
 
-        degreeLabel.setText("Bằng Cấp");
         degreeLabel.setBackground(new java.awt.Color(255, 255, 255));
         degreeLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         degreeLabel.setForeground(new java.awt.Color(0, 0, 0));
+        degreeLabel.setText("Bằng Cấp");
         degreeLabel.setName("degreeLabel"); // NOI18N
         degreeLabel.setOpaque(true);
 
         degreeForm.setBackground(new java.awt.Color(255, 255, 255));
         degreeForm.setName("degreeForm"); // NOI18N
 
-        degreeIDLabel.setLabelFor(degreeIDTextField);
-        degreeIDLabel.setText("Mã Bằng Cấp :");
         degreeIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         degreeIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        degreeIDLabel.setLabelFor(degreeIDTextField);
+        degreeIDLabel.setText("Mã Bằng Cấp :");
         degreeIDLabel.setName("degreeIDLabel"); // NOI18N
 
-        degreeIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         degreeIDTextField.setBackground(new java.awt.Color(204, 204, 204));
+        degreeIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        degreeIDTextField.setForeground(new java.awt.Color(0, 0, 0));
         degreeIDTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         degreeIDTextField.setEnabled(false);
-        degreeIDTextField.setForeground(new java.awt.Color(0, 0, 0));
         degreeIDTextField.setName("degreeIDTextField"); // NOI18N
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
@@ -199,6 +224,7 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         addButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         addButton.setIconTextGap(10);
         addButton.setName("addButton"); // NOI18N
+        addButton.setPreferredSize(new java.awt.Dimension(112, 40));
 
         deleteButton.setBackground(new java.awt.Color(220, 53, 69));
         deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -210,30 +236,30 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         deleteButton.setName("deleteButton"); // NOI18N
         deleteButton.setOpaque(true);
 
-        updateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
-        updateButton.setText("Sửa");
         updateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         updateButton.setForeground(new java.awt.Color(255, 255, 255));
+        updateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
+        updateButton.setText("Sửa");
         updateButton.setIconTextGap(10);
         updateButton.setName("updateButton"); // NOI18N
         updateButton.setOpaque(true);
 
-        degreeNameLabel.setLabelFor(degreeNameTextField);
-        degreeNameLabel.setText("Tên Bằng Cấp :");
         degreeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         degreeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
+        degreeNameLabel.setLabelFor(degreeNameTextField);
+        degreeNameLabel.setText("Tên Bằng Cấp :");
         degreeNameLabel.setName("degreeNameLabel"); // NOI18N
 
-        degreeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         degreeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
-        degreeNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        degreeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         degreeNameTextField.setForeground(new java.awt.Color(0, 0, 0));
+        degreeNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         degreeNameTextField.setName("degreeNameTextField"); // NOI18N
 
-        cancelButton.setText("Hủy Bỏ");
         cancelButton.setBackground(new java.awt.Color(108, 117, 125));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         cancelButton.setForeground(new java.awt.Color(255, 255, 255));
+        cancelButton.setText("Hủy Bỏ");
         cancelButton.setName("cancelButton"); // NOI18N
 
         javax.swing.GroupLayout degreeFormLayout = new javax.swing.GroupLayout(degreeForm);
@@ -245,7 +271,7 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
             .addComponent(degreeIDTextField, javax.swing.GroupLayout.Alignment.TRAILING)
             .addComponent(degreeIDLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(degreeFormLayout.createSequentialGroup()
-                .addComponent(addButton)
+                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -265,12 +291,11 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
                 .addComponent(degreeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
                 .addGroup(degreeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(degreeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(deleteButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -298,20 +323,23 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         degreeTableContainer.setBackground(new java.awt.Color(255, 255, 255));
         degreeTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         degreeTableContainer.setName("degreeTableContainer"); // NOI18N
+        degreeTableContainer.setPreferredSize(new java.awt.Dimension(537, 540));
 
-        degreeTableLabel.setText("Bằng Cấp");
         degreeTableLabel.setBackground(new java.awt.Color(255, 255, 255));
         degreeTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         degreeTableLabel.setForeground(new java.awt.Color(0, 0, 0));
+        degreeTableLabel.setText("Bằng Cấp");
         degreeTableLabel.setName("degreeTableLabel"); // NOI18N
         degreeTableLabel.setOpaque(true);
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "STT", "ID", "Tên Bằng Cấp", "Ngày Tạo"
+                "STT", "Mã Bằng Cấp", "Tên Bằng Cấp", "Ngày Tạo"
             }
         ) {
             Class[] types = new Class [] {
@@ -332,12 +360,6 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         jTable1.setName("degreeTable"); // NOI18N
         jTable1.setRowHeight(40);
         jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -350,10 +372,7 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout degreeTableContainerLayout = new javax.swing.GroupLayout(degreeTableContainer);
@@ -371,7 +390,7 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
             degreeTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(degreeTableContainerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(degreeTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(degreeTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -385,17 +404,17 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
                 .addGap(50, 50, 50)
                 .addComponent(degreeFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addComponent(degreeTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(degreeTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(50, 50, 50))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
+                .addGap(50, 50, 50)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(degreeTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(degreeFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

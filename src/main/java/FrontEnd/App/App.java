@@ -9,7 +9,7 @@ import FrontEnd.LoginUI.LoginUI;
 import FrontEnd.RewardContentUI.RewardContentPanel;
 import FrontEnd.SalaryContentUI.SalaryContentPanel;
 import FrontEnd.StatisticsContentUI.StatisticsContentPanel;
-import FrontEnd.TravelContentUI.TravelContentPanel;
+import FrontEnd.ProjectContentUI.AssignmentContentPanel;
 import FrontEnd.UserInfoContentUI.UserInfoContentPanel;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Color;
@@ -41,7 +41,7 @@ public class App extends javax.swing.JFrame implements MouseListener {
     EmployeeContentPanel employeeContentPanel;
     DepartmentContentPanel departmentContentPanel;
     SalaryContentPanel salaryContentPanel;
-    TravelContentPanel travelContentPanel;
+    AssignmentContentPanel travelContentPanel;
     RewardContentPanel rewardContentPanel;
     CriticismContentPanel criticismContentPanel;
     AccountContentPanel accountContentPanel;
@@ -78,7 +78,7 @@ public class App extends javax.swing.JFrame implements MouseListener {
         employeeContentPanel = new EmployeeContentPanel();
         departmentContentPanel = new DepartmentContentPanel();
         salaryContentPanel = new SalaryContentPanel();
-        travelContentPanel = new TravelContentPanel();
+        travelContentPanel = new AssignmentContentPanel();
         rewardContentPanel = new RewardContentPanel();
         criticismContentPanel = new CriticismContentPanel();
         accountContentPanel = new AccountContentPanel();
