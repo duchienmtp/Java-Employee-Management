@@ -43,7 +43,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
                 new Font("Segoe UI", Font.PLAIN, 12),
                 Color.BLACK // Text color
         );
-        jPanel1.setBorder(titledBorder);
+        jPanel1.setBorder(titledBorder); //
 
         tableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 
