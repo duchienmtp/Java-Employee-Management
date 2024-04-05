@@ -2,12 +2,11 @@ use QLNV
 
 CREATE TABLE [Employees] (
   [id] nvarchar(255) PRIMARY KEY,
-  [firstName] nvarchar(255) not null,
-  [lastName] nvarchar(255) not null,
+  [fullName] nvarchar(255) not null,
   [gender] nvarchar(255) not null,
-  [birthDate] DATETIME not null,
+  [birthDate] DATE not null,
   [phoneNumber] nvarchar(255) not null,
-  [group] nvarchar(255) not null,
+  [ethnicGroup] nvarchar(255) not null,
   [typeId] nvarchar(255) not null,
   [religion] nvarchar(255) not null,
   [degreeId] nvarchar(255) not null,
@@ -16,9 +15,9 @@ CREATE TABLE [Employees] (
   [departmentId] nvarchar(255) not null,
   [specialtyId] nvarchar(255) not null,
   [employStatus] bit not null,
-  [status] bit not null
 )
 GO
+
 
 CREATE TABLE [Account] (
   [userId] nvarchar(255) PRIMARY KEY,
@@ -27,13 +26,12 @@ CREATE TABLE [Account] (
   [email] nvarchar(255) not null,
   [avatar] nvarchar(255),
   [authorization] nvarchar(255) not null,
-  [status] bit not null,
   [createdAt] DATETIME not null
 )
 GO
 
 CREATE TABLE [EmployeeType] (
-  [typeId] nvarchar(255) PRIMARY KEY,
+  [typeId] nvarchar(255) PRIMARY KEY ,
   [typeName] nvarchar(255) not null
 )
 GO
@@ -52,7 +50,7 @@ GO
 
 CREATE TABLE [PositionSalaries] (
   [postionId] nvarchar(255) PRIMARY KEY,
-  [positionSalary] nvarchar(255) not null,
+  [positionSalaryAllowance] numeric(5,3) not null,
   [createdAt] DATETIME not null,
   [updatedAt] DATETIME not null
 )
@@ -61,46 +59,42 @@ GO
 CREATE TABLE [Rewards] (
   [rewardId] nvarchar(255) PRIMARY KEY,
   [rewardName] nvarchar(255) not null,
-  [reward] nvarchar(255) not null
+  [reward] int not null
 )
 GO
 
 CREATE TABLE [Criticism] (
   [criticismId] nvarchar(255) PRIMARY KEY,
   [critismName] nvarchar(255) not null,
-  [judgement] nvarchar(255) not null
+  [judgement] int not null
 )
 GO
 
 CREATE TABLE [EmployeesRewardsCriticism] (
   [employeeId] nvarchar(255),
   [rewardId] nvarchar(255),
-  [critismId] nvarchar(255),
+  [criticismId] nvarchar(255),
   [faultCount] integer not null,
-  [createdAt] DATETIME,
-  PRIMARY KEY ([employeeId], [rewardId], [critismId], [createdAt])
+  [rewardCount] integer not null,
+  [createdAt] DATE,
+  PRIMARY KEY ([employeeId], [rewardId], [criticismId], [createdAt])
 )
 GO
 
 CREATE TABLE [Specialties] (
   [specialtyId] nvarchar(255) PRIMARY KEY,
-  [specialtyName] nvarchar(255) not null
-)
-GO
-
-CREATE TABLE [SpecialtySalaries] (
-  [specialtyId] nvarchar(255) PRIMARY KEY,
-  [specialtySalary] nvarchar(255) not null,
-  [createdAt] DATETIME not null,
-  [updatedAt] DATETIME not null
+  [specialtyName] nvarchar(255) not null,
+  [baseSalary] int not null
 )
 GO
 
 CREATE TABLE [EmployeeSalaries] (
   [employeeId] nvarchar(255),
-  [advance] nvarchar(255) not null,
-  [netSalary] nvarchar(255) not null,
-  [createdAt] DATETIME not null
+  [advance] int not null,
+  [insurance] decimal not null,
+  [netSalary] decimal not null,
+  [createdAt] DATETIME not null,
+  PRIMARY KEY ([employeeId], [createdAt])
 )
 GO
 
@@ -111,88 +105,66 @@ CREATE TABLE [Departments] (
 )
 GO
 
-CREATE TABLE [BusinessTravels] (
-  [businessTravelId] nvarchar(255) PRIMARY KEY,
+CREATE TABLE [Projects] (
+  [projectId] nvarchar(255) PRIMARY KEY,
+  [projectName] nvarchar(255) not null,
+  [departmentId] nvarchar(255) not null,
   [beginAt] DATETIME not null,
   [completedAt] DATETIME not null,
   [place] nvarchar(255) not null,
-  [purpose] text
 )
 GO
 
 CREATE TABLE [Assignments] (
   [employeeId] nvarchar(255),
-  [businessTravelId] nvarchar(255),
-  PRIMARY KEY ([employeeId], [businessTravelId])
+  [projectId] nvarchar(255),
+  PRIMARY KEY ([employeeId], [projectId])
 )
 GO
 
 ALTER TABLE [Account] ADD FOREIGN KEY ([userId]) REFERENCES [Employees] ([id])
 GO
 
-ALTER TABLE [EmployeeType] ADD FOREIGN KEY ([typeId]) REFERENCES [Employees] ([typeId])
+ALTER TABLE [Employees] ADD FOREIGN KEY ([typeId]) REFERENCES [EmployeeType] ([typeId])
 GO
 
-ALTER TABLE [Degrees] ADD FOREIGN KEY ([degreeId]) REFERENCES [Employees] ([degreeId])
+ALTER TABLE [Employees] ADD FOREIGN KEY ([degreeId]) REFERENCES [Degrees] ([degreeId])
 GO
 
-ALTER TABLE [Positions] ADD FOREIGN KEY ([positionId]) REFERENCES [Employees] ([positionId])
+ALTER TABLE [Employees] ADD FOREIGN KEY ([positionId]) REFERENCES [Positions] ([positionId])
 GO
 
 ALTER TABLE [PositionSalaries] ADD FOREIGN KEY ([postionId]) REFERENCES [Positions] ([positionId])
 GO
 
-CREATE TABLE [Rewards_EmployeesRewardsCriticism] (
-  [Rewards_rewardId] varchar,
-  [EmployeesRewardsCriticism_rewardId] varchar,
-  PRIMARY KEY ([Rewards_rewardId], [EmployeesRewardsCriticism_rewardId])
-);
+ALTER TABLE [EmployeesRewardsCriticism] ADD FOREIGN KEY ([rewardId]) REFERENCES [Rewards] ([rewardId]);
 GO
 
-ALTER TABLE [Rewards_EmployeesRewardsCriticism] ADD FOREIGN KEY ([Rewards_rewardId]) REFERENCES [Rewards] ([rewardId]);
-GO
-
-ALTER TABLE [Rewards_EmployeesRewardsCriticism] ADD FOREIGN KEY ([EmployeesRewardsCriticism_rewardId]) REFERENCES [EmployeesRewardsCriticism] ([rewardId]);
-GO
-
-
-CREATE TABLE [Criticism_EmployeesRewardsCriticism] (
-  [Criticism_criticismId] varchar,
-  [EmployeesRewardsCriticism_critismId] varchar,
-  PRIMARY KEY ([Criticism_criticismId], [EmployeesRewardsCriticism_critismId])
-);
-GO
-
-ALTER TABLE [Criticism_EmployeesRewardsCriticism] ADD FOREIGN KEY ([Criticism_criticismId]) REFERENCES [Criticism] ([criticismId]);
-GO
-
-ALTER TABLE [Criticism_EmployeesRewardsCriticism] ADD FOREIGN KEY ([EmployeesRewardsCriticism_critismId]) REFERENCES [EmployeesRewardsCriticism] ([critismId]);
+ALTER TABLE [EmployeesRewardsCriticism] ADD FOREIGN KEY ([criticismId]) REFERENCES [Criticism] ([criticismId]);
 GO
 
 
 ALTER TABLE [EmployeesRewardsCriticism] ADD FOREIGN KEY ([employeeId]) REFERENCES [Employees] ([id])
 GO
 
-ALTER TABLE [SpecialtySalaries] ADD FOREIGN KEY ([specialtyId]) REFERENCES [Specialties] ([specialtyId])
-GO
 
-ALTER TABLE [Specialties] ADD FOREIGN KEY ([specialtyId]) REFERENCES [Employees] ([specialtyId])
+ALTER TABLE [Employees] ADD FOREIGN KEY ([specialtyId]) REFERENCES [Specialties] ([specialtyId])
 GO
 
 ALTER TABLE [EmployeeSalaries] ADD FOREIGN KEY ([employeeId]) REFERENCES [Employees] ([id])
 GO
 
-ALTER TABLE [Departments] ADD FOREIGN KEY ([departmentId]) REFERENCES [Employees] ([departmentId])
+ALTER TABLE [Employees] ADD FOREIGN KEY ([departmentId]) REFERENCES [Departments] ([departmentId])
 GO
 
-ALTER TABLE [Employees] ADD FOREIGN KEY ([id]) REFERENCES [Departments] ([departmentLeader])
+ALTER TABLE [Departments] ADD FOREIGN KEY ([departmentLeader]) REFERENCES [Employees] ([id])
 GO
 
-ALTER TABLE [Departments] ADD FOREIGN KEY ([departmentId]) REFERENCES [BusinessTravels] ([businessTravelId])
+ALTER TABLE [Projects] ADD FOREIGN KEY ([departmentId]) REFERENCES [Departments] ([departmentId])
 GO
 
-ALTER TABLE [Employees] ADD FOREIGN KEY ([id]) REFERENCES [Assignments] ([employeeId])
+ALTER TABLE [Assignments] ADD FOREIGN KEY ([employeeId]) REFERENCES [Employees] ([id])
 GO
 
-ALTER TABLE [BusinessTravels] ADD FOREIGN KEY ([businessTravelId]) REFERENCES [Assignments] ([businessTravelId])
+ALTER TABLE [Assignments] ADD FOREIGN KEY ([projectId]) REFERENCES [Projects] ([projectId])
 GO

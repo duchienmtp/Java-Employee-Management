@@ -1,5 +1,6 @@
 package FrontEnd.App;
 
+import BackEnd.ConnectDB.ConnectDB;
 import FrontEnd.AccountContentUI.AccountContentPanel;
 import FrontEnd.CriticismContentUI.CriticismContentPanel;
 import FrontEnd.DepartmentContentUI.DepartmentContentPanel;
@@ -8,7 +9,7 @@ import FrontEnd.LoginUI.LoginUI;
 import FrontEnd.RewardContentUI.RewardContentPanel;
 import FrontEnd.SalaryContentUI.SalaryContentPanel;
 import FrontEnd.StatisticsContentUI.StatisticsContentPanel;
-import FrontEnd.TravelContentUI.TravelContentPanel;
+import FrontEnd.ProjectContentUI.AssignmentContentPanel;
 import FrontEnd.UserInfoContentUI.UserInfoContentPanel;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Color;
@@ -19,6 +20,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -35,7 +41,7 @@ public class App extends javax.swing.JFrame implements MouseListener {
     EmployeeContentPanel employeeContentPanel;
     DepartmentContentPanel departmentContentPanel;
     SalaryContentPanel salaryContentPanel;
-    TravelContentPanel travelContentPanel;
+    AssignmentContentPanel travelContentPanel;
     RewardContentPanel rewardContentPanel;
     CriticismContentPanel criticismContentPanel;
     AccountContentPanel accountContentPanel;
@@ -72,7 +78,7 @@ public class App extends javax.swing.JFrame implements MouseListener {
         employeeContentPanel = new EmployeeContentPanel();
         departmentContentPanel = new DepartmentContentPanel();
         salaryContentPanel = new SalaryContentPanel();
-        travelContentPanel = new TravelContentPanel();
+        travelContentPanel = new AssignmentContentPanel();
         rewardContentPanel = new RewardContentPanel();
         criticismContentPanel = new CriticismContentPanel();
         accountContentPanel = new AccountContentPanel();
@@ -549,8 +555,18 @@ public class App extends javax.swing.JFrame implements MouseListener {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws NoSuchAlgorithmException, SQLException {
         FlatDarkLaf.setup();
+//        ConnectDB connection = new ConnectDB();
+//        Connection con = connection.createConnection();
+//        String query = "select * from EmployeeType";
+//        Statement stmt = con.createStatement();
+//        ResultSet rs = stmt.executeQuery(query);
+//        while (rs.next()) {
+//            System.out.println("Employee Type: " + rs.getString("typeId") + " - " + rs.getString("typeName"));
+//        }
+//        con.close();
+
         java.awt.EventQueue.invokeLater(() -> {
             new App().setVisible(true);
         });
