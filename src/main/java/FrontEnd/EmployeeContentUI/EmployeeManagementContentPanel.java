@@ -152,9 +152,11 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
+
         setBackground(new java.awt.Color(255, 255, 255));
         setAlignmentX(0.0F);
         setAlignmentY(0.0F);
+        setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(1055, 640));
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
@@ -164,6 +166,11 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
         addButton.setText("Thêm");
         addButton.setIconTextGap(10);
         addButton.setName("addButton"); // NOI18N
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
 
         deleteButton.setBackground(new java.awt.Color(220, 53, 69));
         deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -247,7 +254,6 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
         tableContainer.setPreferredSize(new java.awt.Dimension(863, 364));
 
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
         tableLabel.setText("Danh sách nhân viên");
         tableLabel.setName("tableLabel"); // NOI18N
 
@@ -348,6 +354,10 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel implement
                 .addGap(43, 43, 43))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
