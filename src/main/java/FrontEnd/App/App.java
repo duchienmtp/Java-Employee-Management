@@ -1,6 +1,5 @@
 package FrontEnd.App;
 
-import BackEnd.ConnectDB.ConnectDB;
 import FrontEnd.AccountContentUI.AccountContentPanel;
 import FrontEnd.CriticismContentUI.CriticismContentPanel;
 import FrontEnd.DepartmentContentUI.DepartmentContentPanel;
@@ -21,10 +20,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -491,7 +487,7 @@ public class App extends javax.swing.JFrame implements MouseListener {
         appContentPanel.setAlignmentX(0.0F);
         appContentPanel.setAlignmentY(0.0F);
         appContentPanel.setName("appContentPanel"); // NOI18N
-        appContentPanel.setPreferredSize(new java.awt.Dimension(1000, 740));
+        appContentPanel.setPreferredSize(new java.awt.Dimension(1055, 740));
 
         welcomeLabel.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         welcomeLabel.setForeground(new java.awt.Color(51, 255, 51));
@@ -526,7 +522,7 @@ public class App extends javax.swing.JFrame implements MouseListener {
             .addGroup(bodyPanelLayout.createSequentialGroup()
                 .addComponent(menuPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(appContentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1055, Short.MAX_VALUE)
+                .addComponent(appContentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
         bodyPanelLayout.setVerticalGroup(

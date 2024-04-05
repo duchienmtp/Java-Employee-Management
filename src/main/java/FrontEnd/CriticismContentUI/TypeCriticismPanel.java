@@ -1,49 +1,135 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package FrontEnd.CriticismContentUI;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
 public class TypeCriticismPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
 
     int selectedRow = -1;
     boolean selectionConfirmed;
+    Object[] selectedRowData;
 
-  
     public TypeCriticismPanel() {
         initComponents();
-        
-     addButton.addActionListener(this);
+
+        typeCriticismLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+        typeCriticismTableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+
+        addButton.addActionListener(this);
         updateButton.addActionListener(this);
         deleteButton.addActionListener(this);
-       typeCriticismTable.getSelectionModel().addListSelectionListener(this);
+        cancelButton.addActionListener(this);
+
+        typeCriticismTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        typeCriticismTable.setDefaultRenderer(String.class, centerRenderer);
+        typeCriticismTable.setDefaultRenderer(Object.class, centerRenderer);
+        typeCriticismTable.setDefaultRenderer(Integer.class, centerRenderer);
+        typeCriticismTable.setDefaultRenderer(Double.class, centerRenderer);
+
+        typeCriticismTable.getSelectionModel().addListSelectionListener(this);
         tableInit();
         jPanel1.addMouseListener(this);
     }
 
-   public void tableInit() {
-        Object[] newRowData = {1, "LKL001", "Đi Trễ","100,000", "02/01/2024"};
+    public void tableInit() {
+        Object[] newRowData = {1, "CR001", "Đi Trễ", 100000, "02/01/2024"};
         DefaultTableModel model = (DefaultTableModel) typeCriticismTable.getModel();
         for (int i = 0; i < 10; i++) {
             model.addRow(newRowData);
         }
     }
+
+    public void insertTableRow() {
+        String typeCriticismID = (String) typeCriticismIDTextField.getText();
+        String typeCriticismName = typeCriticismNameTextField.getText();
+        int money = Integer.parseInt((String) moneyTextField.getText());
+
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn thêm mới dữ liệu loại khen thưởng với ID " + typeCriticismID + " ?",
+                "CẬP NHẬT ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+//            // Create a new ArrayList
+//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
+//
+//            // Add all elements from the array to the ArrayList
+//            dataList.addAll(Arrays.asList(rowData));
+            typeCriticismTable.revalidate();
+
+        }
+    }
+
+    public void updateTableRow(Object[] rowData, String typeCriticismID) {
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn cập nhật dữ liệu loại khen thưởng với ID " + typeCriticismID + " ?",
+                "CẬP NHẬT ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            // Create a new ArrayList
+            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
+
+            // Add all elements from the array to the ArrayList
+            dataList.addAll(Arrays.asList(rowData));
+            typeCriticismTable.revalidate();
+        }
+    }
+
+    public void deleteTableRow(int selectedRow, String typeCriticismID) {
+        DefaultTableModel model = (DefaultTableModel) typeCriticismTable.getModel();
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn xóa bỏ loại khen thưởng với ID " + typeCriticismID + " ?",
+                "XÓA BỎ ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            model.removeRow(selectedRow);
+            typeCriticismTable.revalidate();
+        }
+    }
+
+    public void fillDataTypeCriticismForm(Object[] selectedRowData) {
+        typeCriticismIDTextField.setText((String) selectedRowData[1]);
+        typeCriticismNameTextField.setText((String) selectedRowData[2]);
+        moneyTextField.setText(Integer.toString((int) selectedRowData[3]));
+    }
+
+    public void clearFormContent() {
+        typeCriticismIDTextField.setText("");
+        typeCriticismNameTextField.setText("");
+        moneyTextField.setText("");
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        typeCriticismFormContainer = new javax.swing.JPanel();
-        TypeCriticismLabel = new javax.swing.JLabel();
-        typeCriticismForm = new javax.swing.JPanel();
+        typeRewardTableContainer = new javax.swing.JPanel();
+        typeCriticismTableLabel = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        typeCriticismTable = new javax.swing.JTable();
+        typeRewardFormContainer = new javax.swing.JPanel();
+        typeCriticismLabel = new javax.swing.JLabel();
+        typeRewardForm = new javax.swing.JPanel();
         typeCriticismIDLabel = new javax.swing.JLabel();
         typeCriticismIDTextField = new javax.swing.JTextField();
         addButton = new javax.swing.JButton();
@@ -51,39 +137,113 @@ public class TypeCriticismPanel extends javax.swing.JPanel implements ActionList
         updateButton = new javax.swing.JButton();
         typeCriticismNameLabel = new javax.swing.JLabel();
         typeCriticismNameTextField = new javax.swing.JTextField();
-        cancelBtn = new javax.swing.JButton();
-        moneyCriticismTextField1 = new javax.swing.JTextField();
-        moneyCriticismLabel1 = new javax.swing.JLabel();
-        typeCriticismTableContainer = new javax.swing.JPanel();
-        typeCriticismTableLabel = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        typeCriticismTable = new javax.swing.JTable();
+        cancelButton = new javax.swing.JButton();
+        moneyLabel = new javax.swing.JLabel();
+        moneyTextField = new javax.swing.JTextField();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1055, 640));
 
-        typeCriticismFormContainer.setBackground(new java.awt.Color(255, 255, 255));
-        typeCriticismFormContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        typeCriticismFormContainer.setName("typeCriticismFormContainer"); // NOI18N
+        typeRewardTableContainer.setBackground(new java.awt.Color(255, 255, 255));
+        typeRewardTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        typeRewardTableContainer.setName("typeRewardTableContainer"); // NOI18N
+        typeRewardTableContainer.setPreferredSize(new java.awt.Dimension(537, 540));
 
-        TypeCriticismLabel.setBackground(new java.awt.Color(255, 255, 255));
-        TypeCriticismLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        TypeCriticismLabel.setForeground(new java.awt.Color(51, 51, 0));
-        TypeCriticismLabel.setText("Tạo Loại Kỷ Luật");
-        TypeCriticismLabel.setName("TypeCriticismLabel"); // NOI18N
-        TypeCriticismLabel.setOpaque(true);
+        typeCriticismTableLabel.setBackground(new java.awt.Color(255, 255, 255));
+        typeCriticismTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        typeCriticismTableLabel.setForeground(new java.awt.Color(0, 0, 0));
+        typeCriticismTableLabel.setText("Loại Kỷ Luật");
+        typeCriticismTableLabel.setName("typeCriticismTableLabel"); // NOI18N
+        typeCriticismTableLabel.setOpaque(true);
 
-        typeCriticismForm.setBackground(new java.awt.Color(255, 255, 255));
-        typeCriticismForm.setName("typeCriticismForm"); // NOI18N
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+
+        typeCriticismTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "Mã Loại Kỷ Luật", "Tên Kỷ Luật", "Số Tiền Phạt", "Ngày Tạo"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        typeCriticismTable.setName("typeCriticismTable"); // NOI18N
+        typeCriticismTable.setRowHeight(40);
+        jScrollPane1.setViewportView(typeCriticismTable);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout typeRewardTableContainerLayout = new javax.swing.GroupLayout(typeRewardTableContainer);
+        typeRewardTableContainer.setLayout(typeRewardTableContainerLayout);
+        typeRewardTableContainerLayout.setHorizontalGroup(
+            typeRewardTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, typeRewardTableContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(typeRewardTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(typeCriticismTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        typeRewardTableContainerLayout.setVerticalGroup(
+            typeRewardTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(typeRewardTableContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(typeCriticismTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        typeRewardFormContainer.setBackground(new java.awt.Color(255, 255, 255));
+        typeRewardFormContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        typeRewardFormContainer.setName("typeRewardFormContainer"); // NOI18N
+        typeRewardFormContainer.setPreferredSize(new java.awt.Dimension(386, 540));
+
+        typeCriticismLabel.setBackground(new java.awt.Color(255, 255, 255));
+        typeCriticismLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        typeCriticismLabel.setForeground(new java.awt.Color(0, 0, 0));
+        typeCriticismLabel.setText("Tạo Loại Kỷ Luật");
+        typeCriticismLabel.setName("typeCriticismLabel"); // NOI18N
+        typeCriticismLabel.setOpaque(true);
+
+        typeRewardForm.setBackground(new java.awt.Color(255, 255, 255));
+        typeRewardForm.setName("typeRewardForm"); // NOI18N
 
         typeCriticismIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        typeCriticismIDLabel.setForeground(new java.awt.Color(51, 51, 0));
-        typeCriticismIDLabel.setText("Mã Loại Kỷ Luật:");
+        typeCriticismIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        typeCriticismIDLabel.setText("Mã Loại Kỷ Luật :");
         typeCriticismIDLabel.setName("typeCriticismIDLabel"); // NOI18N
 
         typeCriticismIDTextField.setBackground(new java.awt.Color(204, 204, 204));
         typeCriticismIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        typeCriticismIDTextField.setForeground(new java.awt.Color(0, 0, 0));
+        typeCriticismIDTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         typeCriticismIDTextField.setName("typeCriticismIDTextField"); // NOI18N
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
@@ -113,50 +273,57 @@ public class TypeCriticismPanel extends javax.swing.JPanel implements ActionList
         updateButton.setOpaque(true);
 
         typeCriticismNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        typeCriticismNameLabel.setForeground(new java.awt.Color(51, 51, 0));
-        typeCriticismNameLabel.setText("Tên Loại Kỷ Luật:");
+        typeCriticismNameLabel.setForeground(new java.awt.Color(0, 0, 0));
+        typeCriticismNameLabel.setText("Tên Loại Kỷ Luật :");
         typeCriticismNameLabel.setName("typeCriticismNameLabel"); // NOI18N
 
         typeCriticismNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         typeCriticismNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        typeCriticismNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         typeCriticismNameTextField.setName("typeCriticismNameTextField"); // NOI18N
 
-        cancelBtn.setBackground(new java.awt.Color(108, 117, 125));
-        cancelBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        cancelBtn.setForeground(new java.awt.Color(255, 255, 255));
-        cancelBtn.setText("Hủy Bỏ");
-        cancelBtn.setName("cancelBtn"); // NOI18N
+        cancelButton.setBackground(new java.awt.Color(108, 117, 125));
+        cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
+        cancelButton.setText("Hủy Bỏ");
+        cancelButton.setName("cancelButton"); // NOI18N
 
-        moneyCriticismTextField1.setBackground(new java.awt.Color(204, 204, 204));
-        moneyCriticismTextField1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        moneyCriticismTextField1.setName("typeCriticismNameTextField"); // NOI18N
+        moneyLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        moneyLabel.setForeground(new java.awt.Color(0, 0, 0));
+        moneyLabel.setLabelFor(moneyTextField);
+        moneyLabel.setText("Số Tiền Phạt :");
+        moneyLabel.setName("moneyLabel"); // NOI18N
+        moneyLabel.setPreferredSize(new java.awt.Dimension(118, 40));
 
-        moneyCriticismLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        moneyCriticismLabel1.setForeground(new java.awt.Color(51, 51, 0));
-        moneyCriticismLabel1.setText("Số Tiền Phạt:");
-        moneyCriticismLabel1.setName("typeCriticismNameLabel"); // NOI18N
+        moneyTextField.setBackground(new java.awt.Color(204, 204, 204));
+        moneyTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        moneyTextField.setForeground(new java.awt.Color(0, 0, 0));
+        moneyTextField.setName("moneyTextField"); // NOI18N
 
-        javax.swing.GroupLayout typeCriticismFormLayout = new javax.swing.GroupLayout(typeCriticismForm);
-        typeCriticismForm.setLayout(typeCriticismFormLayout);
-        typeCriticismFormLayout.setHorizontalGroup(
-            typeCriticismFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout typeRewardFormLayout = new javax.swing.GroupLayout(typeRewardForm);
+        typeRewardForm.setLayout(typeRewardFormLayout);
+        typeRewardFormLayout.setHorizontalGroup(
+            typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(typeCriticismNameTextField)
             .addComponent(typeCriticismNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(typeCriticismIDTextField, javax.swing.GroupLayout.Alignment.TRAILING)
             .addComponent(typeCriticismIDLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(typeCriticismFormLayout.createSequentialGroup()
+            .addGroup(typeRewardFormLayout.createSequentialGroup()
                 .addComponent(addButton)
                 .addGap(18, 18, 18)
                 .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
-            .addComponent(cancelBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(moneyCriticismTextField1)
-            .addComponent(moneyCriticismLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(cancelButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(typeRewardFormLayout.createSequentialGroup()
+                .addComponent(moneyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(moneyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 1, Short.MAX_VALUE))
         );
-        typeCriticismFormLayout.setVerticalGroup(
-            typeCriticismFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(typeCriticismFormLayout.createSequentialGroup()
+        typeRewardFormLayout.setVerticalGroup(
+            typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(typeRewardFormLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addComponent(typeCriticismIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -166,117 +333,38 @@ public class TypeCriticismPanel extends javax.swing.JPanel implements ActionList
                 .addGap(0, 0, 0)
                 .addComponent(typeCriticismNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(moneyCriticismLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(moneyCriticismTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addGroup(typeCriticismFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(typeCriticismFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(moneyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(moneyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        javax.swing.GroupLayout typeCriticismFormContainerLayout = new javax.swing.GroupLayout(typeCriticismFormContainer);
-        typeCriticismFormContainer.setLayout(typeCriticismFormContainerLayout);
-        typeCriticismFormContainerLayout.setHorizontalGroup(
-            typeCriticismFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(typeCriticismFormContainerLayout.createSequentialGroup()
+        javax.swing.GroupLayout typeRewardFormContainerLayout = new javax.swing.GroupLayout(typeRewardFormContainer);
+        typeRewardFormContainer.setLayout(typeRewardFormContainerLayout);
+        typeRewardFormContainerLayout.setHorizontalGroup(
+            typeRewardFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(typeRewardFormContainerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(typeCriticismFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(typeCriticismForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TypeCriticismLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(typeRewardFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(typeRewardForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(typeCriticismLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        typeCriticismFormContainerLayout.setVerticalGroup(
-            typeCriticismFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(typeCriticismFormContainerLayout.createSequentialGroup()
+        typeRewardFormContainerLayout.setVerticalGroup(
+            typeRewardFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(typeRewardFormContainerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(TypeCriticismLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(typeCriticismLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(typeCriticismForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        typeCriticismTableContainer.setBackground(new java.awt.Color(255, 255, 255));
-        typeCriticismTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        typeCriticismTableContainer.setName("typeCriticismTableContainer"); // NOI18N
-
-        typeCriticismTableLabel.setBackground(new java.awt.Color(255, 255, 255));
-        typeCriticismTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        typeCriticismTableLabel.setForeground(new java.awt.Color(51, 51, 0));
-        typeCriticismTableLabel.setText("Loại Kỷ Luật");
-        typeCriticismTableLabel.setName("typeCriticismTableLabel"); // NOI18N
-        typeCriticismTableLabel.setOpaque(true);
-
-        typeCriticismTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "STT", "Mã Loại Kỷ Luật", "Tên Kỷ Luật", "Số Tiền Phạt", "Ngày Tạo"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        typeCriticismTable.setName("degreeTable"); // NOI18N
-        typeCriticismTable.setRowHeight(40);
-        jScrollPane1.setViewportView(typeCriticismTable);
-        if (typeCriticismTable.getColumnModel().getColumnCount() > 0) {
-            typeCriticismTable.getColumnModel().getColumn(0).setPreferredWidth(1);
-        }
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1)
-                .addGap(0, 0, 0))
-        );
-
-        javax.swing.GroupLayout typeCriticismTableContainerLayout = new javax.swing.GroupLayout(typeCriticismTableContainer);
-        typeCriticismTableContainer.setLayout(typeCriticismTableContainerLayout);
-        typeCriticismTableContainerLayout.setHorizontalGroup(
-            typeCriticismTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, typeCriticismTableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(typeCriticismTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(typeCriticismTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        typeCriticismTableContainerLayout.setVerticalGroup(
-            typeCriticismTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(typeCriticismTableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(typeCriticismTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(typeRewardForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -286,73 +374,101 @@ public class TypeCriticismPanel extends javax.swing.JPanel implements ActionList
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
-                .addComponent(typeCriticismFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(typeCriticismTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(typeRewardFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(typeRewardTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(50, 50, 50))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(typeCriticismTableContainer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(typeCriticismFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(56, Short.MAX_VALUE))))
+                .addGap(50, 50, 50)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(typeRewardTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(typeRewardFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(50, 50, 50))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 998, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
-                .addGap(19, 19, 19))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel TypeCriticismLabel;
     private javax.swing.JButton addButton;
-    private javax.swing.JButton cancelBtn;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel moneyCriticismLabel1;
-    private javax.swing.JTextField moneyCriticismTextField1;
-    private javax.swing.JPanel typeCriticismForm;
-    private javax.swing.JPanel typeCriticismFormContainer;
+    private javax.swing.JLabel moneyLabel;
+    private javax.swing.JTextField moneyTextField;
     private javax.swing.JLabel typeCriticismIDLabel;
     private javax.swing.JTextField typeCriticismIDTextField;
+    private javax.swing.JLabel typeCriticismLabel;
     private javax.swing.JLabel typeCriticismNameLabel;
     private javax.swing.JTextField typeCriticismNameTextField;
     private javax.swing.JTable typeCriticismTable;
-    private javax.swing.JPanel typeCriticismTableContainer;
     private javax.swing.JLabel typeCriticismTableLabel;
+    private javax.swing.JPanel typeRewardForm;
+    private javax.swing.JPanel typeRewardFormContainer;
+    private javax.swing.JPanel typeRewardTableContainer;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String typeCriticismID = "";
+        if (selectedRowData != null) {
+            typeCriticismID = (String) selectedRowData[1];
+        }
+
+        if (e.getSource() == addButton) {
+
+        } else if (e.getSource() == deleteButton) {
+            if (selectedRow >= 0) {
+                deleteTableRow(selectedRow, typeCriticismID);
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else if (e.getSource() == updateButton) {
+            if (selectedRow >= 0) {
+                updateTableRow(selectedRowData, typeCriticismID);
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else if (e.getSource() == cancelButton) {
+            clearFormContent();
+        }
     }
 
     @Override
-    public void valueChanged(ListSelectionEvent e) {
+    public void valueChanged(ListSelectionEvent event) {
+        if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
+            selectionConfirmed = true;
+            selectedRow = typeCriticismTable.getSelectedRow();
+            if (selectedRow >= 0) {  // Check if a row is selected
+                selectedRowData = new Object[typeCriticismTable.getColumnCount()];
+                for (int i = 0; i < typeCriticismTable.getColumnCount(); i++) {
+                    selectedRowData[i] = typeCriticismTable.getValueAt(selectedRow, i);
+                }
+                fillDataTypeCriticismForm(selectedRowData);
+            }
+        }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-         Component clickedComponent = jPanel1.getComponentAt(jPanel1.getMousePosition());
-         if (clickedComponent !=typeCriticismTable && selectionConfirmed) {
-           typeCriticismTable.getSelectionModel().clearSelection();
+        Component clickedComponent = jPanel1.getComponentAt(jPanel1.getMousePosition());
+        if (clickedComponent != typeCriticismTable && selectionConfirmed) {
+            typeCriticismTable.getSelectionModel().clearSelection();
             selectionConfirmed = false;
         }
     }

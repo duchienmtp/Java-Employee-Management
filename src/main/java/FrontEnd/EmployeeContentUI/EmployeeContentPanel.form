@@ -6,7 +6,7 @@
     <Property name="alignmentY" type="float" value="0.0"/>
     <Property name="name" type="java.lang.String" value="employeeContentPanel" noResource="true"/>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[1000, 740]"/>
+      <Dimension value="[1055, 740]"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -24,11 +24,8 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="appSubMenu" alignment="0" max="32767" attributes="0"/>
-          <Group type="102" alignment="0" attributes="0">
-              <Component id="employeeContainer" min="-2" pref="1055" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-          </Group>
+          <Component id="appSubMenu" max="32767" attributes="0"/>
+          <Component id="employeeContainer" alignment="0" max="-2" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -36,7 +33,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="appSubMenu" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-              <Component id="employeeContainer" max="32767" attributes="0"/>
+              <Component id="employeeContainer" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -165,7 +162,7 @@
         <Property name="alignmentY" type="float" value="0.0"/>
         <Property name="name" type="java.lang.String" value="employeeContainer" noResource="true"/>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[1000, 640]"/>
+          <Dimension value="[1055, 640]"/>
         </Property>
       </Properties>
 

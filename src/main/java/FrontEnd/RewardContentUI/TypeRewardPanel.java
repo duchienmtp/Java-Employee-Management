@@ -1,37 +1,122 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package FrontEnd.RewardContentUI;
+
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
 public class TypeRewardPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
 
     int selectedRow = -1;
     boolean selectionConfirmed;
+    Object[] selectedRowData;
+
     public TypeRewardPanel() {
         initComponents();
-   addButton.addActionListener(this);
+
+        TypeRewardLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+        typeRewardTableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+
+        addButton.addActionListener(this);
         updateButton.addActionListener(this);
         deleteButton.addActionListener(this);
+        cancelButton.addActionListener(this);
+
+        typeRewardTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        typeRewardTable.setDefaultRenderer(String.class, centerRenderer);
+        typeRewardTable.setDefaultRenderer(Object.class, centerRenderer);
+        typeRewardTable.setDefaultRenderer(Integer.class, centerRenderer);
+        typeRewardTable.setDefaultRenderer(Double.class, centerRenderer);
+
         typeRewardTable.getSelectionModel().addListSelectionListener(this);
         tableInit();
         jPanel1.addMouseListener(this);
     }
 
-     public void tableInit() {
-        Object[] newRowData = {1, "LKT001", "Nhân viên của năm","1,000,000", "02/01/2024"};
+    public void tableInit() {
+        Object[] newRowData = {1, "RE001", "Nhân viên của năm", 1000000, "02/01/2024"};
         DefaultTableModel model = (DefaultTableModel) typeRewardTable.getModel();
         for (int i = 0; i < 10; i++) {
             model.addRow(newRowData);
         }
     }
+
+    public void insertTableRow() {
+        String typeRewardID = (String) typeRewardIDTextField.getText();
+        String typeRewardName = typeRewardNameTextField.getText();
+        int money = Integer.parseInt((String) moneyTextField.getText());
+
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn thêm mới dữ liệu loại khen thưởng với ID " + typeRewardID + " ?",
+                "CẬP NHẬT ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+//            // Create a new ArrayList
+//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
+//
+//            // Add all elements from the array to the ArrayList
+//            dataList.addAll(Arrays.asList(rowData));
+            typeRewardTable.revalidate();
+
+        }
+    }
+
+    public void updateTableRow(Object[] rowData, String typeRewardID) {
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn cập nhật dữ liệu loại khen thưởng với ID " + typeRewardID + " ?",
+                "CẬP NHẬT ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            // Create a new ArrayList
+            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
+
+            // Add all elements from the array to the ArrayList
+            dataList.addAll(Arrays.asList(rowData));
+            typeRewardTable.revalidate();
+        }
+    }
+
+    public void deleteTableRow(int selectedRow, String typeRewardID) {
+        DefaultTableModel model = (DefaultTableModel) typeRewardTable.getModel();
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn xóa bỏ loại khen thưởng với ID " + typeRewardID + " ?",
+                "XÓA BỎ ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            model.removeRow(selectedRow);
+            typeRewardTable.revalidate();
+        }
+    }
+
+    public void fillDataTypeRewardForm(Object[] selectedRowData) {
+        typeRewardIDTextField.setText((String) selectedRowData[1]);
+        typeRewardNameTextField.setText((String) selectedRowData[2]);
+        moneyTextField.setText(Integer.toString((int) selectedRowData[3]));
+    }
+
+    public void clearFormContent() {
+        typeRewardIDTextField.setText("");
+        typeRewardNameTextField.setText("");
+        moneyTextField.setText("");
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -47,9 +132,9 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         updateButton = new javax.swing.JButton();
         typeRewardNameLabel = new javax.swing.JLabel();
         typeRewardNameTextField = new javax.swing.JTextField();
-        cancelBtn = new javax.swing.JButton();
-        moneyRewardLabel1 = new javax.swing.JLabel();
-        moneyRewardNameTextField1 = new javax.swing.JTextField();
+        cancelButton = new javax.swing.JButton();
+        moneyLabel = new javax.swing.JLabel();
+        moneyTextField = new javax.swing.JTextField();
         typeRewardTableContainer = new javax.swing.JPanel();
         typeRewardTableLabel = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -62,10 +147,11 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         typeRewardFormContainer.setBackground(new java.awt.Color(255, 255, 255));
         typeRewardFormContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         typeRewardFormContainer.setName("typeRewardFormContainer"); // NOI18N
+        typeRewardFormContainer.setPreferredSize(new java.awt.Dimension(386, 540));
 
         TypeRewardLabel.setBackground(new java.awt.Color(255, 255, 255));
         TypeRewardLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        TypeRewardLabel.setForeground(new java.awt.Color(0, 102, 51));
+        TypeRewardLabel.setForeground(new java.awt.Color(0, 0, 0));
         TypeRewardLabel.setText("Tạo Loại Khen Thưởng");
         TypeRewardLabel.setName("TypeRewardLabel"); // NOI18N
         TypeRewardLabel.setOpaque(true);
@@ -74,12 +160,13 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         typeRewardForm.setName("typeRewardForm"); // NOI18N
 
         typeRewardIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        typeRewardIDLabel.setForeground(new java.awt.Color(0, 102, 51));
+        typeRewardIDLabel.setForeground(new java.awt.Color(0, 0, 0));
         typeRewardIDLabel.setText("Mã Loại Khen Thưởng:");
         typeRewardIDLabel.setName("typeRewardIDLabel"); // NOI18N
 
         typeRewardIDTextField.setBackground(new java.awt.Color(204, 204, 204));
         typeRewardIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        typeRewardIDTextField.setForeground(new java.awt.Color(0, 0, 0));
         typeRewardIDTextField.setName("typeRewardIDTextField"); // NOI18N
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
@@ -109,28 +196,32 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         updateButton.setOpaque(true);
 
         typeRewardNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        typeRewardNameLabel.setForeground(new java.awt.Color(0, 102, 0));
+        typeRewardNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         typeRewardNameLabel.setText("Tên Loại Khen Thưởng :");
         typeRewardNameLabel.setName("typeRewardNameLabel"); // NOI18N
 
         typeRewardNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         typeRewardNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        typeRewardNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         typeRewardNameTextField.setName("typeRewardNameTextField"); // NOI18N
 
-        cancelBtn.setBackground(new java.awt.Color(108, 117, 125));
-        cancelBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        cancelBtn.setForeground(new java.awt.Color(255, 255, 255));
-        cancelBtn.setText("Hủy Bỏ");
-        cancelBtn.setName("cancelBtn"); // NOI18N
+        cancelButton.setBackground(new java.awt.Color(108, 117, 125));
+        cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
+        cancelButton.setText("Hủy Bỏ");
+        cancelButton.setName("cancelButton"); // NOI18N
 
-        moneyRewardLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        moneyRewardLabel1.setForeground(new java.awt.Color(0, 102, 0));
-        moneyRewardLabel1.setText("Số Tiền Thưởng :");
-        moneyRewardLabel1.setName("typeRewardNameLabel"); // NOI18N
+        moneyLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        moneyLabel.setForeground(new java.awt.Color(0, 0, 0));
+        moneyLabel.setLabelFor(moneyTextField);
+        moneyLabel.setText("Số Tiền Thưởng :");
+        moneyLabel.setName("moneyLabel"); // NOI18N
+        moneyLabel.setPreferredSize(new java.awt.Dimension(118, 40));
 
-        moneyRewardNameTextField1.setBackground(new java.awt.Color(204, 204, 204));
-        moneyRewardNameTextField1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        moneyRewardNameTextField1.setName("typeRewardNameTextField"); // NOI18N
+        moneyTextField.setBackground(new java.awt.Color(204, 204, 204));
+        moneyTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        moneyTextField.setForeground(new java.awt.Color(0, 0, 0));
+        moneyTextField.setName("moneyTextField"); // NOI18N
 
         javax.swing.GroupLayout typeRewardFormLayout = new javax.swing.GroupLayout(typeRewardForm);
         typeRewardForm.setLayout(typeRewardFormLayout);
@@ -145,13 +236,13 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
                 .addGap(18, 18, 18)
                 .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
-            .addComponent(cancelBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(moneyRewardLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(cancelButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(typeRewardFormLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(moneyRewardNameTextField1)
-                .addContainerGap())
+                .addComponent(moneyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(moneyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 1, Short.MAX_VALUE))
         );
         typeRewardFormLayout.setVerticalGroup(
             typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -164,13 +255,13 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
                 .addComponent(typeRewardNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(typeRewardNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(moneyRewardLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(9, 9, 9)
-                .addComponent(moneyRewardNameTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addGroup(typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(moneyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(moneyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(typeRewardFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -203,13 +294,16 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         typeRewardTableContainer.setBackground(new java.awt.Color(255, 255, 255));
         typeRewardTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         typeRewardTableContainer.setName("typeRewardTableContainer"); // NOI18N
+        typeRewardTableContainer.setPreferredSize(new java.awt.Dimension(537, 540));
 
         typeRewardTableLabel.setBackground(new java.awt.Color(255, 255, 255));
         typeRewardTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        typeRewardTableLabel.setForeground(new java.awt.Color(0, 102, 0));
+        typeRewardTableLabel.setForeground(new java.awt.Color(0, 0, 0));
         typeRewardTableLabel.setText("Loại Khen Thưởng");
         typeRewardTableLabel.setName("typeRewardTableLabel"); // NOI18N
         typeRewardTableLabel.setOpaque(true);
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
         typeRewardTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -220,10 +314,10 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -234,7 +328,7 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
                 return canEdit [columnIndex];
             }
         });
-        typeRewardTable.setName("degreeTable"); // NOI18N
+        typeRewardTable.setName("typeRewardTable"); // NOI18N
         typeRewardTable.setRowHeight(40);
         jScrollPane1.setViewportView(typeRewardTable);
         if (typeRewardTable.getColumnModel().getColumnCount() > 0) {
@@ -253,10 +347,7 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout typeRewardTableContainerLayout = new javax.swing.GroupLayout(typeRewardTableContainer);
@@ -274,7 +365,7 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
             typeRewardTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(typeRewardTableContainerLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(typeRewardTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(typeRewardTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -287,44 +378,42 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addComponent(typeRewardFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(32, 32, 32)
                 .addComponent(typeRewardTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(50, 50, 50))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addComponent(typeRewardFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(typeRewardTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(typeRewardTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(typeRewardFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(50, 50, 50))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 986, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel TypeRewardLabel;
     private javax.swing.JButton addButton;
-    private javax.swing.JButton cancelBtn;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel moneyRewardLabel1;
-    private javax.swing.JTextField moneyRewardNameTextField1;
+    private javax.swing.JLabel moneyLabel;
+    private javax.swing.JTextField moneyTextField;
     private javax.swing.JPanel typeRewardForm;
     private javax.swing.JPanel typeRewardFormContainer;
     private javax.swing.JLabel typeRewardIDLabel;
@@ -339,16 +428,49 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String typeRewardID = "";
+        if (selectedRowData != null) {
+            typeRewardID = (String) selectedRowData[1];
+        }
+
+        if (e.getSource() == addButton) {
+
+        } else if (e.getSource() == deleteButton) {
+            if (selectedRow >= 0) {
+                deleteTableRow(selectedRow, typeRewardID);
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else if (e.getSource() == updateButton) {
+            if (selectedRow >= 0) {
+                updateTableRow(selectedRowData, typeRewardID);
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else if (e.getSource() == cancelButton) {
+            clearFormContent();
+        }
     }
 
     @Override
-    public void valueChanged(ListSelectionEvent e) {
+    public void valueChanged(ListSelectionEvent event) {
+        if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
+            selectionConfirmed = true;
+            selectedRow = typeRewardTable.getSelectedRow();
+            if (selectedRow >= 0) {  // Check if a row is selected
+                selectedRowData = new Object[typeRewardTable.getColumnCount()];
+                for (int i = 0; i < typeRewardTable.getColumnCount(); i++) {
+                    selectedRowData[i] = typeRewardTable.getValueAt(selectedRow, i);
+                }
+                fillDataTypeRewardForm(selectedRowData);
+            }
+        }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         Component clickedComponent = jPanel1.getComponentAt(jPanel1.getMousePosition());
-        if (clickedComponent !=typeRewardTable && selectionConfirmed) {
+        if (clickedComponent != typeRewardTable && selectionConfirmed) {
             typeRewardTable.getSelectionModel().clearSelection();
             selectionConfirmed = false;
         }

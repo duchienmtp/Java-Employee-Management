@@ -1,9 +1,8 @@
-package FrontEnd.ProjectContentUI;
+package FrontEnd.AccountContentUI;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -19,17 +18,21 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class AssignmentManagementContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
+public class AccountManagementContentPanel extends javax.swing.JPanel implements MouseListener, ActionListener, ListSelectionListener {
 
-    AssignmentForm assignmentForm;
+    AccountForm accountForm;
     int selectedRow = -1;
-    boolean selectionConfirmed;
     Object[] selectedRowData;
+    boolean selectionConfirmed;
 
-    public AssignmentManagementContentPanel() {
+    public AccountManagementContentPanel() {
         initComponents();
 
-        tableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+        accountForm = new AccountForm();
+
+        addButton.addActionListener(this);
+        editButton.addActionListener(this);
+        deleteButton.addActionListener(this);
 
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1), // Line color and stroke size
@@ -41,106 +44,46 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
         );
         jPanel1.setBorder(titledBorder);
 
-        assignmentForm = new AssignmentForm();
+        tableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 
-        addButton.addActionListener(this);
-        deleteButton.addActionListener(this);
-        editButton.addActionListener(this);
-        searchButton.addActionListener(this);
-
+        jTable1.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        jTable1.setDefaultRenderer(Object.class, centerRenderer);
         jTable1.setDefaultRenderer(String.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
+        jTable1.setDefaultRenderer(Object.class, centerRenderer);
 
         tableInit();
-
         jTable1.getSelectionModel().addListSelectionListener(this);
-        jTable1.addMouseListener(this);
         addMouseListener(this);
-        jTable1.addMouseListener(this);
 
         setVisible(true);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == addButton) {
-            if (assignmentForm != null) {
-                assignmentForm.setTitle("THÊM MỚI CÔNG TÁC CỦA NHÂN VIÊN");
-                assignmentForm.setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(this, "Can not found form!");
-            }
-        } else if (e.getSource() == deleteButton) {
-            if (selectedRow >= 0) {
-                deleteTableRow(selectedRow);
-            } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else if (e.getSource() == editButton) {
-            if (selectedRow >= 0) {
-                updateTableRow(selectedRowData);
-                assignmentForm.setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else if (e.getSource() == importExcel) {
-
-        } else if (e.getSource() == exportExcel) {
-
-        } else if (e.getSource() == searchButton) {
-            String tmp = searchTextField.getText().trim();
-            if (!tmp.isEmpty()) {
-                search(tmp);
-            } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập họ tên hoặc id hoặc mã công tác của nhân viên cần tìm kiếm!");
-            }
-        }
-    }
-
-    public void search(String searchText) {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        int check = 0;
-        for (int i = 0; i < jTable1.getRowCount(); i++) {
-            String btid = model.getValueAt(i, 1).toString().trim().toLowerCase();
-            String name = model.getValueAt(i, 3).toString().trim().toLowerCase(); // Lấy tên từ dòng hiện tại và chuyển thành chữ thường
-            String id = model.getValueAt(i, 2).toString().trim().toLowerCase(); // Lấy ID từ dòng hiện tại và chuyển thành chữ thường
-            if (name.contains(searchText.toLowerCase()) || id.contains(searchText.toLowerCase()) || btid.contains(searchText.toLowerCase())) { // So sánh tên hoặc ID với nội dung tìm kiếm
-                jTable1.getSelectionModel().setSelectionInterval(i, i); // Chọn dòng tìm thấy
-                Rectangle rect = jTable1.getCellRect(i, 0, true);
-                jTable1.scrollRectToVisible(rect); // Cuộn tới dòng tìm thấy
-                check = 1;
-                break; // Kết thúc vòng lặp khi tìm thấy dòng phù hợp
-            }
-        }
-        if (check == 0) {
-            JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu.");
-        }
-    }
-
     public void tableInit() {
-        Object[] newRowData = {1, "EM001", "Lữ Thị Cẩm Tri", "BT001", "Lập trình Java", "Hà Nội", "10/10/2023", "10/02/2024"};
+        Object[] newRowData = {1, "EM001", "Trần Đức Hiển", "duchien230904@gmail.com", "Admin", "05/04/2024", "Đang Hoạt Động"};
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         for (int i = 0; i < 10; i++) {
             model.addRow(newRowData);
         }
     }
 
-    public void updateTableRow(Object[] rowData) {
+    public void updateTableRow(Object[] rowData, String employeeID) {
         // Create a new ArrayList
         ArrayList<Object> dataList = new ArrayList<>(rowData.length);
 
         // Add all elements from the array to the ArrayList
         dataList.addAll(Arrays.asList(rowData));
-        assignmentForm.setTitle("CẬP NHẬT THÔNG TIN CÔNG TÁC CỦA NHÂN VIÊN");
-        assignmentForm.showFormWithData(dataList);
+        accountForm.setTitle("CẬP NHẬT THÔNG TIN TÀI KHOẢN CỦA NHÂN VIÊN");
+        accountForm.showFormWithData(dataList);
     }
 
-    public void deleteTableRow(int selectedRow) {
+    public void deleteTableRow(int selectedRow, String employeeID) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        int confirmation = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn là muốn xóa thông tin công tác của nhân viên này? ", "Thông báo", JOptionPane.YES_NO_OPTION);
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn xóa bỏ nhân viên với ID " + employeeID + " ?",
+                "XÓA BỎ ?",
+                JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
             model.removeRow(selectedRow);
@@ -162,25 +105,114 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
         }
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String employeeID = "";
+        if (selectedRowData != null) {
+            employeeID = (String) selectedRowData[1];
+        }
+        if (e.getSource() == addButton) {
+            accountForm.setTitle("THÊM MỚI TÀI KHOẢN NHÂN VIÊN");
+            accountForm.setVisible(true);
+        } else if (e.getSource() == deleteButton) {
+            if (selectedRow >= 0) {
+                deleteTableRow(selectedRow, employeeID);
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else if (e.getSource() == editButton) {
+            if (selectedRow >= 0) {
+                updateTableRow(selectedRowData, employeeID);
+                accountForm.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else if (e.getSource() == importExcel) {
+
+        } else if (e.getSource() == exportExcel) {
+
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        addButton = new javax.swing.JButton();
-        deleteButton = new javax.swing.JButton();
-        exportExcel = new javax.swing.JButton();
-        editButton = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        searchOptionComboBox = new javax.swing.JComboBox<>();
-        searchTextField = new javax.swing.JTextField();
-        searchButton = new javax.swing.JButton();
-        importExcel = new javax.swing.JButton();
         tableContainer = new javax.swing.JPanel();
         tableLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        addButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
+        editButton = new javax.swing.JButton();
+        importExcel = new javax.swing.JButton();
+        exportExcel = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        searchOptionComboBox = new javax.swing.JComboBox<>();
+        searchTextField = new javax.swing.JTextField();
+        searchButton = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        setBackground(java.awt.Color.white);
+        setAlignmentX(0.0F);
+        setAlignmentY(0.0F);
+
+        tableContainer.setBackground(new java.awt.Color(255, 255, 255));
+        tableContainer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        tableContainer.setName("tableContainer"); // NOI18N
+        tableContainer.setPreferredSize(new java.awt.Dimension(863, 364));
+
+        tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
+        tableLabel.setText("Danh sách tài khoản của nhân viên");
+        tableLabel.setName("tableLabel"); // NOI18N
+
+        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Email", "Phân Quyền", "Ngày Tạo", "Trạng Thái"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.setRowHeight(40);
+        jScrollPane2.setViewportView(jTable1);
+
+        javax.swing.GroupLayout tableContainerLayout = new javax.swing.GroupLayout(tableContainer);
+        tableContainer.setLayout(tableContainerLayout);
+        tableContainerLayout.setHorizontalGroup(
+            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tableContainerLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
+                    .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(25, 25, 25))
+        );
+        tableContainerLayout.setVerticalGroup(
+            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tableContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -198,6 +230,21 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
         deleteButton.setIconTextGap(10);
         deleteButton.setName("deleteButton"); // NOI18N
 
+        editButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        editButton.setForeground(new java.awt.Color(255, 255, 255));
+        editButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
+        editButton.setText("Sửa");
+        editButton.setIconTextGap(10);
+        editButton.setName("editButton"); // NOI18N
+
+        importExcel.setBackground(new java.awt.Color(13, 110, 253));
+        importExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        importExcel.setForeground(new java.awt.Color(255, 255, 255));
+        importExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
+        importExcel.setText("Nhập ");
+        importExcel.setIconTextGap(10);
+        importExcel.setName("importExcel"); // NOI18N
+
         exportExcel.setBackground(new java.awt.Color(13, 202, 240));
         exportExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         exportExcel.setForeground(new java.awt.Color(255, 255, 255));
@@ -206,18 +253,11 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
         exportExcel.setIconTextGap(10);
         exportExcel.setName("exportExcel"); // NOI18N
 
-        editButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        editButton.setForeground(new java.awt.Color(255, 255, 255));
-        editButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
-        editButton.setText("Sửa");
-        editButton.setIconTextGap(10);
-        editButton.setName("editButton"); // NOI18N
-
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
-        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo Tên", "Theo Mã Công Tác" }));
+        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo Tên", "Theo Mã" }));
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
@@ -258,73 +298,6 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
                 .addContainerGap())
         );
 
-        importExcel.setBackground(new java.awt.Color(13, 110, 253));
-        importExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        importExcel.setForeground(new java.awt.Color(255, 255, 255));
-        importExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
-        importExcel.setText("Nhập ");
-        importExcel.setIconTextGap(10);
-        importExcel.setName("importExcel"); // NOI18N
-
-        tableContainer.setBackground(new java.awt.Color(255, 255, 255));
-        tableContainer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        tableContainer.setName("tableContainer"); // NOI18N
-
-        tableLabel.setBackground(new java.awt.Color(255, 255, 255));
-        tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
-        tableLabel.setText("Danh sách công tác của nhân viên");
-        tableLabel.setName("tableLabel"); // NOI18N
-        tableLabel.setOpaque(true);
-
-        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "STT", "ID", "Họ và Tên", "Mã Công Tác", "Tên Công Tác", "Nơi Công Tác", "Ngày Bắt Đầu", "Ngày Kết Thúc"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jTable1.setRowHeight(40);
-        jScrollPane2.setViewportView(jTable1);
-
-        javax.swing.GroupLayout tableContainerLayout = new javax.swing.GroupLayout(tableContainer);
-        tableContainer.setLayout(tableContainerLayout);
-        tableContainerLayout.setHorizontalGroup(
-            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
-                    .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(25, 25, 25))
-        );
-        tableContainerLayout.setVerticalGroup(
-            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -332,23 +305,23 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
             .addGroup(layout.createSequentialGroup()
                 .addGap(96, 96, 96)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(63, 63, 63)
                         .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(69, 69, 69)
                         .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(69, 69, 69)
                         .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(62, 62, 62)
                         .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(96, 96, 96))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -379,20 +352,9 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
     private javax.swing.JPanel tableContainer;
     private javax.swing.JLabel tableLabel;
     // End of variables declaration//GEN-END:variables
-
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getSource() == jTable1) {
-            if (e.getClickCount() == 2) {
-                // Get the selected row index
-                selectedRow = jTable1.getSelectedRow();
-                if (selectedRow != -1) {
-                    // Open a new frame with information from the selected row
-                    ArrayList<Object> dataList = new ArrayList<>(selectedRowData.length);
-                    dataList.addAll(Arrays.asList(selectedRowData));
-                }
-            }
-        } else {
+        if (e.getSource() == this) {
             Component clickedComponent = this.getComponentAt(this.getMousePosition());
             if (clickedComponent != jTable1 && selectionConfirmed) {
                 jTable1.getSelectionModel().clearSelection();

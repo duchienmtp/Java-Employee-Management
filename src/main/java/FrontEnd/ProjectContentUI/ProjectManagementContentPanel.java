@@ -331,6 +331,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
             .addGroup(projectFormContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(projectLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(projectFormContainerLayout.createSequentialGroup()
                         .addComponent(addButton)
@@ -359,7 +360,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(projectPlaceTextField)))
                 .addContainerGap())
-            .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         projectFormContainerLayout.setVerticalGroup(
             projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -156,7 +156,7 @@ public class SpecialtyContentPanel extends javax.swing.JPanel implements ActionL
         specialtyLabel.setOpaque(true);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setPreferredSize(new java.awt.Dimension(371, 328));
+        jPanel2.setPreferredSize(new java.awt.Dimension(372, 540));
 
         specialtyIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         specialtyIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -272,7 +272,7 @@ public class SpecialtyContentPanel extends javax.swing.JPanel implements ActionL
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, specialtyFormContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(specialtyFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(specialtyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );

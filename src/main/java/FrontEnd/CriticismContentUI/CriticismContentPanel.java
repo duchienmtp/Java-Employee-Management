@@ -4,22 +4,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 public class CriticismContentPanel extends javax.swing.JPanel implements ActionListener {
 
-    TypeCriticismPanel typeCriticismContentPanel;
-    CriticismEmployeePanel criticismEmployeeContentPanel;
+    TypeCriticismPanel typeCriticismPanel;
+    CriticismEmployeePanel criticismEmployeePanel;
+
     public CriticismContentPanel() {
         initComponents();
-//         typeCriticismContentPanel = new TypeCriticismContentPanel();
-       criticismContainer.setLayout(new GridLayout(1, 1));
-       showTypeCriticismContentPanel();
+
+        criticismEmployeePanel = new CriticismEmployeePanel();
+        typeCriticismPanel = new TypeCriticismPanel();
+
+        criticismContainer.setLayout(new GridLayout(1, 1));
+
+        showCriticismEmployeeContentPanel();
+
         typeCriticismBtn.addActionListener(this);
         criticismEmployeeBtn.addActionListener(this);
-        
-        
+
         setVisible(true);
     }
-     @Override
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == typeCriticismBtn) {
             showTypeCriticismContentPanel();
@@ -36,16 +43,14 @@ public class CriticismContentPanel extends javax.swing.JPanel implements ActionL
 
     private void showTypeCriticismContentPanel() {
         clearPanel();
-       typeCriticismContentPanel = new TypeCriticismPanel();
-        criticismContainer.add(typeCriticismContentPanel);
+        criticismContainer.add(typeCriticismPanel);
         criticismContainer.revalidate();
         criticismContainer.repaint();
     }
 
     private void showCriticismEmployeeContentPanel() {
         clearPanel();
-        criticismEmployeeContentPanel = new CriticismEmployeePanel();
-        criticismContainer.add(criticismEmployeeContentPanel);
+        criticismContainer.add(criticismEmployeePanel);
         criticismContainer.revalidate();
         criticismContainer.repaint();
     }
@@ -54,87 +59,83 @@ public class CriticismContentPanel extends javax.swing.JPanel implements ActionL
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        addCriticism = new javax.swing.JPanel();
-        typeCriticismBtn = new javax.swing.JButton();
-        criticismEmployeeBtn = new javax.swing.JButton();
         criticismContainer = new javax.swing.JPanel();
+        appSubMenu = new javax.swing.JPanel();
+        criticismEmployeeBtn = new javax.swing.JButton();
+        typeCriticismBtn = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(153, 153, 255));
         setAlignmentX(0.0F);
         setAlignmentY(0.0F);
 
-        addCriticism.setBackground(new java.awt.Color(204, 204, 204));
-
-        typeCriticismBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        typeCriticismBtn.setIcon(new javax.swing.ImageIcon("C:\\Users\\admin\\OneDrive\\Documents\\NetBeansProjects\\Employee-Management\\Java-Employee-Management\\src\\main\\resources\\images\\add.png")); // NOI18N
-        typeCriticismBtn.setText("Thêm Loại Kỷ Luật");
-
-        criticismEmployeeBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        criticismEmployeeBtn.setIcon(new javax.swing.ImageIcon("C:\\Users\\admin\\OneDrive\\Documents\\NetBeansProjects\\Employee-Management\\Java-Employee-Management\\src\\main\\resources\\images\\hammer.png")); // NOI18N
-        criticismEmployeeBtn.setText("Tạo Kỷ Luật");
-
         criticismContainer.setBackground(new java.awt.Color(255, 255, 255));
-        criticismContainer.setForeground(new java.awt.Color(255, 255, 255));
+        criticismContainer.setName("criticismContainer"); // NOI18N
+        criticismContainer.setPreferredSize(new java.awt.Dimension(1055, 640));
 
-        javax.swing.GroupLayout criticismContainerLayout = new javax.swing.GroupLayout(criticismContainer);
-        criticismContainer.setLayout(criticismContainerLayout);
-        criticismContainerLayout.setHorizontalGroup(
-            criticismContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        criticismContainerLayout.setVerticalGroup(
-            criticismContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 570, Short.MAX_VALUE)
-        );
+        appSubMenu.setBackground(new java.awt.Color(204, 204, 204));
+        appSubMenu.setName("appSubMenu"); // NOI18N
+        appSubMenu.setPreferredSize(new java.awt.Dimension(1055, 100));
 
-        javax.swing.GroupLayout addCriticismLayout = new javax.swing.GroupLayout(addCriticism);
-        addCriticism.setLayout(addCriticismLayout);
-        addCriticismLayout.setHorizontalGroup(
-            addCriticismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(addCriticismLayout.createSequentialGroup()
-                .addGap(64, 64, 64)
-                .addComponent(typeCriticismBtn)
-                .addGap(72, 72, 72)
+        criticismEmployeeBtn.setBackground(new java.awt.Color(45, 64, 80));
+        criticismEmployeeBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        criticismEmployeeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/criticism.png"))); // NOI18N
+        criticismEmployeeBtn.setText("Quản Lý Kỷ Luật");
+        criticismEmployeeBtn.setIconTextGap(10);
+        criticismEmployeeBtn.setName("criticismEmployeeBtn"); // NOI18N
+        criticismEmployeeBtn.setOpaque(true);
+
+        typeCriticismBtn.setBackground(new java.awt.Color(45, 64, 80));
+        typeCriticismBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        typeCriticismBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/criticism-type.png"))); // NOI18N
+        typeCriticismBtn.setText("Loại Kỷ Luật");
+        typeCriticismBtn.setIconTextGap(10);
+        typeCriticismBtn.setName("typeCriticismBtn"); // NOI18N
+        typeCriticismBtn.setOpaque(true);
+
+        javax.swing.GroupLayout appSubMenuLayout = new javax.swing.GroupLayout(appSubMenu);
+        appSubMenu.setLayout(appSubMenuLayout);
+        appSubMenuLayout.setHorizontalGroup(
+            appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(appSubMenuLayout.createSequentialGroup()
+                .addGap(96, 96, 96)
                 .addComponent(criticismEmployeeBtn)
-                .addContainerGap(536, Short.MAX_VALUE))
-            .addComponent(criticismContainer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(86, 86, 86)
+                .addComponent(typeCriticismBtn)
+                .addGap(0, 0, 0))
         );
-        addCriticismLayout.setVerticalGroup(
-            addCriticismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addCriticismLayout.createSequentialGroup()
-                .addContainerGap(33, Short.MAX_VALUE)
-                .addGroup(addCriticismLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(typeCriticismBtn)
-                    .addComponent(criticismEmployeeBtn))
+        appSubMenuLayout.setVerticalGroup(
+            appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(appSubMenuLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(criticismContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(typeCriticismBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(criticismEmployeeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(addCriticism, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(appSubMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(criticismContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(addCriticism, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addComponent(appSubMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(criticismContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
- 
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel addCriticism;
+    private javax.swing.JPanel appSubMenu;
     private javax.swing.JPanel criticismContainer;
     private javax.swing.JButton criticismEmployeeBtn;
     private javax.swing.JButton typeCriticismBtn;
     // End of variables declaration//GEN-END:variables
-   
 }
-
-
-
-

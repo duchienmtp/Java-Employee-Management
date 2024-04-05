@@ -208,23 +208,25 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         jPanel1 = new javax.swing.JPanel();
         salaryFormContainer = new javax.swing.JPanel();
         salaryLabel = new javax.swing.JLabel();
-        employeeIDLabel = new javax.swing.JLabel();
+        salaryForm = new javax.swing.JPanel();
         employeeNameLabel = new javax.swing.JLabel();
+        cancelButton = new javax.swing.JButton();
         employeeNameTextField = new javax.swing.JTextField();
         detailButton = new javax.swing.JButton();
-        addButton = new javax.swing.JButton();
-        deleteButton = new javax.swing.JButton();
-        updateButton = new javax.swing.JButton();
         employeeIDComboBox = new javax.swing.JComboBox<>();
         monthPickerLabel = new javax.swing.JLabel();
         monthPickerComboBox = new javax.swing.JComboBox<>();
         salarySumLabel = new javax.swing.JLabel();
+        employeeIDLabel = new javax.swing.JLabel();
         salarySumTextField = new javax.swing.JTextField();
-        cancelButton = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
+        addButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
         salaryTableContainer = new javax.swing.JPanel();
         salaryTableLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(102, 255, 102));
         setName("salaryContentPanel"); // NOI18N
@@ -234,7 +236,7 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         salaryFormContainer.setBackground(new java.awt.Color(255, 255, 255));
         salaryFormContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         salaryFormContainer.setName("salaryFormContainer"); // NOI18N
-        salaryFormContainer.setPreferredSize(new java.awt.Dimension(396, 540));
+        salaryFormContainer.setPreferredSize(new java.awt.Dimension(386, 540));
 
         salaryLabel.setBackground(new java.awt.Color(255, 255, 255));
         salaryLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -242,14 +244,10 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         salaryLabel.setText("Bảng Tính Lương");
         salaryLabel.setName("salaryLabel"); // NOI18N
         salaryLabel.setOpaque(true);
+        salaryLabel.setPreferredSize(new java.awt.Dimension(369, 25));
 
-        employeeIDLabel.setBackground(new java.awt.Color(255, 255, 255));
-        employeeIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeIDLabel.setForeground(new java.awt.Color(0, 0, 0));
-        employeeIDLabel.setLabelFor(employeeIDComboBox);
-        employeeIDLabel.setText("Mã Nhân Viên :");
-        employeeIDLabel.setName("employeeIDLabel"); // NOI18N
-        employeeIDLabel.setOpaque(true);
+        salaryForm.setBackground(new java.awt.Color(255, 255, 255));
+        salaryForm.setName("salaryForm"); // NOI18N
 
         employeeNameLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -258,6 +256,13 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         employeeNameLabel.setText("Tên Nhân Viên :");
         employeeNameLabel.setName("employeeNameLabel"); // NOI18N
         employeeNameLabel.setOpaque(true);
+
+        cancelButton.setBackground(new java.awt.Color(108, 117, 125));
+        cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
+        cancelButton.setText("Hủy Bỏ");
+        cancelButton.setName("cancelButton"); // NOI18N
+        cancelButton.setOpaque(true);
 
         employeeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         employeeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -272,33 +277,6 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         detailButton.setText("Xem Chi Tiết");
         detailButton.setName("detailButton"); // NOI18N
         detailButton.setOpaque(true);
-
-        addButton.setBackground(new java.awt.Color(25, 135, 84));
-        addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        addButton.setForeground(new java.awt.Color(255, 255, 255));
-        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
-        addButton.setText("Thêm");
-        addButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        addButton.setIconTextGap(10);
-        addButton.setName("addButton"); // NOI18N
-
-        deleteButton.setBackground(new java.awt.Color(220, 53, 69));
-        deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        deleteButton.setForeground(new java.awt.Color(255, 255, 255));
-        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
-        deleteButton.setText("Xóa");
-        deleteButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        deleteButton.setIconTextGap(10);
-        deleteButton.setName("deleteButton"); // NOI18N
-        deleteButton.setOpaque(true);
-
-        updateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        updateButton.setForeground(new java.awt.Color(255, 255, 255));
-        updateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
-        updateButton.setText("Sửa");
-        updateButton.setIconTextGap(10);
-        updateButton.setName("updateButton"); // NOI18N
-        updateButton.setOpaque(true);
 
         employeeIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
         employeeIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -329,6 +307,16 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         salarySumLabel.setText("Tổng Lương :");
         salarySumLabel.setName("salarySumLabel"); // NOI18N
         salarySumLabel.setOpaque(true);
+        salarySumLabel.setPreferredSize(new java.awt.Dimension(95, 20));
+
+        employeeIDLabel.setBackground(new java.awt.Color(255, 255, 255));
+        employeeIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        employeeIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        employeeIDLabel.setLabelFor(employeeIDComboBox);
+        employeeIDLabel.setText("Mã Nhân Viên :");
+        employeeIDLabel.setName("employeeIDLabel"); // NOI18N
+        employeeIDLabel.setOpaque(true);
+        employeeIDLabel.setPreferredSize(new java.awt.Dimension(101, 40));
 
         salarySumTextField.setBackground(new java.awt.Color(204, 204, 204));
         salarySumTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -338,12 +326,92 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         salarySumTextField.setName("salarySumTextField"); // NOI18N
         salarySumTextField.setOpaque(true);
 
-        cancelButton.setBackground(new java.awt.Color(108, 117, 125));
-        cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
-        cancelButton.setText("Hủy Bỏ");
-        cancelButton.setName("cancelButton"); // NOI18N
-        cancelButton.setOpaque(true);
+        updateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        updateButton.setForeground(new java.awt.Color(255, 255, 255));
+        updateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
+        updateButton.setText("Sửa");
+        updateButton.setIconTextGap(10);
+        updateButton.setName("updateButton"); // NOI18N
+        updateButton.setOpaque(true);
+
+        addButton.setBackground(new java.awt.Color(25, 135, 84));
+        addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        addButton.setForeground(new java.awt.Color(255, 255, 255));
+        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
+        addButton.setText("Thêm");
+        addButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        addButton.setIconTextGap(10);
+        addButton.setName("addButton"); // NOI18N
+        addButton.setPreferredSize(new java.awt.Dimension(112, 40));
+
+        deleteButton.setBackground(new java.awt.Color(220, 53, 69));
+        deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        deleteButton.setForeground(new java.awt.Color(255, 255, 255));
+        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
+        deleteButton.setText("Xóa");
+        deleteButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        deleteButton.setIconTextGap(10);
+        deleteButton.setName("deleteButton"); // NOI18N
+        deleteButton.setOpaque(true);
+
+        javax.swing.GroupLayout salaryFormLayout = new javax.swing.GroupLayout(salaryForm);
+        salaryForm.setLayout(salaryFormLayout);
+        salaryFormLayout.setHorizontalGroup(
+            salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(salaryFormLayout.createSequentialGroup()
+                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(monthPickerLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(salarySumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(employeeNameTextField)
+                    .addComponent(monthPickerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(salarySumTextField)))
+            .addGroup(salaryFormLayout.createSequentialGroup()
+                .addComponent(employeeIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(employeeIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, salaryFormLayout.createSequentialGroup()
+                .addComponent(detailButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(salaryFormLayout.createSequentialGroup()
+                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
+        );
+        salaryFormLayout.setVerticalGroup(
+            salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, salaryFormLayout.createSequentialGroup()
+                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(employeeIDComboBox))
+                .addGap(18, 18, 18)
+                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(employeeNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(monthPickerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(monthPickerComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(salarySumTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(salarySumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(detailButton, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(deleteButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout salaryFormContainerLayout = new javax.swing.GroupLayout(salaryFormContainer);
         salaryFormContainer.setLayout(salaryFormContainerLayout);
@@ -352,33 +420,8 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
             .addGroup(salaryFormContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(salaryLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(salaryFormContainerLayout.createSequentialGroup()
-                        .addComponent(addButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(salaryFormContainerLayout.createSequentialGroup()
-                        .addComponent(employeeNameLabel)
-                        .addGap(2, 2, 2)
-                        .addComponent(employeeNameTextField))
-                    .addGroup(salaryFormContainerLayout.createSequentialGroup()
-                        .addComponent(employeeIDLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(employeeIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(salaryFormContainerLayout.createSequentialGroup()
-                        .addComponent(monthPickerLabel)
-                        .addGap(16, 16, 16)
-                        .addComponent(monthPickerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(salaryFormContainerLayout.createSequentialGroup()
-                        .addComponent(salarySumLabel)
-                        .addGap(24, 24, 24)
-                        .addComponent(salarySumTextField))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, salaryFormContainerLayout.createSequentialGroup()
-                        .addComponent(detailButton, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(salaryLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(salaryForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         salaryFormContainerLayout.setVerticalGroup(
@@ -386,32 +429,8 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
             .addGroup(salaryFormContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(salaryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(employeeIDComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(employeeNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(monthPickerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(monthPickerComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(salarySumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(salarySumTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(detailButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, Short.MAX_VALUE)
-                .addGroup(salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(updateButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(salaryForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -480,6 +499,19 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
                 .addContainerGap())
         );
 
+        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -487,18 +519,20 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addComponent(salaryFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addGap(32, 32, 32)
                 .addComponent(salaryTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(50, 50, 50))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(50, 50, 50)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(salaryTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(salaryFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(50, Short.MAX_VALUE))
+                    .addComponent(salaryTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(salaryFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -523,10 +557,12 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
     private javax.swing.JLabel employeeNameLabel;
     private javax.swing.JTextField employeeNameTextField;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JComboBox<String> monthPickerComboBox;
     private javax.swing.JLabel monthPickerLabel;
+    private javax.swing.JPanel salaryForm;
     private javax.swing.JPanel salaryFormContainer;
     private javax.swing.JLabel salaryLabel;
     private javax.swing.JLabel salarySumLabel;

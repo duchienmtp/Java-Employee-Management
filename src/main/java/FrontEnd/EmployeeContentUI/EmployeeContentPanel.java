@@ -13,13 +13,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
 
     public EmployeeContentPanel() {
         initComponents();
-//        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-//        centerRenderer.setHorizontalAlignment(JLabel.LEFT);
-//        employeeTable.setDefaultRenderer(String.class, centerRenderer);
-//
-//        DefaultTableCellRenderer integerRenderer = new DefaultTableCellRenderer();
-//        integerRenderer.setHorizontalAlignment(JLabel.LEFT);
-//        employeeTable.setDefaultRenderer(Integer.class, integerRenderer);
+
         degreeContentPanel = new DegreeContentPanel();
         positionContentPanel = new PositionContentPanel();
         specialtyContentPanel = new SpecialtyContentPanel();
@@ -99,7 +93,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         setAlignmentX(0.0F);
         setAlignmentY(0.0F);
         setName("employeeContentPanel"); // NOI18N
-        setPreferredSize(new java.awt.Dimension(1000, 740));
+        setPreferredSize(new java.awt.Dimension(1055, 740));
 
         appSubMenu.setBackground(new java.awt.Color(204, 204, 204));
         appSubMenu.setAlignmentX(0.0F);
@@ -167,7 +161,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         employeeContainer.setAlignmentX(0.0F);
         employeeContainer.setAlignmentY(0.0F);
         employeeContainer.setName("employeeContainer"); // NOI18N
-        employeeContainer.setPreferredSize(new java.awt.Dimension(1000, 640));
+        employeeContainer.setPreferredSize(new java.awt.Dimension(1055, 640));
 
         javax.swing.GroupLayout employeeContainerLayout = new javax.swing.GroupLayout(employeeContainer);
         employeeContainer.setLayout(employeeContainerLayout);
@@ -185,16 +179,14 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(appSubMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(employeeContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 1055, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(employeeContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(appSubMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(employeeContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(employeeContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

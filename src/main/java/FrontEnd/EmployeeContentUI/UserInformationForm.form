@@ -196,6 +196,12 @@
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
             </Property>
+            <Property name="caretColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
+            </Property>
             <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
               <ComponentRef name="null"/>
             </Property>
@@ -355,6 +361,12 @@
             </Property>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
+            </Property>
+            <Property name="caretColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
             <Property name="name" type="java.lang.String" value="phoneNumberTextField" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -522,10 +534,10 @@
             </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="5">
-                <StringItem index="0" value="B&#x1eb1;ng C&#x1eed; Nh&#xe2;n"/>
-                <StringItem index="1" value="B&#x1eb1;ng K&#x1ef9; S&#x1b0;"/>
-                <StringItem index="2" value="B&#x1eb1;ng Th&#x1ea1;c S&#x129;"/>
-                <StringItem index="3" value="B&#x1eb1;ng Ti&#x1ebf;n S&#x129;"/>
+                <StringItem index="0" value="C&#x1eed; Nh&#xe2;n"/>
+                <StringItem index="1" value="K&#x1ef9; S&#x1b0;"/>
+                <StringItem index="2" value="Th&#x1ea1;c S&#x129;"/>
+                <StringItem index="3" value="Ti&#x1ebf;n S&#x129;"/>
                 <StringItem index="4" value=" "/>
               </StringArray>
             </Property>
@@ -653,8 +665,8 @@
             </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="4">
-                <StringItem index="0" value="Nh&#xe2;n Vi&#xea;n Ch&#xed;nh Th&#x1ee9;c"/>
-                <StringItem index="1" value="Nh&#xe2;n Vi&#xea;n B&#xe1;n Th&#x1edd;i Gian"/>
+                <StringItem index="0" value="Ch&#xed;nh Th&#x1ee9;c"/>
+                <StringItem index="1" value="Nh&#xe2;n Vi&#xea;n"/>
                 <StringItem index="2" value="Th&#x1ef1;c T&#x1ead;p Sinh"/>
                 <StringItem index="3" value=" "/>
               </StringArray>

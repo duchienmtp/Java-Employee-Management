@@ -5,6 +5,8 @@ import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class UserInformationForm extends javax.swing.JFrame implements ActionListener {
+public class UserInformationForm extends javax.swing.JFrame implements ActionListener, WindowListener {
 
     JFileChooser fileChooser;
 
@@ -41,6 +43,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 //        birthdateDatePicker.addDateChangeListener(this);
         confirmButton.addActionListener(this);
         declineButton.addActionListener(this);
+        addWindowListener(this);
     }
 
     @Override
@@ -61,31 +64,46 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                         "File Selected", JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == confirmButton) {
+            clearFormData();
             dispose();
         } else if (e.getSource() == declineButton) {
+            clearFormData();
             dispose();
         }
     }
 
     public void showFormWithData(ArrayList<Object> data) {
         if (data != null) {
-            employeeNameTextField.setText((String) data.get(2));
-            if (data.get(2) != null) {
-//                avatarLabel.setIcon(icon);
-            } else {
-                avatarLabel.setText("Không có ảnh");
+            if (!data.get(0).equals("")) {
+                jLabel1.setText((String) data.get(0));
             }
+            employeeNameTextField.setText((String) data.get(1));
             genderComboBox.setSelectedItem(data.get(3));
             birthdateDatePicker.setText((String) data.get(4));
-            phoneNumberTextField.setText("");
-            ethicGroupComboBox.setSelectedItem("");
-            religionComboBox.setSelectedItem("");
-            nationComboBox.setSelectedItem("");
-            specialtyComboBox.setSelectedItem("");
-            degreeComboBox.setSelectedItem("");
-            positionComboBox.setSelectedItem(data.get(5));
-            employeeTypeComboBox.setSelectedItem(data.get(6));
+            phoneNumberTextField.setText((String) data.get(5));
+            ethicGroupComboBox.setSelectedItem(data.get(6));
+            religionComboBox.setSelectedItem(data.get(7));
+            nationComboBox.setSelectedItem(data.get(8));
+            specialtyComboBox.setSelectedItem(data.get(9));
+            degreeComboBox.setSelectedItem(data.get(10));
+            positionComboBox.setSelectedItem(data.get(11));
+            employeeTypeComboBox.setSelectedItem(data.get(12));
         }
+    }
+
+    public void clearFormData() {
+        jLabel1.setText("Không có tệp được chọn");
+        employeeNameTextField.setText("");
+        genderComboBox.setSelectedItem("");
+        birthdateDatePicker.setText("");
+        phoneNumberTextField.setText("");
+        ethicGroupComboBox.setSelectedItem("");
+        religionComboBox.setSelectedItem("");
+        nationComboBox.setSelectedItem("");
+        specialtyComboBox.setSelectedItem("");
+        degreeComboBox.setSelectedItem("");
+        positionComboBox.setSelectedItem("");
+        employeeTypeComboBox.setSelectedItem("");
     }
 
     @SuppressWarnings("unchecked")
@@ -136,6 +154,8 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
         employeeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         employeeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
+        employeeNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        employeeNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameTextField.setHighlighter(null);
         employeeNameTextField.setName("employeeNameTextField"); // NOI18N
 
@@ -201,6 +221,8 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
         phoneNumberTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         phoneNumberTextField.setBackground(new java.awt.Color(204, 204, 204));
+        phoneNumberTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        phoneNumberTextField.setForeground(new java.awt.Color(0, 0, 0));
         phoneNumberTextField.setName("phoneNumberTextField"); // NOI18N
         phoneNumberTextField.setPreferredSize(new java.awt.Dimension(230, 26));
 
@@ -253,7 +275,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         degreeComboBox.setBackground(new java.awt.Color(204, 204, 204));
         degreeComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         degreeComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        degreeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bằng Cử Nhân", "Bằng Kỹ Sư", "Bằng Thạc Sĩ", "Bằng Tiến Sĩ", " " }));
+        degreeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cử Nhân", "Kỹ Sư", "Thạc Sĩ", "Tiến Sĩ", " " }));
         degreeComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         degreeComboBox.setName("degreeComboBox"); // NOI18N
 
@@ -291,7 +313,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         employeeTypeComboBox.setBackground(new java.awt.Color(204, 204, 204));
         employeeTypeComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         employeeTypeComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        employeeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nhân Viên Chính Thức", "Nhân Viên Bán Thời Gian", "Thực Tập Sinh", " " }));
+        employeeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chính Thức", "Nhân Viên", "Thực Tập Sinh", " " }));
         employeeTypeComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         employeeTypeComboBox.setName("employeeTypeComboBox"); // NOI18N
 
@@ -459,6 +481,35 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
     private javax.swing.JComboBox<String> specialtyComboBox;
     private javax.swing.JLabel specialtyLabel;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+        clearFormData();
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+    }
 
 //    @Override
 //    public void dateChanged(DateChangeEvent dce) {

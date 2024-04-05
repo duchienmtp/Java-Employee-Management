@@ -163,10 +163,10 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         positionIDTextField = new javax.swing.JTextField();
         positionNameLabel = new javax.swing.JLabel();
         positionNameTextField = new javax.swing.JTextField();
+        cancelButton = new javax.swing.JButton();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         updateButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
         positionTableContainer = new javax.swing.JPanel();
         positionTableLabel = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -188,6 +188,7 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         positionFormLabel.setName("positionFormLabel"); // NOI18N
 
         positionForm.setBackground(new java.awt.Color(255, 255, 255));
+        positionForm.setPreferredSize(new java.awt.Dimension(372, 464));
 
         positionIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         positionIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -217,24 +218,37 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         positionNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         positionNameTextField.setName("positionNameTextField"); // NOI18N
 
+        cancelButton.setBackground(new java.awt.Color(108, 117, 125));
+        cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
+        cancelButton.setText("Hủy Bỏ");
+        cancelButton.setName("cancelButton"); // NOI18N
+
         addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         addButton.setForeground(new java.awt.Color(255, 255, 255));
         addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
         addButton.setText("Thêm");
+        addButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         addButton.setIconTextGap(10);
         addButton.setName("addButton"); // NOI18N
-        addButton.setOpaque(true);
+        addButton.setPreferredSize(new java.awt.Dimension(112, 40));
 
         deleteButton.setBackground(new java.awt.Color(220, 53, 69));
         deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         deleteButton.setForeground(new java.awt.Color(255, 255, 255));
         deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
         deleteButton.setText("Xóa");
+        deleteButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         deleteButton.setIconTextGap(10);
         deleteButton.setName("deleteButton"); // NOI18N
         deleteButton.setOpaque(true);
-        deleteButton.setPreferredSize(new java.awt.Dimension(105, 41));
+        deleteButton.setPreferredSize(new java.awt.Dimension(100, 40));
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
 
         updateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         updateButton.setForeground(new java.awt.Color(255, 255, 255));
@@ -244,30 +258,21 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         updateButton.setName("updateButton"); // NOI18N
         updateButton.setOpaque(true);
 
-        cancelButton.setBackground(new java.awt.Color(108, 117, 125));
-        cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
-        cancelButton.setText("Hủy Bỏ");
-        cancelButton.setName("cancelButton"); // NOI18N
-
         javax.swing.GroupLayout positionFormLayout = new javax.swing.GroupLayout(positionForm);
         positionForm.setLayout(positionFormLayout);
         positionFormLayout.setHorizontalGroup(
             positionFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(positionFormLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(positionFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(positionIDTextField)
-                    .addComponent(positionNameTextField)
-                    .addGroup(positionFormLayout.createSequentialGroup()
-                        .addComponent(addButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
-                    .addComponent(positionIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(positionNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addComponent(positionIDTextField)
+            .addComponent(positionNameTextField)
+            .addComponent(positionIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(positionNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, positionFormLayout.createSequentialGroup()
+                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         positionFormLayout.setVerticalGroup(
             positionFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -282,11 +287,11 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
                 .addComponent(positionNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(positionFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                     .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -298,7 +303,7 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
                 .addContainerGap()
                 .addGroup(positionFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(positionFormLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(positionForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(positionForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         positionFormContainerLayout.setVerticalGroup(
@@ -362,7 +367,7 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout positionTableContainerLayout = new javax.swing.GroupLayout(positionTableContainer);
@@ -402,8 +407,8 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(positionFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
-                    .addComponent(positionTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(positionTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(positionFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
 
@@ -418,6 +423,10 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
