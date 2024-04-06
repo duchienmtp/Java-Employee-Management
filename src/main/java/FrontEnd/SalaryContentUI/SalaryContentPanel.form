@@ -563,7 +563,7 @@
                         <Column editable="false" title="STT" type="java.lang.Integer"/>
                         <Column editable="false" title="ID" type="java.lang.String"/>
                         <Column editable="false" title="T&#xea;n Nh&#xe2;n Vi&#xea;n" type="java.lang.String"/>
-                        <Column editable="false" title="L&#x1b0;&#x1a1;ng Th&#xe1;ng" type="java.lang.Integer"/>
+                        <Column editable="false" title="L&#x1b0;&#x1a1;ng Th&#xe1;ng" type="java.lang.String"/>
                         <Column editable="false" title="Th&#x1ef1;c L&#xe3;nh" type="java.lang.Double"/>
                         <Column editable="false" title="Ng&#xe0;y T&#x1ea1;o" type="java.lang.Object"/>
                       </Table>
@@ -585,17 +585,17 @@
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>

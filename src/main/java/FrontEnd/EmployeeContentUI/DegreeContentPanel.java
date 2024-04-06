@@ -23,9 +23,12 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
+    ArrayList<Object> formData;
 
     public DegreeContentPanel() {
         initComponents();
+
+        formData = new ArrayList<>();
 
         degreeLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         degreeTableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
@@ -58,51 +61,54 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         }
     }
 
+    public ArrayList<Object> getDataFromForm() {
+        String degreeID = degreeIDTextField.getText(),
+                degreeName = degreeNameTextField.getText();
+
+        return new ArrayList<>(Arrays.asList(degreeID, degreeName));
+    }
+
     public void insertTableRow() {
-        String degreeID = degreeIDTextField.getText();
-        String degreeName = degreeNameTextField.getText();
+        formData = getDataFromForm();
 
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn thêm mới dữ liệu nhân viên với ID " + degreeID + " ?",
-                "CẬP NHẬT ?",
+                "Bạn có muốn thêm mới dữ liệu bằng cấp với ID " + formData.get(0) + " ?",
+                "THÊM MỚI ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-//            // Create a new ArrayList
-//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-//
-//            // Add all elements from the array to the ArrayList
-//            dataList.addAll(Arrays.asList(rowData));
+            clearFormContent();
             jTable1.revalidate();
 
         }
     }
 
-    public void updateTableRow(Object[] rowData, String degreeID) {
+    public void updateTableRow() {
+        formData = getDataFromForm();
+
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn cập nhật dữ liệu nhân viên với ID " + degreeID + " ?",
+                "Bạn có muốn cập nhật dữ liệu bằng cấp với ID " + formData.get(0) + " ?",
                 "CẬP NHẬT ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            // Create a new ArrayList
-            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-
-            // Add all elements from the array to the ArrayList
-            dataList.addAll(Arrays.asList(rowData));
+            clearFormContent();
             jTable1.revalidate();
         }
     }
 
-    public void deleteTableRow(int selectedRow, String degreeID) {
+    public void deleteTableRow() {
+        formData = getDataFromForm();
+
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn xóa bỏ nhân viên với ID " + degreeID + " ?",
+                "Bạn có muốn xóa bỏ dữ liệu bằng cấp với ID " + formData.get(0) + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
             model.removeRow(selectedRow);
+            clearFormContent();
             jTable1.revalidate();
         }
     }
@@ -117,6 +123,10 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
         degreeIDTextField.setText("");
         degreeNameTextField.setText("");
         degreeIDTextField.setEnabled(true);
+    }
+
+    public boolean isFormFilled() {
+        return !(degreeNameTextField.getText().equals(""));
     }
 
     @Override
@@ -136,24 +146,25 @@ public class DegreeContentPanel extends javax.swing.JPanel implements ActionList
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String degreeID = "";
-        if (selectedRowData != null) {
-            degreeID = (String) selectedRowData[1];
-        } else {
-            degreeID = degreeIDTextField.getText();
-        }
-
         if (e.getSource() == addButton) {
-            insertTableRow();
+            if (isFormFilled()) {
+                insertTableRow();
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
-                deleteTableRow(selectedRow, degreeID);
+                deleteTableRow();
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == updateButton) {
             if (selectedRow >= 0) {
-                updateTableRow(selectedRowData, degreeID);
+                if (isFormFilled()) {
+                    updateTableRow();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }

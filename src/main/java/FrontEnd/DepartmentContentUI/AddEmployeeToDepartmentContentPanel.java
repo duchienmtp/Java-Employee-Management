@@ -1,15 +1,14 @@
-package FrontEnd.ProjectContentUI;
+package FrontEnd.DepartmentContentUI;
 
-import com.github.lgooddatepicker.components.DatePickerSettings;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.BorderFactory;
@@ -20,27 +19,17 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class ProjectManagementContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
+public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener, ItemListener {
 
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
     ArrayList<Object> formData;
 
-    public ProjectManagementContentPanel() {
+    public AddEmployeeToDepartmentContentPanel() {
         initComponents();
 
         formData = new ArrayList<>();
-
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        DatePickerSettings startDatePickerSettings = new DatePickerSettings();
-        startDatePickerSettings.setFormatForDatesCommonEra(dtf);
-        startDatePicker.setSettings(startDatePickerSettings);
-
-        DatePickerSettings endDatePickerSettings = new DatePickerSettings();
-        endDatePickerSettings.setFormatForDatesCommonEra(dtf);
-        endDatePicker.setSettings(endDatePickerSettings);
 
         projectLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         projectTableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
@@ -61,13 +50,13 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         tableInit();
 
         jTable1.getSelectionModel().addListSelectionListener(this);
-//        jTable1.addMouseListener(this);
+        departmentIDComboBox.addItemListener(this);
         jPanel1.addMouseListener(this);
         setVisible(true);
     }
 
     public void tableInit() {
-        Object[] newRowData = {1, "DP001", "Java", "Hà Nội", "01/01/2024", "02/02/2024", "blablala"};
+        Object[] newRowData = {1, "EM001", "Trần Đức Hiển", "DP001", "Quản Lý", "Lalala"};
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         for (int i = 0; i < 10; i++) {
             model.addRow(newRowData);
@@ -75,20 +64,20 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
     }
 
     public ArrayList<Object> getDataFromForm() {
-        String projectID = projectIDTextField.getText(),
-                projectName = projectNameTextField.getText(),
-                startDate = startDatePicker.getText(),
-                endDate = endDatePicker.getText(),
-                projectPlace = projectPlaceTextField.getText();
+        String departmentID = (String) departmentIDComboBox.getSelectedItem(),
+                departmentName = departmentNameTextField.getText(),
+                departmentManagerName = departmentManagerNameTextField.getText(),
+                employeeID = (String) employeeIDComboBox.getSelectedItem(),
+                employeeName = employeeNameTextField.getText();
 
-        return new ArrayList<>(Arrays.asList(projectID, projectName, startDate, endDate, projectPlace));
+        return new ArrayList<>(Arrays.asList(departmentID, departmentName, departmentManagerName, employeeID, employeeName));
     }
 
     public void insertTableRow() {
         formData = getDataFromForm();
 
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn thêm mới dữ liệu dự án với ID " + formData.get(0) + " ?",
+                "Bạn có muốn thêm mới dữ liệu phòng ban nhân viên với ID " + formData.get(3) + " ?",
                 "THÊM MỚI ?",
                 JOptionPane.YES_NO_OPTION);
 
@@ -102,7 +91,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         formData = getDataFromForm();
 
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn cập nhật dữ liệu dữ liệu dự án với ID " + formData.get(0) + " ?",
+                "Bạn có muốn cập nhật dữ liệu phòng ban nhân viên với ID " + formData.get(3) + " ?",
                 "CẬP NHẬT ?",
                 JOptionPane.YES_NO_OPTION);
 
@@ -117,7 +106,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
 
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn xóa bỏ dữ liệu dự án với ID " + formData.get(0) + " ?",
+                "Bạn có muốn xóa bỏ dữ liệu phòng ban nhân viên với ID " + formData.get(3) + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
@@ -128,27 +117,24 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         }
     }
 
-    public void fillDataProjectForm(Object[] selectedRowData) {
-        projectIDTextField.setText((String) selectedRowData[1]);
-        projectNameTextField.setText((String) selectedRowData[2]);
-        startDatePicker.setText((String) selectedRowData[4]);
-        endDatePicker.setText((String) selectedRowData[5]);
-        projectPlaceTextField.setText((String) selectedRowData[3]);
+    public void fillDataDepartmentForm(Object[] selectedRowData) {
+        departmentIDComboBox.setSelectedItem(selectedRowData[1]);
+        departmentNameTextField.setText((String) selectedRowData[2]);
+        departmentManagerNameTextField.setText((String) selectedRowData[3]);
+        employeeIDComboBox.setSelectedItem(selectedRowData[4]);
+        employeeNameTextField.setText((String) selectedRowData[5]);
     }
 
     public void clearFormContent() {
-        projectIDTextField.setText("");
-        projectNameTextField.setText("");
-        startDatePicker.setText("");
-        endDatePicker.setText("");
-        projectPlaceTextField.setText("");
+        departmentIDComboBox.setSelectedItem("");
+        departmentNameTextField.setText("");
+        departmentManagerNameTextField.setText("");
+        employeeIDComboBox.setSelectedItem("");
+        employeeNameTextField.setText("");
     }
 
     public boolean isFormFilled() {
-        return !(projectNameTextField.getText().equals("")
-                || startDatePicker.getText().equals("")
-                || endDatePicker.getText().equals("")
-                || projectPlaceTextField.getText().equals(""));
+        return !employeeNameTextField.getText().equals("");
     }
 
     @Override
@@ -161,7 +147,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                 for (int i = 0; i < jTable1.getColumnCount(); i++) {
                     selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
                 }
-                fillDataProjectForm(selectedRowData);
+                fillDataDepartmentForm(selectedRowData);
             }
         }
     }
@@ -192,6 +178,17 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
             }
         } else if (e.getSource() == cancelButton) {
             clearFormContent();
+        }
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            // Get the selected item
+            String selectedItem = (String) e.getItem();
+
+            // Do something with the selected item
+            System.out.println("Selected item: " + selectedItem);
         }
     }
 
@@ -227,20 +224,20 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         jPanel1 = new javax.swing.JPanel();
         projectFormContainer = new javax.swing.JPanel();
         projectLabel = new javax.swing.JLabel();
-        projectIDLabel = new javax.swing.JLabel();
-        employeeNameLabel = new javax.swing.JLabel();
-        projectNameTextField = new javax.swing.JTextField();
+        departmentIDLabel = new javax.swing.JLabel();
+        departmentNameLabel = new javax.swing.JLabel();
+        departmentNameTextField = new javax.swing.JTextField();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         updateButton = new javax.swing.JButton();
-        monthPickerLabel = new javax.swing.JLabel();
-        salarySumLabel = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
-        projectIDTextField = new javax.swing.JTextField();
-        startDatePicker = new com.github.lgooddatepicker.components.DatePicker();
-        endDatePicker = new com.github.lgooddatepicker.components.DatePicker();
-        projectPlaceTextField = new javax.swing.JTextField();
-        projectPlaceLabel = new javax.swing.JLabel();
+        employeeIDLabel = new javax.swing.JLabel();
+        departmentManagerNameLabel = new javax.swing.JLabel();
+        departmentManagerNameTextField = new javax.swing.JTextField();
+        departmentIDComboBox = new javax.swing.JComboBox<>();
+        employeeIDComboBox = new javax.swing.JComboBox<>();
+        employeeNameTextField = new javax.swing.JTextField();
+        employeeNameLabel = new javax.swing.JLabel();
         projectTableContainer = new javax.swing.JPanel();
         projectTableLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -256,36 +253,35 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         projectFormContainer.setName("projectFormContainer"); // NOI18N
         projectFormContainer.setPreferredSize(new java.awt.Dimension(396, 545));
 
-        projectLabel.setText("Dự Án");
+        projectLabel.setText("Nhân Viên Phòng Ban");
         projectLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         projectLabel.setForeground(new java.awt.Color(0, 0, 0));
         projectLabel.setName("projectLabel"); // NOI18N
         projectLabel.setOpaque(true);
 
-        projectIDLabel.setLabelFor(projectIDTextField);
-        projectIDLabel.setText("Mã Dự Án :");
-        projectIDLabel.setBackground(new java.awt.Color(255, 255, 255));
-        projectIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        projectIDLabel.setForeground(new java.awt.Color(0, 0, 0));
-        projectIDLabel.setName("projectIDLabel"); // NOI18N
-        projectIDLabel.setOpaque(true);
+        departmentIDLabel.setText("Mã Phòng :");
+        departmentIDLabel.setBackground(new java.awt.Color(255, 255, 255));
+        departmentIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        departmentIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        departmentIDLabel.setName("departmentIDLabel"); // NOI18N
+        departmentIDLabel.setOpaque(true);
 
-        employeeNameLabel.setLabelFor(projectNameTextField);
-        employeeNameLabel.setText("Tên Dự Án :");
-        employeeNameLabel.setBackground(new java.awt.Color(255, 255, 255));
-        employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
-        employeeNameLabel.setName("employeeNameLabel"); // NOI18N
-        employeeNameLabel.setOpaque(true);
+        departmentNameLabel.setLabelFor(departmentNameTextField);
+        departmentNameLabel.setText("Tên Phòng :");
+        departmentNameLabel.setBackground(new java.awt.Color(255, 255, 255));
+        departmentNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        departmentNameLabel.setForeground(new java.awt.Color(0, 0, 0));
+        departmentNameLabel.setName("departmentNameLabel"); // NOI18N
+        departmentNameLabel.setOpaque(true);
 
-        projectNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        projectNameTextField.setBackground(new java.awt.Color(204, 204, 204));
-        projectNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        projectNameTextField.setEnabled(false);
-        projectNameTextField.setForeground(new java.awt.Color(0, 0, 0));
-        projectNameTextField.setName("projectNameTextField"); // NOI18N
-        projectNameTextField.setOpaque(true);
+        departmentNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        departmentNameTextField.setBackground(new java.awt.Color(204, 204, 204));
+        departmentNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        departmentNameTextField.setEnabled(false);
+        departmentNameTextField.setForeground(new java.awt.Color(0, 0, 0));
+        departmentNameTextField.setName("departmentNameTextField"); // NOI18N
+        departmentNameTextField.setOpaque(true);
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -314,20 +310,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         updateButton.setName("updateButton"); // NOI18N
         updateButton.setOpaque(true);
 
-        monthPickerLabel.setText("Bắt Đầu Từ :");
-        monthPickerLabel.setBackground(new java.awt.Color(255, 255, 255));
-        monthPickerLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        monthPickerLabel.setForeground(new java.awt.Color(0, 0, 0));
-        monthPickerLabel.setName("monthPickerLabel"); // NOI18N
-        monthPickerLabel.setOpaque(true);
-
-        salarySumLabel.setText("Kết Thúc :");
-        salarySumLabel.setBackground(new java.awt.Color(255, 255, 255));
-        salarySumLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        salarySumLabel.setForeground(new java.awt.Color(0, 0, 0));
-        salarySumLabel.setName("salarySumLabel"); // NOI18N
-        salarySumLabel.setOpaque(true);
-
         cancelButton.setText("Hủy Bỏ");
         cancelButton.setBackground(new java.awt.Color(108, 117, 125));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -335,32 +317,59 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.setOpaque(true);
 
-        projectIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        projectIDTextField.setBackground(new java.awt.Color(204, 204, 204));
-        projectIDTextField.setEnabled(false);
-        projectIDTextField.setForeground(new java.awt.Color(0, 0, 0));
-        projectIDTextField.setName("projectIDTextField"); // NOI18N
-        projectIDTextField.setOpaque(true);
+        employeeIDLabel.setText("Mã NV :");
+        employeeIDLabel.setBackground(new java.awt.Color(255, 255, 255));
+        employeeIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        employeeIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        employeeIDLabel.setName("employeeIDLabel"); // NOI18N
+        employeeIDLabel.setOpaque(true);
 
-        startDatePicker.setName("startDatePicker"); // NOI18N
-        startDatePicker.setToolTipText("");
+        departmentManagerNameLabel.setBackground(new java.awt.Color(255, 255, 255));
+        departmentManagerNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        departmentManagerNameLabel.setForeground(new java.awt.Color(0, 0, 0));
+        departmentManagerNameLabel.setLabelFor(departmentNameTextField);
+        departmentManagerNameLabel.setText("Quản Lý :");
+        departmentManagerNameLabel.setName("employeeNameLabel"); // NOI18N
+        departmentManagerNameLabel.setOpaque(true);
 
-        endDatePicker.setName("endDatePicker"); // NOI18N
+        departmentManagerNameTextField.setBackground(new java.awt.Color(204, 204, 204));
+        departmentManagerNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        departmentManagerNameTextField.setForeground(new java.awt.Color(0, 0, 0));
+        departmentManagerNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        departmentManagerNameTextField.setEnabled(false);
+        departmentManagerNameTextField.setName("projectNameTextField"); // NOI18N
+        departmentManagerNameTextField.setOpaque(true);
+        departmentManagerNameTextField.setPreferredSize(new java.awt.Dimension(299, 40));
 
-        projectPlaceTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        projectPlaceTextField.setBackground(new java.awt.Color(204, 204, 204));
-        projectPlaceTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        projectPlaceTextField.setForeground(new java.awt.Color(0, 0, 0));
-        projectPlaceTextField.setName("projectPlaceTextField"); // NOI18N
-        projectPlaceTextField.setOpaque(true);
+        departmentIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
+        departmentIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        departmentIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
+        departmentIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        departmentIDComboBox.setPreferredSize(new java.awt.Dimension(299, 40));
 
-        projectPlaceLabel.setLabelFor(projectPlaceTextField);
-        projectPlaceLabel.setText("Dự Án Tại :");
-        projectPlaceLabel.setBackground(new java.awt.Color(255, 255, 255));
-        projectPlaceLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        projectPlaceLabel.setForeground(new java.awt.Color(0, 0, 0));
-        projectPlaceLabel.setName("projectPlaceLabel"); // NOI18N
-        projectPlaceLabel.setOpaque(true);
+        employeeIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
+        employeeIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        employeeIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
+        employeeIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        employeeIDComboBox.setOpaque(true);
+        employeeIDComboBox.setPreferredSize(new java.awt.Dimension(299, 40));
+
+        employeeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
+        employeeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        employeeNameTextField.setForeground(new java.awt.Color(0, 0, 0));
+        employeeNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        employeeNameTextField.setEnabled(false);
+        employeeNameTextField.setName("projectNameTextField"); // NOI18N
+        employeeNameTextField.setOpaque(true);
+        employeeNameTextField.setPreferredSize(new java.awt.Dimension(299, 40));
+
+        employeeNameLabel.setBackground(new java.awt.Color(255, 255, 255));
+        employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        employeeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
+        employeeNameLabel.setLabelFor(departmentNameTextField);
+        employeeNameLabel.setText("Tên NV");
+        employeeNameLabel.setName("employeeNameLabel"); // NOI18N
+        employeeNameLabel.setOpaque(true);
 
         javax.swing.GroupLayout projectFormContainerLayout = new javax.swing.GroupLayout(projectFormContainer);
         projectFormContainer.setLayout(projectFormContainerLayout);
@@ -376,27 +385,25 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                         .addGap(18, 18, 18)
                         .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
+                        .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addComponent(employeeNameLabel)
+                        .addComponent(departmentNameLabel)
                         .addGap(2, 2, 2)
-                        .addComponent(projectNameTextField))
+                        .addComponent(departmentNameTextField))
                     .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addComponent(projectIDLabel)
+                        .addComponent(departmentIDLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(projectIDTextField))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectFormContainerLayout.createSequentialGroup()
-                        .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(startDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                            .addComponent(monthPickerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(endDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                            .addComponent(salarySumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(departmentIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addComponent(projectPlaceLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(projectPlaceTextField)))
+                        .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(departmentManagerNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
+                            .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(2, 2, 2)
+                        .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(departmentManagerNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(employeeIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(employeeNameTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         projectFormContainerLayout.setVerticalGroup(
@@ -406,24 +413,24 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                 .addComponent(projectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(projectIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(projectIDTextField))
+                    .addComponent(departmentIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(departmentIDComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(departmentNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(departmentNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(departmentManagerNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(departmentManagerNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(employeeIDComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(projectNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(monthPickerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(salarySumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, 0)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(startDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                    .addComponent(endDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(projectPlaceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(projectPlaceTextField))
+                    .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -439,7 +446,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         projectTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         projectTableContainer.setName("projectTableContainer"); // NOI18N
 
-        projectTableLabel.setText("Bảng Dự Án");
+        projectTableLabel.setText("Danh Sách Nhân Viên Của Phòng Ban");
         projectTableLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         projectTableLabel.setForeground(new java.awt.Color(0, 0, 0));
@@ -451,14 +458,14 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
 
             },
             new String [] {
-                "STT", "ID", "Tên Dự Án", "Nơi Làm Việc", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Phòng Quản Lý"
+                "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Mã Phòng Ban", "Tên Phòng Ban", "Quản Lý"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -473,9 +480,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         jTable1.setName("degreeTable"); // NOI18N
         jTable1.setRowHeight(40);
         jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(5).setResizable(false);
-        }
 
         javax.swing.GroupLayout projectTableContainerLayout = new javax.swing.GroupLayout(projectTableContainer);
         projectTableContainer.setLayout(projectTableContainerLayout);
@@ -535,23 +539,23 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
     private javax.swing.JButton addButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteButton;
+    private javax.swing.JComboBox<String> departmentIDComboBox;
+    private javax.swing.JLabel departmentIDLabel;
+    private javax.swing.JLabel departmentManagerNameLabel;
+    private javax.swing.JTextField departmentManagerNameTextField;
+    private javax.swing.JLabel departmentNameLabel;
+    private javax.swing.JTextField departmentNameTextField;
+    private javax.swing.JComboBox<String> employeeIDComboBox;
+    private javax.swing.JLabel employeeIDLabel;
     private javax.swing.JLabel employeeNameLabel;
-    private com.github.lgooddatepicker.components.DatePicker endDatePicker;
+    private javax.swing.JTextField employeeNameTextField;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JLabel monthPickerLabel;
     private javax.swing.JPanel projectFormContainer;
-    private javax.swing.JLabel projectIDLabel;
-    private javax.swing.JTextField projectIDTextField;
     private javax.swing.JLabel projectLabel;
-    private javax.swing.JTextField projectNameTextField;
-    private javax.swing.JLabel projectPlaceLabel;
-    private javax.swing.JTextField projectPlaceTextField;
     private javax.swing.JPanel projectTableContainer;
     private javax.swing.JLabel projectTableLabel;
-    private javax.swing.JLabel salarySumLabel;
-    private com.github.lgooddatepicker.components.DatePicker startDatePicker;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -22,9 +22,13 @@ public class SpecialtyContentPanel extends javax.swing.JPanel implements ActionL
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
+    ArrayList<Object> formData;
 
     public SpecialtyContentPanel() {
         initComponents();
+
+        formData = new ArrayList<>();
+
         specialtyLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         specialtyTableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 
@@ -56,52 +60,55 @@ public class SpecialtyContentPanel extends javax.swing.JPanel implements ActionL
         }
     }
 
+    public ArrayList<Object> getDataFromForm() {
+        String specialtyID = specialtyIDTextField.getText(),
+                specialtyName = specialtyNameTextField.getText();
+
+        return new ArrayList<>(Arrays.asList(specialtyID, specialtyName));
+    }
+
     public void insertTableRow() {
-        String specialtyID = specialtyIDTextField.getText();
-        String specialtyName = specialtyNameTextField.getText();
+        formData = getDataFromForm();
 
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn thêm mới dữ liệu nhân viên với ID " + specialtyID + " ?",
-                "CẬP NHẬT ?",
+                "Bạn có muốn thêm mới dữ liệu chuyên môn với ID " + formData.get(0) + " ?",
+                "THÊM MỚI ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-//            // Create a new ArrayList
-//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-//
-//            // Add all elements from the array to the ArrayList
-//            dataList.addAll(Arrays.asList(rowData));
+            clearFormContent();
             jTable1.revalidate();
 
         }
     }
 
-    public void updateTableRow(Object[] rowData, String employeeID) {
+    public void updateTableRow() {
+        formData = getDataFromForm();
+
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn cập nhật dữ liệu nhân viên với ID " + employeeID + " ?",
+                "Bạn có muốn cập nhật dữ liệu chuyên môn với ID " + formData.get(0) + " ?",
                 "CẬP NHẬT ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            // Create a new ArrayList
-            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-
-            // Add all elements from the array to the ArrayList
-            dataList.addAll(Arrays.asList(rowData));
+            clearFormContent();
             jTable1.revalidate();
         }
 
     }
 
-    public void deleteTableRow(int selectedRow, String employeeID) {
+    public void deleteTableRow() {
+        formData = getDataFromForm();
+
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn xóa bỏ nhân viên với ID " + employeeID + " ?",
+                "Bạn có muốn xóa bỏ dữ liệu chuyên môn với ID " + formData.get(0) + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
             model.removeRow(selectedRow);
+            clearFormContent();
             jTable1.revalidate();
         }
     }
@@ -116,6 +123,10 @@ public class SpecialtyContentPanel extends javax.swing.JPanel implements ActionL
         specialtyIDTextField.setText("");
         specialtyNameTextField.setText("");
         specialtyIDTextField.setEnabled(true);
+    }
+
+    public boolean isFormFilled() {
+        return !(specialtyNameTextField.getText().equals(""));
     }
 
     @SuppressWarnings("unchecked")
@@ -201,11 +212,6 @@ public class SpecialtyContentPanel extends javax.swing.JPanel implements ActionL
         deleteButton.setName("deleteButton"); // NOI18N
         deleteButton.setOpaque(true);
         deleteButton.setPreferredSize(new java.awt.Dimension(100, 40));
-        deleteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteButtonActionPerformed(evt);
-            }
-        });
 
         updateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         updateButton.setForeground(new java.awt.Color(255, 255, 255));
@@ -391,10 +397,6 @@ public class SpecialtyContentPanel extends javax.swing.JPanel implements ActionL
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_deleteButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JButton cancelButton;
@@ -417,22 +419,25 @@ public class SpecialtyContentPanel extends javax.swing.JPanel implements ActionL
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String employeeID = "";
-        if (selectedRowData != null) {
-            employeeID = (String) selectedRowData[1];
-        }
-
         if (e.getSource() == addButton) {
-
+            if (isFormFilled()) {
+                insertTableRow();
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
-                deleteTableRow(selectedRow, employeeID);
+                deleteTableRow();
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == updateButton) {
             if (selectedRow >= 0) {
-                updateTableRow(selectedRowData, employeeID);
+                if (isFormFilled()) {
+                    updateTableRow();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }

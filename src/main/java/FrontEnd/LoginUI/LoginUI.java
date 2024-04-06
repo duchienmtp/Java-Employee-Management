@@ -109,7 +109,7 @@ public class LoginUI extends javax.swing.JFrame {
         passwordLabel.setName("passwordLabel"); // NOI18N
 
         passwordTextField.setBackground(new java.awt.Color(255, 255, 255));
-        passwordTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        passwordTextField.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         passwordTextField.setForeground(new java.awt.Color(0, 0, 0));
         passwordTextField.setBorder(null);
         passwordTextField.setCaretColor(new java.awt.Color(0, 0, 0));

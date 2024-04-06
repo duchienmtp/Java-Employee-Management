@@ -65,7 +65,7 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
 
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Bạn có muốn thêm mới dữ liệu nhân viên với ID " + employeeID + " ?",
-                "CẬP NHẬT ?",
+                "XÁC NHẬN ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
@@ -77,14 +77,32 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
         }
     }
 
+    public boolean isFormFilled() {
+        return !(employeeNameTextField.getText().equals("")
+                || rewardNameTextField.getText().equals("")
+                || startDatePicker.getText().equals("")
+                || ((int) countSpinner.getValue() == 0)
+                || moneyTextField.getText().equals(""));
+    }
+
     @Override
+
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == confirmButton) {
-            handleSubmitForm();
-            dispose();
+            if (isFormFilled()) {
+                handleSubmitForm();
+                clearFormData();
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == cancelButton) {
-            clearFormData();
-            dispose();
+            if (isFormFilled()) {
+                JOptionPane.showMessageDialog(this, "Bạn có muốn hủy!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                clearFormData();
+                dispose();
+            }
         }
     }
 
@@ -114,6 +132,8 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
+        startDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        startDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         startDatePicker.setName("startDatePicker"); // NOI18N
 
         employeeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
@@ -185,7 +205,7 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
         rewardNameTextField.setName("rewardNameTextField"); // NOI18N
         rewardNameTextField.setOpaque(true);
 
-        startDatePickerLabel.setText("Ngày Bắt Đầu :");
+        startDatePickerLabel.setText("Ngày Tạo :");
         startDatePickerLabel.setBackground(new java.awt.Color(255, 255, 255));
         startDatePickerLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         startDatePickerLabel.setForeground(new java.awt.Color(0, 0, 0));

@@ -331,7 +331,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="startDatePickerLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Ng&#xe0;y B&#x1eaf;t &#x110;&#x1ea7;u :"/>
+            <Property name="text" type="java.lang.String" value="Ng&#xe0;y T&#x1ea1;o :"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>

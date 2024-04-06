@@ -22,11 +22,14 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
+    ArrayList<Object> formData;
 
     DetailSalaryInfo detailSalaryInfo;
 
     public SalaryContentPanel() {
         initComponents();
+
+        formData = new ArrayList<>();
 
         detailSalaryInfo = new DetailSalaryInfo();
 
@@ -56,60 +59,62 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
     }
 
     public void tableInit() {
-        Object[] newRowData = {1, "EM001", "Trần Đức Hiển", 4, 30000000, "01/04/2024"};
+        Object[] newRowData = {1, "EM001", "Trần Đức Hiển", "4/2024", 30000000, "01/04/2024"};
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         for (int i = 0; i < 10; i++) {
             model.addRow(newRowData);
         }
     }
 
-    public void insertTableRow() {
-        String employeeID = (String) employeeIDComboBox.getSelectedItem();
-        String employeeName = employeeNameTextField.getText();
+    public ArrayList<Object> getDataFromForm() {
+        String employeeID = (String) employeeIDComboBox.getSelectedItem(),
+                employeeName = employeeNameTextField.getText();
         int monthOfSalary = Integer.parseInt((String) monthPickerComboBox.getSelectedItem());
         double salary = Double.parseDouble((String) salarySumTextField.getText());
 
-        int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn thêm mới dữ liệu nhân viên với ID " + employeeID + " ?",
-                "CẬP NHẬT ?",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirmation == JOptionPane.YES_OPTION) {
-//            // Create a new ArrayList
-//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-//
-//            // Add all elements from the array to the ArrayList
-//            dataList.addAll(Arrays.asList(rowData));
-            jTable1.revalidate();
-
-        }
+        return new ArrayList<>(Arrays.asList(employeeID, employeeName, monthOfSalary, salary));
     }
 
-    public void updateTableRow(Object[] rowData, String employeeID) {
+    public void insertTableRow() {
+        formData = getDataFromForm();
+
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn cập nhật dữ liệu lương nhân viên với ID " + employeeID + " ?",
-                "CẬP NHẬT ?",
+                "Bạn có muốn thêm mới dữ liệu lương của nhân viên với ID " + formData.get(0) + " ?",
+                "THÊM MỚI ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            // Create a new ArrayList
-            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-
-            // Add all elements from the array to the ArrayList
-            dataList.addAll(Arrays.asList(rowData));
+            clearFormContent();
             jTable1.revalidate();
         }
     }
 
-    public void deleteTableRow(int selectedRow, String employeeID) {
+    public void updateTableRow() {
+        formData = getDataFromForm();
+
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn cập nhật dữ liệu lương của nhân viên với ID " + formData.get(0) + " ?",
+                "CẬP NHẬT ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            clearFormContent();
+            jTable1.revalidate();
+        }
+    }
+
+    public void deleteTableRow() {
+        formData = getDataFromForm();
+
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn xóa bỏ lương nhân viên với ID " + employeeID + " ?",
+                "Bạn có muốn xóa bỏ dữ liệu lương của nhân viên với ID " + formData.get(0) + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
             model.removeRow(selectedRow);
+            clearFormContent();
             jTable1.revalidate();
         }
     }
@@ -126,6 +131,10 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         employeeNameTextField.setText("");
         monthPickerComboBox.setSelectedItem("1");
         salarySumTextField.setText("");
+    }
+
+    public boolean isFormFilled() {
+        return !(employeeNameTextField.getText().equals("") || ((String) monthPickerComboBox.getSelectedItem()).equals(""));
     }
 
     @Override
@@ -145,22 +154,25 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String employeeID = "";
-        if (selectedRowData != null) {
-            employeeID = (String) selectedRowData[1];
-        }
-
         if (e.getSource() == addButton) {
-
+            if (isFormFilled()) {
+                insertTableRow();
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
-                deleteTableRow(selectedRow, employeeID);
+                deleteTableRow();
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == updateButton) {
             if (selectedRow >= 0) {
-                updateTableRow(selectedRowData, employeeID);
+                if (isFormFilled()) {
+                    updateTableRow();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -172,7 +184,6 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
-
         }
     }
 
@@ -455,7 +466,7 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false
@@ -472,11 +483,6 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         jTable1.setName("degreeTable"); // NOI18N
         jTable1.setRowHeight(40);
         jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-            jTable1.getColumnModel().getColumn(4).setResizable(false);
-            jTable1.getColumnModel().getColumn(5).setResizable(false);
-        }
 
         javax.swing.GroupLayout salaryTableContainerLayout = new javax.swing.GroupLayout(salaryTableContainer);
         salaryTableContainer.setLayout(salaryTableContainerLayout);

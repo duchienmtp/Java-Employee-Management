@@ -1,26 +1,34 @@
 package FrontEnd.EmployeeContentUI;
 
 import com.github.lgooddatepicker.components.DatePickerSettings;
-import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
-import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.time.LocalDate;
+import java.io.File;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import javax.swing.AbstractButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class UserInformationForm extends javax.swing.JFrame implements ActionListener, WindowListener {
 
     JFileChooser fileChooser;
+    ArrayList<Object> formData;
+    File selectedFile = null;
+    String fileName = "";
 
     public UserInformationForm() {
         initComponents();
+
+        formData = new ArrayList<>();
+
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         DatePickerSettings pickerSettings = new DatePickerSettings();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -39,11 +47,49 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
         fileChooser.setFileFilter(imageFilter);
 
+        deleteFileButton.setVisible(false);
+
         fileChooserButton.addActionListener(this);
 //        birthdateDatePicker.addDateChangeListener(this);
         confirmButton.addActionListener(this);
         declineButton.addActionListener(this);
         addWindowListener(this);
+    }
+
+    public void handleSubmitForm() {
+        String employeeID = "";
+        formData = getDataFromForm();
+
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Xác nhận thao tác ?",
+                "XÁC NHẬN ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            if (selectedFile != null) {
+            }
+            clearFormData();
+            dispose();
+        }
+    }
+
+    public void cancelSubmitForm() {
+        String employeeID = "";
+
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Xác nhận thao tác ?",
+                "HỦY BỎ ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            clearFormData();
+        }
+    }
+
+    public boolean isFormFilled() {
+        return !(employeeNameTextField.getText().equals("")
+                || birthdateDatePicker.getText().equals("")
+                || phoneNumberTextField.getText().equals(""));
     }
 
     @Override
@@ -54,21 +100,34 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 // Get the selected file
-                java.io.File selectedFile = fileChooser.getSelectedFile();
+                selectedFile = fileChooser.getSelectedFile();
 
                 // Get the file name with extension
-                String fileName = selectedFile.getName();
+                fileName = selectedFile.getName();
 
                 // Display the file name in a message box
-                JOptionPane.showMessageDialog(this, "Selected file: " + fileName,
-                        "File Selected", JOptionPane.INFORMATION_MESSAGE);
+                jLabel1.setText(fileName);
+
+                deleteFileButton.setVisible(true);
+
             }
         } else if (e.getSource() == confirmButton) {
-            clearFormData();
-            dispose();
+            if (isFormFilled()) {
+                handleSubmitForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == declineButton) {
-            clearFormData();
-            dispose();
+            if (isFormFilled()) {
+                clearFormData();
+            } else {
+                clearFormData();
+                dispose();
+            }
+        } else if (e.getSource() == deleteFileButton) {
+            selectedFile = null;
+            fileName = "Không có tệp nào được chọn";
+            deleteFileButton.setVisible(false);
         }
     }
 
@@ -92,9 +151,10 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
     }
 
     public void clearFormData() {
-        jLabel1.setText("Không có tệp được chọn");
         employeeNameTextField.setText("");
         genderComboBox.setSelectedItem("");
+        jLabel1.setText("Không có tệp được chọn");
+        deleteFileButton.setVisible(false);
         birthdateDatePicker.setText("");
         phoneNumberTextField.setText("");
         ethicGroupComboBox.setSelectedItem("");
@@ -104,6 +164,23 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         degreeComboBox.setSelectedItem("");
         positionComboBox.setSelectedItem("");
         employeeTypeComboBox.setSelectedItem("");
+    }
+
+    public ArrayList<Object> getDataFromForm() {
+        String employeeName = employeeNameTextField.getText(),
+                gender = (String) genderComboBox.getSelectedItem(),
+                birthdate = birthdateDatePicker.getText(),
+                phoneNumber = phoneNumberTextField.getText(),
+                ethicGroup = (String) ethicGroupComboBox.getSelectedItem(),
+                religion = (String) religionComboBox.getSelectedItem(),
+                nation = (String) nationComboBox.getSelectedItem(),
+                specialty = (String) specialtyComboBox.getSelectedItem(),
+                degree = (String) degreeComboBox.getSelectedItem(),
+                position = (String) positionComboBox.getSelectedItem(),
+                employeeType = (String) employeeTypeComboBox.getSelectedItem();
+
+        return new ArrayList<>(Arrays.asList(employeeName, gender, fileName, birthdate, phoneNumber,
+                ethicGroup, religion, nation, specialty, degree, position, employeeType));
     }
 
     @SuppressWarnings("unchecked")
@@ -139,6 +216,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         confirmButton = new javax.swing.JButton();
         declineButton = new javax.swing.JButton();
         birthdateDatePicker = new com.github.lgooddatepicker.components.DatePicker();
+        deleteFileButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("THÊM MỚI");
@@ -149,6 +227,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         employeeNameLabel.setLabelFor(employeeNameTextField);
         employeeNameLabel.setText("Họ và Tên :");
         employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        employeeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameLabel.setName("employeeNameLabel"); // NOI18N
 
         employeeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -161,6 +240,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         avatarLabel.setLabelFor(fileChooserPanel);
         avatarLabel.setText("Ảnh đại diện (Nếu có) :");
         avatarLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        avatarLabel.setForeground(new java.awt.Color(0, 0, 0));
         avatarLabel.setName("avatarLabel"); // NOI18N
 
         fileChooserPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -175,6 +255,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
         jLabel1.setText("Không có tệp nào được chọn");
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
 
         javax.swing.GroupLayout fileChooserPanelLayout = new javax.swing.GroupLayout(fileChooserPanel);
         fileChooserPanel.setLayout(fileChooserPanelLayout);
@@ -194,10 +275,12 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         genderLabel.setLabelFor(genderComboBox);
         genderLabel.setText("Giới Tính :");
         genderLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        genderLabel.setForeground(new java.awt.Color(0, 0, 0));
         genderLabel.setName("genderLabel"); // NOI18N
 
         genderComboBox.setBackground(new java.awt.Color(204, 204, 204));
         genderComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        genderComboBox.setForeground(new java.awt.Color(0, 0, 0));
         genderComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nam ", "Nữ", " " }));
         genderComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         genderComboBox.setName("genderComboBox"); // NOI18N
@@ -205,11 +288,13 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         birthdateLabel.setLabelFor(birthdateDatePicker);
         birthdateLabel.setText("Ngày Sinh :");
         birthdateLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        birthdateLabel.setForeground(new java.awt.Color(0, 0, 0));
         birthdateLabel.setName("birthdateLabel"); // NOI18N
 
         phoneNumberLabel.setLabelFor(phoneNumberTextField);
         phoneNumberLabel.setText("Số Điện Thoại :");
         phoneNumberLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        phoneNumberLabel.setForeground(new java.awt.Color(0, 0, 0));
         phoneNumberLabel.setName("phoneNumberLabel"); // NOI18N
 
         phoneNumberTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -222,10 +307,12 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         ethicGroupLabel.setLabelFor(ethicGroupComboBox);
         ethicGroupLabel.setText("Dân Tộc :");
         ethicGroupLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        ethicGroupLabel.setForeground(new java.awt.Color(0, 0, 0));
         ethicGroupLabel.setName("ethicGroupLabel"); // NOI18N
 
         ethicGroupComboBox.setBackground(new java.awt.Color(204, 204, 204));
         ethicGroupComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        ethicGroupComboBox.setForeground(new java.awt.Color(0, 0, 0));
         ethicGroupComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kinh", "Tày", "Mường" }));
         ethicGroupComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         ethicGroupComboBox.setName("ethicGroupComboBox"); // NOI18N
@@ -234,10 +321,12 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         religionLabel.setLabelFor(religionComboBox);
         religionLabel.setText("Tôn giáo :");
         religionLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        religionLabel.setForeground(new java.awt.Color(0, 0, 0));
         religionLabel.setName("religionLabel"); // NOI18N
 
         religionComboBox.setBackground(new java.awt.Color(204, 204, 204));
         religionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        religionComboBox.setForeground(new java.awt.Color(0, 0, 0));
         religionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Phật Giáo", "Thiên Chúa Giáo", "Công Giáo" }));
         religionComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         religionComboBox.setName("religionComboBox"); // NOI18N
@@ -245,10 +334,12 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         nationLabel.setLabelFor(nationComboBox);
         nationLabel.setText("Quốc Tịch :");
         nationLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        nationLabel.setForeground(new java.awt.Color(0, 0, 0));
         nationLabel.setName("nationLabel"); // NOI18N
 
         nationComboBox.setBackground(new java.awt.Color(204, 204, 204));
         nationComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        nationComboBox.setForeground(new java.awt.Color(0, 0, 0));
         nationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Việt Nam", "Hoa Kỳ", "Canada", "Nhật Bản", "Hàn Quốc", " " }));
         nationComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         nationComboBox.setName("nationComboBox"); // NOI18N
@@ -256,6 +347,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         degreeLabel.setLabelFor(degreeComboBox);
         degreeLabel.setText("Bằng Cấp :");
         degreeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        degreeLabel.setForeground(new java.awt.Color(0, 0, 0));
         degreeLabel.setName("degreeLabel"); // NOI18N
 
         degreeComboBox.setBackground(new java.awt.Color(204, 204, 204));
@@ -268,15 +360,18 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         positionLabel.setLabelFor(positionComboBox);
         positionLabel.setText("Chức vụ :");
         positionLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        positionLabel.setForeground(new java.awt.Color(0, 0, 0));
         positionLabel.setName("positionLabel"); // NOI18N
 
         specialtyLabel.setLabelFor(specialtyComboBox);
         specialtyLabel.setText("Chuyên Môn :");
         specialtyLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        specialtyLabel.setForeground(new java.awt.Color(0, 0, 0));
         specialtyLabel.setName("specialtyLabel"); // NOI18N
 
         specialtyComboBox.setBackground(new java.awt.Color(204, 204, 204));
         specialtyComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        specialtyComboBox.setForeground(new java.awt.Color(0, 0, 0));
         specialtyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kế Toán", "Lập Trình Viên", "Quản Lý Dự Án", "Quản Lý Nhân Sự", "Phân Tích Dữ Liệu Doanh Nghiệp", "Designer" }));
         specialtyComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         specialtyComboBox.setName("specialtyComboBox"); // NOI18N
@@ -284,11 +379,13 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nhân Viên", "Phó Phòng", "Trưởng Phòng", "Thư Ký", "Phó Giám Đốc", "Tổng Giám Đốc" }));
         positionComboBox.setBackground(new java.awt.Color(204, 204, 204));
         positionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        positionComboBox.setForeground(new java.awt.Color(0, 0, 0));
         positionComboBox.setName("positionComboBox"); // NOI18N
 
         employeeTypeLabel.setLabelFor(employeeTypeComboBox);
         employeeTypeLabel.setText("Loại Nhân Viên :");
         employeeTypeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        employeeTypeLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeTypeLabel.setName("employeeTypeLabel"); // NOI18N
 
         employeeTypeComboBox.setBackground(new java.awt.Color(204, 204, 204));
@@ -311,7 +408,12 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         declineButton.setName("declineButton"); // NOI18N
 
         birthdateDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        birthdateDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         birthdateDatePicker.setName("birthdateDatePicker"); // NOI18N
+
+        deleteFileButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        deleteFileButton.setForeground(new java.awt.Color(255, 255, 255));
+        deleteFileButton.setText("Xóa Ảnh");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -343,9 +445,9 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(genderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(phoneNumberLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(phoneNumberTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(genderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(genderComboBox, 0, 235, Short.MAX_VALUE)
+                                .addComponent(phoneNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -355,21 +457,27 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                     .addComponent(specialtyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ethicGroupComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(employeeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(avatarLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ethicGroupLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(specialtyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(employeeTypeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(fileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(fileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(avatarLabel)
+                        .addGap(18, 18, 18)
+                        .addComponent(deleteFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(30, 30, 30))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(genderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(avatarLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(genderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(avatarLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(deleteFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -377,11 +485,11 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                         .addComponent(genderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(fileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(phoneNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(birthdateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ethicGroupLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(birthdateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(phoneNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(birthdateDatePicker, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -439,6 +547,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
     private javax.swing.JButton declineButton;
     private javax.swing.JComboBox<String> degreeComboBox;
     private javax.swing.JLabel degreeLabel;
+    private javax.swing.JButton deleteFileButton;
     private javax.swing.JLabel employeeNameLabel;
     private javax.swing.JTextField employeeNameTextField;
     private javax.swing.JComboBox<String> employeeTypeComboBox;
@@ -491,14 +600,4 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
     @Override
     public void windowDeactivated(WindowEvent e) {
     }
-
-//    @Override
-//    public void dateChanged(DateChangeEvent dce) {
-//        LocalDate localDate = birthdateDatePicker.getDate();
-//        if (localDate != null) {
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//            String formattedDate = localDate.format(formatter); // Use format() on the date
-//            birthdateDatePicker.setText(formattedDate); // Set the displayed text
-//        }
-//    }
 }

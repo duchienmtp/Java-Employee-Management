@@ -22,9 +22,13 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
+    ArrayList<Object> formData;
 
     public PositionContentPanel() {
         initComponents();
+
+        formData = new ArrayList<>();
+
         positionFormLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         positionTableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 
@@ -54,51 +58,53 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         }
     }
 
+    public ArrayList<Object> getDataFromForm() {
+        String positionID = positionIDTextField.getText(),
+                positionName = positionNameTextField.getText();
+
+        return new ArrayList<>(Arrays.asList(positionID, positionName));
+    }
+
     public void insertTableRow() {
-        String positionID = positionIDTextField.getText();
-        String positionName = positionNameTextField.getText();
+        formData = getDataFromForm();
+
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn thêm mới dữ liệu nhân viên với ID " + positionID + " ?",
-                "XÓA BỎ ?",
+                "Bạn có muốn thêm mới dữ liệu chức vụ với ID " + formData.get(0) + " ?",
+                "THÊM MỚI ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-//            // Create a new ArrayList
-//            ArrayList<Object> dataList = new ArrayList<>(selectedRowData.length);
-//
-//            // Add all elements from the array to the ArrayList
-//            dataList.addAll(Arrays.asList(selectedRowData));
+            clearFormContent();
             jTable1.revalidate();
         }
     }
 
     public void updateTableRow() {
-        String positionID = (String) selectedRowData[1];
+        formData = getDataFromForm();
+
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn cập nhật dữ liệu nhân viên với ID " + positionID + " ?",
+                "Bạn có muốn cập nhật dữ liệu chức vụ với ID " + formData.get(0) + " ?",
                 "CẬP NHẬT ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            // Create a new ArrayList
-            ArrayList<Object> dataList = new ArrayList<>(selectedRowData.length);
-
-            // Add all elements from the array to the ArrayList
-            dataList.addAll(Arrays.asList(selectedRowData));
+            clearFormContent();
             jTable1.revalidate();
         }
     }
 
     public void deleteTableRow() {
-        String positionID = (String) selectedRowData[1];
+        formData = getDataFromForm();
+
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn xóa bỏ nhân viên với ID " + positionID + " ?",
+                "Bạn có muốn xóa bỏ dữ liệu chức vụ với ID " + formData.get(0) + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
             model.removeRow(selectedRow);
+            clearFormContent();
             jTable1.revalidate();
         }
     }
@@ -113,6 +119,10 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         positionIDTextField.setText("");
         positionNameTextField.setText("");
         positionIDTextField.setEnabled(true);
+    }
+
+    public boolean isFormFilled() {
+        return !(positionNameTextField.getText().equals(""));
     }
 
     @Override
@@ -133,7 +143,11 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == addButton) {
-            insertTableRow();
+            if (isFormFilled()) {
+                insertTableRow();
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
                 deleteTableRow();
@@ -142,7 +156,11 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
             }
         } else if (e.getSource() == updateButton) {
             if (selectedRow >= 0) {
-                updateTableRow();
+                if (isFormFilled()) {
+                    updateTableRow();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }

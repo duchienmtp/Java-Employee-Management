@@ -147,6 +147,12 @@
       <SubComponents>
         <Component class="com.github.lgooddatepicker.components.DatePicker" name="startDatePicker">
           <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="12" style="1"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="startDatePicker" noResource="true"/>
           </Properties>
         </Component>
@@ -331,7 +337,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="startDatePickerLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Ng&#xe0;y B&#x1eaf;t &#x110;&#x1ea7;u :"/>
+            <Property name="text" type="java.lang.String" value="Ng&#xe0;y T&#x1ea1;o :"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>

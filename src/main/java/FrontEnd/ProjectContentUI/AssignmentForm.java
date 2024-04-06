@@ -8,13 +8,21 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import javax.swing.AbstractButton;
+import javax.swing.JRadioButton;
 
 public class AssignmentForm extends javax.swing.JFrame implements ActionListener, WindowListener {
 
     public boolean btnconfirmClicked = false;
+    ArrayList<Object> formData;
 
     public AssignmentForm() {
         initComponents();
+
+        formData = new ArrayList<>();
+
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         DatePickerSettings pickerSettingsBegin = new DatePickerSettings();
         pickerSettingsBegin.setFormatForDatesCommonEra("dd/MM/yyyy");
@@ -30,6 +38,19 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         cancelButton.addActionListener(this);
 
         addWindowListener(this);
+    }
+
+    public ArrayList<Object> getDataFromForm() {
+        String employeeID = (String) employeeIDComboBox.getSelectedItem(),
+                employeeName = employeeNameTextField.getText(),
+                projectID = (String) projectIDComboBox.getSelectedItem(),
+                projectName = employeeNameTextField.getText(),
+                startDate = startDatePicker.getText(),
+                endDate = endDatePicker.getText(),
+                projectPlace = (String) projectPlaceComboBox.getSelectedItem();
+
+        return new ArrayList<>(Arrays.asList(employeeID, employeeName, projectID, projectName, startDate, endDate,
+                projectPlace));
     }
 
     public void showFormWithData(ArrayList<Object> data) {
@@ -55,30 +76,57 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
     }
 
     public void handleSubmitForm() {
-        String employeeID = (String) employeeIDComboBox.getSelectedItem();
+        formData = getDataFromForm();
 
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn thêm mới dữ liệu nhân viên với ID " + employeeID + " ?",
+                "Xác nhận thao tác ?",
                 "CẬP NHẬT ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-//            // Create a new ArrayList
-//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-//
-//            // Add all elements from the array to the ArrayList
-//            dataList.addAll(Arrays.asList(rowData));
+            clearFormData();
+            dispose();
         }
+    }
+
+    public void cancelSubmitForm() {
+        formData = getDataFromForm();
+
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Xác nhận thao tác ?",
+                "HỦY BỎ ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            clearFormData();
+            dispose();
+        }
+    }
+
+    public boolean isFormFilled() {
+        return !(employeeNameTextField.getText().equals("")
+                || projectNameTextField.getText().equals("")
+                || startDatePicker.getText().equals("")
+                || endDatePicker.getText().equals("")
+                || ((String) projectPlaceComboBox.getSelectedItem()).equals(""));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == confirmButton) {
-            handleSubmitForm();
-            dispose();
+            if (isFormFilled()) {
+                handleSubmitForm();
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == cancelButton) {
-            clearFormData();
-            dispose();
+            if (isFormFilled()) {
+                cancelSubmitForm();
+            } else {
+                clearFormData();
+                dispose();
+            }
         }
     }
 
@@ -182,6 +230,8 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         startDatePickerLabel.setOpaque(true);
         startDatePickerLabel.setToolTipText("startDatePickerLabel");
 
+        endDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        endDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         endDatePicker.setName("endDatePicker"); // NOI18N
 
         endDatePickerLabel.setLabelFor(endDatePicker);
@@ -192,6 +242,8 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         endDatePickerLabel.setName("endDatePickerLabel"); // NOI18N
         endDatePickerLabel.setOpaque(true);
 
+        startDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        startDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         startDatePicker.setName("startDatePicker"); // NOI18N
 
         projectPlaceLabel.setText("Dự Án Tại :");

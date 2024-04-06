@@ -22,9 +22,12 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
+    ArrayList<Object> formData;
 
     public TypeRewardPanel() {
         initComponents();
+
+        formData = new ArrayList<>();
 
         TypeRewardLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         typeRewardTableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
@@ -55,52 +58,55 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         }
     }
 
-    public void insertTableRow() {
-        String typeRewardID = (String) typeRewardIDTextField.getText();
-        String typeRewardName = typeRewardNameTextField.getText();
+    public ArrayList<Object> getDataFromForm() {
+        String typeRewardID = (String) typeRewardIDTextField.getText(),
+                typeRewardName = typeRewardNameTextField.getText();
         int money = Integer.parseInt((String) moneyTextField.getText());
 
+        return new ArrayList<>(Arrays.asList(typeRewardID, typeRewardName, money));
+    }
+
+    public void insertTableRow() {
+        formData = getDataFromForm();
+
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn thêm mới dữ liệu loại khen thưởng với ID " + typeRewardID + " ?",
-                "CẬP NHẬT ?",
+                "Bạn có muốn thêm mới dữ liệu loại khen thưởng với ID " + formData.get(0) + " ?",
+                "THÊM MỚI ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-//            // Create a new ArrayList
-//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-//
-//            // Add all elements from the array to the ArrayList
-//            dataList.addAll(Arrays.asList(rowData));
+            clearFormContent();
             typeRewardTable.revalidate();
 
         }
     }
 
-    public void updateTableRow(Object[] rowData, String typeRewardID) {
+    public void updateTableRow() {
+        formData = getDataFromForm();
+
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn cập nhật dữ liệu loại khen thưởng với ID " + typeRewardID + " ?",
+                "Bạn có muốn cập nhật dữ liệu loại khen thưởng với ID " + formData.get(0) + " ?",
                 "CẬP NHẬT ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            // Create a new ArrayList
-            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-
-            // Add all elements from the array to the ArrayList
-            dataList.addAll(Arrays.asList(rowData));
+            clearFormContent();
             typeRewardTable.revalidate();
         }
     }
 
-    public void deleteTableRow(int selectedRow, String typeRewardID) {
+    public void deleteTableRow() {
+        formData = getDataFromForm();
+
         DefaultTableModel model = (DefaultTableModel) typeRewardTable.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn xóa bỏ loại khen thưởng với ID " + typeRewardID + " ?",
+                "Bạn có muốn xóa bỏ dữ liệu loại khen thưởng với ID " + formData.get(0) + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
             model.removeRow(selectedRow);
+            clearFormContent();
             typeRewardTable.revalidate();
         }
     }
@@ -115,6 +121,10 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         typeRewardIDTextField.setText("");
         typeRewardNameTextField.setText("");
         moneyTextField.setText("");
+    }
+
+    public boolean isFormFilled() {
+        return !(typeRewardNameTextField.getText().equals("") || moneyTextField.getText().equals(""));
     }
 
     @SuppressWarnings("unchecked")
@@ -167,6 +177,7 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         typeRewardIDTextField.setBackground(new java.awt.Color(204, 204, 204));
         typeRewardIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         typeRewardIDTextField.setForeground(new java.awt.Color(0, 0, 0));
+        typeRewardIDTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         typeRewardIDTextField.setName("typeRewardIDTextField"); // NOI18N
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
@@ -203,6 +214,7 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         typeRewardNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         typeRewardNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         typeRewardNameTextField.setForeground(new java.awt.Color(0, 0, 0));
+        typeRewardNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         typeRewardNameTextField.setName("typeRewardNameTextField"); // NOI18N
 
         cancelButton.setBackground(new java.awt.Color(108, 117, 125));
@@ -221,6 +233,7 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         moneyTextField.setBackground(new java.awt.Color(204, 204, 204));
         moneyTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         moneyTextField.setForeground(new java.awt.Color(0, 0, 0));
+        moneyTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         moneyTextField.setName("moneyTextField"); // NOI18N
 
         javax.swing.GroupLayout typeRewardFormLayout = new javax.swing.GroupLayout(typeRewardForm);
@@ -428,22 +441,25 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String typeRewardID = "";
-        if (selectedRowData != null) {
-            typeRewardID = (String) selectedRowData[1];
-        }
-
         if (e.getSource() == addButton) {
-
+            if (isFormFilled()) {
+                insertTableRow();
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
-                deleteTableRow(selectedRow, typeRewardID);
+                deleteTableRow();
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == updateButton) {
             if (selectedRow >= 0) {
-                updateTableRow(selectedRowData, typeRewardID);
+                if (isFormFilled()) {
+                    updateTableRow();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -453,7 +469,8 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
     }
 
     @Override
-    public void valueChanged(ListSelectionEvent event) {
+    public void valueChanged(ListSelectionEvent event
+    ) {
         if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
             selectionConfirmed = true;
             selectedRow = typeRewardTable.getSelectedRow();
@@ -468,7 +485,8 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent e
+    ) {
         Component clickedComponent = jPanel1.getComponentAt(jPanel1.getMousePosition());
         if (clickedComponent != typeRewardTable && selectionConfirmed) {
             typeRewardTable.getSelectionModel().clearSelection();
@@ -477,18 +495,22 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent e
+    ) {
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent e
+    ) {
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(MouseEvent e
+    ) {
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent e
+    ) {
     }
 }

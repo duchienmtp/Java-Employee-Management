@@ -65,7 +65,7 @@ public class CriticismEmployeeForm extends javax.swing.JFrame implements ActionL
 
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Bạn có muốn thêm mới dữ liệu nhân viên với ID " + employeeID + " ?",
-                "CẬP NHẬT ?",
+                "XÁC NHẬN ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
@@ -77,14 +77,31 @@ public class CriticismEmployeeForm extends javax.swing.JFrame implements ActionL
         }
     }
 
+    public boolean isFormFilled() {
+        return !(employeeNameTextField.getText().equals("")
+                || rewardNameTextField.getText().equals("")
+                || startDatePicker.getText().equals("")
+                || ((int) countSpinner.getValue() == 0)
+                || moneyTextField.getText().equals(""));
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == confirmButton) {
-            handleSubmitForm();
-            dispose();
+            if (isFormFilled()) {
+                handleSubmitForm();
+                clearFormData();
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == cancelButton) {
-            clearFormData();
-            dispose();
+            if (isFormFilled()) {
+                JOptionPane.showMessageDialog(this, "Bạn có muốn hủy!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                clearFormData();
+                dispose();
+            }
         }
     }
 
@@ -185,7 +202,7 @@ public class CriticismEmployeeForm extends javax.swing.JFrame implements ActionL
         rewardNameTextField.setName("rewardNameTextField"); // NOI18N
         rewardNameTextField.setOpaque(true);
 
-        startDatePickerLabel.setText("Ngày Bắt Đầu :");
+        startDatePickerLabel.setText("Ngày Tạo :");
         startDatePickerLabel.setBackground(new java.awt.Color(255, 255, 255));
         startDatePickerLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         startDatePickerLabel.setForeground(new java.awt.Color(0, 0, 0));

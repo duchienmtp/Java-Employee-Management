@@ -22,9 +22,12 @@ public class TypeCriticismPanel extends javax.swing.JPanel implements ActionList
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
+    ArrayList<Object> formData;
 
     public TypeCriticismPanel() {
         initComponents();
+
+        formData = new ArrayList<>();
 
         typeCriticismLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         typeCriticismTableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
@@ -55,52 +58,54 @@ public class TypeCriticismPanel extends javax.swing.JPanel implements ActionList
         }
     }
 
-    public void insertTableRow() {
-        String typeCriticismID = (String) typeCriticismIDTextField.getText();
-        String typeCriticismName = typeCriticismNameTextField.getText();
+    public ArrayList<Object> getDataFromForm() {
+        String typeCriticismID = (String) typeCriticismIDTextField.getText(),
+                typeCriticismName = typeCriticismNameTextField.getText();
         int money = Integer.parseInt((String) moneyTextField.getText());
 
-        int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn thêm mới dữ liệu loại khen thưởng với ID " + typeCriticismID + " ?",
-                "CẬP NHẬT ?",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirmation == JOptionPane.YES_OPTION) {
-//            // Create a new ArrayList
-//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-//
-//            // Add all elements from the array to the ArrayList
-//            dataList.addAll(Arrays.asList(rowData));
-            typeCriticismTable.revalidate();
-
-        }
+        return new ArrayList<>(Arrays.asList(typeCriticismID, typeCriticismName, money));
     }
 
-    public void updateTableRow(Object[] rowData, String typeCriticismID) {
+    public void insertTableRow() {
+        formData = getDataFromForm();
+
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn cập nhật dữ liệu loại khen thưởng với ID " + typeCriticismID + " ?",
-                "CẬP NHẬT ?",
+                "Bạn có muốn thêm mới dữ liệu loại khen thưởng với ID " + formData.get(0) + " ?",
+                "THÊM MỚI ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            // Create a new ArrayList
-            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-
-            // Add all elements from the array to the ArrayList
-            dataList.addAll(Arrays.asList(rowData));
+            clearFormContent();
             typeCriticismTable.revalidate();
         }
     }
 
-    public void deleteTableRow(int selectedRow, String typeCriticismID) {
+    public void updateTableRow() {
+        formData = getDataFromForm();
+
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn cập nhật dữ liệu loại khen thưởng với ID " + formData.get(0) + " ?",
+                "CẬP NHẬT ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            clearFormContent();
+            typeCriticismTable.revalidate();
+        }
+    }
+
+    public void deleteTableRow() {
+        formData = getDataFromForm();
+
         DefaultTableModel model = (DefaultTableModel) typeCriticismTable.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn xóa bỏ loại khen thưởng với ID " + typeCriticismID + " ?",
+                "Bạn có muốn xóa bỏ dữ liệu loại khen thưởng với ID " + formData.get(0) + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
             model.removeRow(selectedRow);
+            clearFormContent();
             typeCriticismTable.revalidate();
         }
     }
@@ -115,6 +120,10 @@ public class TypeCriticismPanel extends javax.swing.JPanel implements ActionList
         typeCriticismIDTextField.setText("");
         typeCriticismNameTextField.setText("");
         moneyTextField.setText("");
+    }
+
+    public boolean isFormFilled() {
+        return !(typeCriticismNameTextField.getText().equals("") || moneyTextField.getText().equals(""));
     }
 
     @SuppressWarnings("unchecked")
@@ -425,22 +434,25 @@ public class TypeCriticismPanel extends javax.swing.JPanel implements ActionList
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String typeCriticismID = "";
-        if (selectedRowData != null) {
-            typeCriticismID = (String) selectedRowData[1];
-        }
-
         if (e.getSource() == addButton) {
-
+            if (isFormFilled()) {
+                insertTableRow();
+            } else {
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
-                deleteTableRow(selectedRow, typeCriticismID);
+                deleteTableRow();
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == updateButton) {
             if (selectedRow >= 0) {
-                updateTableRow(selectedRowData, typeCriticismID);
+                if (isFormFilled()) {
+                    updateTableRow();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
             }
