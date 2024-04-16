@@ -1,9 +1,11 @@
 package BackEnd.ConnectDB;
 
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 public class ConnectDB {
 
@@ -12,25 +14,91 @@ public class ConnectDB {
     private static final String DB_URL = "jdbc:sqlserver://KAGAMI\\SQLEXPRESS01:1433;databaseName=QLNV;encrypt=true;trustServerCertificate=true";
     private static final String USER = "sa";
     private static final String PASSWORD = "123456789";
+    private static final String DB_Name = "QLNV";
 
-    public Connection createConnection() throws NoSuchAlgorithmException {
-        System.out.println("Creating SQL Server DataBase Connection");
-        Connection connection = null;
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rset = null;
+
+    public ConnectDB() {
+        checkDriver();
+        setupConnect();
+    }
+
+    private void checkDriver() {
         try {
-            // Provide the java database driver
             Class.forName(JDBC_DRIVER);
-            // Provide URL, database and credentials according to your database
-            // .getConnection ("url/namadatabase, user, password")
-            connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "-- ERROR! Không tìm thấy Driver mySql");
+        }
+    }
+
+    public Boolean checkConnect() {
+        if (conn == null || stmt == null) {
+            JOptionPane.showMessageDialog(null,
+                    "-- ERROR! Chưa thiết lập kết nối tới '" + DB_Name + "'. Vui lòng đăng nhập để thiết lập kết nối!");
+            return false;
+        }
+        return true;
+    }
+
+    private void setupConnect() {
+
+        try {
+            Class.forName(JDBC_DRIVER);
+            conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+            stmt = conn.createStatement();
+            System.out.println("**\nSuccess! Đã kết nối tới '" + DB_Name + "'");
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            return null;
+        } catch (SQLException e) {
+            System.err.println("-- ERROR! Không thể kết nối tới '" + DB_Name + "'");
+            JOptionPane.showMessageDialog(null, "-- ERROR! Không thể kết nối tới '" + DB_Name + "'");
         }
-        if (connection != null) {
-            System.out.println("Connection created successfully..");
-        } else {
-            System.out.println("Connection created failed..");
+    }
+
+    public ResultSet sqlQuery(String qry) {
+        if (checkConnect()) {
+            try {
+                rset = stmt.executeQuery(qry);
+                return rset;
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null,
+                        "-- ERROR! Không thể lấy dữ liệu từ " + DB_Name + "\n" + ex.getLocalizedMessage());
+                return null;
+            }
         }
-        return connection;
+        return null;
+    }
+
+    public Boolean sqlUpdate(String qry) {
+        if (checkConnect()) {
+            try {
+                stmt.executeUpdate(qry);
+                return true;
+
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null,
+                        "-- ERROR! Không thể ghi dữ liệu xuống " + DB_Name + "\n" + ex.getLocalizedMessage());
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public void closeConnect() {
+        try {
+            if (conn != null) {
+                conn.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+            System.out.println("Success! Đóng kết nối tới '" + DB_Name + "' thành công.\n**");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "-- ERROR! Không thể đóng kết nối tới " + DB_Name + "\n" + ex.getLocalizedMessage());
+        }
     }
 }

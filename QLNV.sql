@@ -15,6 +15,7 @@ CREATE TABLE [Employees] (
   [departmentId] nvarchar(255) not null,
   [specialtyId] nvarchar(255) not null,
   [employStatus] bit not null,
+  [deleteStatus] bit not null
 )
 GO
 
@@ -26,7 +27,7 @@ CREATE TABLE [Account] (
   [email] nvarchar(255) not null,
   [avatar] nvarchar(255),
   [authorization] nvarchar(255) not null,
-  [createdAt] DATETIME not null
+  [deleteStatus] bit not null
 )
 GO
 
@@ -38,35 +39,37 @@ GO
 
 CREATE TABLE [Degrees] (
   [degreeId] nvarchar(255) PRIMARY KEY,
-  [degreeName] nvarchar(255) not null
+  [degreeName] nvarchar(255) not null,
+  [deleteStatus] bit not null
 )
 GO
 
 CREATE TABLE [Positions] (
   [positionId] nvarchar(255) PRIMARY KEY,
-  [positionName] nvarchar(255) not null
+  [positionName] nvarchar(255) not null,
+  [deleteStatus] bit not null
 )
 GO
 
 CREATE TABLE [PositionSalaries] (
   [postionId] nvarchar(255) PRIMARY KEY,
   [positionSalaryAllowance] numeric(5,3) not null,
-  [createdAt] DATETIME not null,
-  [updatedAt] DATETIME not null
 )
 GO
 
 CREATE TABLE [Rewards] (
   [rewardId] nvarchar(255) PRIMARY KEY,
   [rewardName] nvarchar(255) not null,
-  [reward] int not null
+  [reward] int not null, 
+  [deleteStatus] bit not null
 )
 GO
 
 CREATE TABLE [Criticism] (
   [criticismId] nvarchar(255) PRIMARY KEY,
-  [critismName] nvarchar(255) not null,
-  [judgement] int not null
+  [criticismName] nvarchar(255) not null,
+  [judgement] int not null,
+  [deleteStatus] bit not null
 )
 GO
 
@@ -84,7 +87,8 @@ GO
 CREATE TABLE [Specialties] (
   [specialtyId] nvarchar(255) PRIMARY KEY,
   [specialtyName] nvarchar(255) not null,
-  [baseSalary] int not null
+  [baseSalary] int not null,
+  [deleteStatus] bit not null
 )
 GO
 
@@ -94,6 +98,7 @@ CREATE TABLE [EmployeeSalaries] (
   [insurance] decimal not null,
   [netSalary] decimal not null,
   [createdAt] DATETIME not null,
+  [deleteStatus] bit not null
   PRIMARY KEY ([employeeId], [createdAt])
 )
 GO
@@ -101,7 +106,8 @@ GO
 CREATE TABLE [Departments] (
   [departmentId] nvarchar(255) PRIMARY KEY,
   [departmentName] nvarchar(255) not null,
-  [departmentLeader] nvarchar(255) not null
+  [departmentLeader] nvarchar(255) not null,
+  [deleteStatus] bit not null
 )
 GO
 
@@ -112,12 +118,14 @@ CREATE TABLE [Projects] (
   [beginAt] DATETIME not null,
   [completedAt] DATETIME not null,
   [place] nvarchar(255) not null,
+  [deleteStatus] bit not null
 )
 GO
 
 CREATE TABLE [Assignments] (
   [employeeId] nvarchar(255),
   [projectId] nvarchar(255),
+  [deleteStatus] bit not null
   PRIMARY KEY ([employeeId], [projectId])
 )
 GO
