@@ -234,7 +234,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jTextField1 = new javax.swing.JTextField();
@@ -277,25 +277,20 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         employeeNameLabel.setLabelFor(employeeNameTextField);
         employeeNameLabel.setText("Họ và Tên :");
         employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameLabel.setName("employeeNameLabel"); // NOI18N
 
         employeeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         employeeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
-        employeeNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        employeeNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameTextField.setHighlighter(null);
         employeeNameTextField.setName("employeeNameTextField"); // NOI18N
 
         genderLabel.setLabelFor(genderComboBox);
         genderLabel.setText("Giới Tính :");
         genderLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        genderLabel.setForeground(new java.awt.Color(0, 0, 0));
         genderLabel.setName("genderLabel"); // NOI18N
 
         genderComboBox.setBackground(new java.awt.Color(204, 204, 204));
         genderComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        genderComboBox.setForeground(new java.awt.Color(0, 0, 0));
         genderComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nam ", "Nữ" }));
         genderComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         genderComboBox.setName("genderComboBox"); // NOI18N
@@ -303,33 +298,26 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         birthdateLabel.setLabelFor(birthdateDatePicker);
         birthdateLabel.setText("Ngày Sinh :");
         birthdateLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        birthdateLabel.setForeground(new java.awt.Color(0, 0, 0));
         birthdateLabel.setName("birthdateLabel"); // NOI18N
 
         phoneNumberLabel.setLabelFor(phoneNumberTextField);
         phoneNumberLabel.setText("Số Điện Thoại :");
         phoneNumberLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        phoneNumberLabel.setForeground(new java.awt.Color(0, 0, 0));
         phoneNumberLabel.setName("phoneNumberLabel"); // NOI18N
 
         phoneNumberTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         phoneNumberTextField.setBackground(new java.awt.Color(204, 204, 204));
-        phoneNumberTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        phoneNumberTextField.setForeground(new java.awt.Color(0, 0, 0));
         phoneNumberTextField.setName("phoneNumberTextField"); // NOI18N
         phoneNumberTextField.setPreferredSize(new java.awt.Dimension(230, 26));
 
         ethicGroupLabel.setLabelFor(ethicGroupComboBox);
         ethicGroupLabel.setText("Dân Tộc :");
         ethicGroupLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        ethicGroupLabel.setForeground(new java.awt.Color(0, 0, 0));
         ethicGroupLabel.setName("ethicGroupLabel"); // NOI18N
 
         ethicGroupComboBox.setBackground(new java.awt.Color(204, 204, 204));
         ethicGroupComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        ethicGroupComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        ethicGroupComboBox.setModel(
-                new javax.swing.DefaultComboBoxModel<>(new String[] { "Kinh", "Tày", "Mường" }));
+        ethicGroupComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kinh", "Tày", "Mường" }));
         ethicGroupComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         ethicGroupComboBox.setName("ethicGroupComboBox"); // NOI18N
         ethicGroupComboBox.setPreferredSize(new java.awt.Dimension(200, 40));
@@ -337,41 +325,32 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         religionLabel.setLabelFor(religionComboBox);
         religionLabel.setText("Tôn giáo :");
         religionLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        religionLabel.setForeground(new java.awt.Color(0, 0, 0));
         religionLabel.setName("religionLabel"); // NOI18N
 
         religionComboBox.setBackground(new java.awt.Color(204, 204, 204));
         religionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        religionComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        religionComboBox.setModel(
-                new javax.swing.DefaultComboBoxModel<>(
-                        new String[] { "Phật Giáo", "Thiên Chúa Giáo", "Công Giáo" }));
+        religionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Phật Giáo", "Thiên Chúa Giáo", "Công Giáo" }));
         religionComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         religionComboBox.setName("religionComboBox"); // NOI18N
 
         nationLabel.setLabelFor(nationComboBox);
         nationLabel.setText("Quốc Tịch :");
         nationLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        nationLabel.setForeground(new java.awt.Color(0, 0, 0));
         nationLabel.setName("nationLabel"); // NOI18N
 
         nationComboBox.setBackground(new java.awt.Color(204, 204, 204));
         nationComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        nationComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        nationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(
-                new String[] { "Việt Nam", "Hoa Kỳ", "Canada", "Nhật Bản", "Hàn Quốc" }));
+        nationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Việt Nam", "Hoa Kỳ", "Canada", "Nhật Bản", "Hàn Quốc" }));
         nationComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         nationComboBox.setName("nationComboBox"); // NOI18N
 
         degreeLabel.setLabelFor(degreeComboBox);
         degreeLabel.setText("Bằng Cấp :");
         degreeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        degreeLabel.setForeground(new java.awt.Color(0, 0, 0));
         degreeLabel.setName("degreeLabel"); // NOI18N
 
         degreeComboBox.setBackground(new java.awt.Color(204, 204, 204));
         degreeComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        degreeComboBox.setForeground(new java.awt.Color(0, 0, 0));
         degreeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
         degreeComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         degreeComboBox.setName("degreeComboBox"); // NOI18N
@@ -379,37 +358,30 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         positionLabel.setLabelFor(positionComboBox);
         positionLabel.setText("Chức vụ :");
         positionLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        positionLabel.setForeground(new java.awt.Color(0, 0, 0));
         positionLabel.setName("positionLabel"); // NOI18N
 
         specialtyLabel.setLabelFor(specialtyComboBox);
         specialtyLabel.setText("Chuyên Môn :");
         specialtyLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        specialtyLabel.setForeground(new java.awt.Color(0, 0, 0));
         specialtyLabel.setName("specialtyLabel"); // NOI18N
 
         specialtyComboBox.setBackground(new java.awt.Color(204, 204, 204));
         specialtyComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        specialtyComboBox.setForeground(new java.awt.Color(0, 0, 0));
         specialtyComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         specialtyComboBox.setName("specialtyComboBox"); // NOI18N
 
         positionComboBox.setBackground(new java.awt.Color(204, 204, 204));
         positionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        positionComboBox.setForeground(new java.awt.Color(0, 0, 0));
         positionComboBox.setName("positionComboBox"); // NOI18N
 
         employeeTypeLabel.setLabelFor(employeeTypeComboBox);
         employeeTypeLabel.setText("Loại Nhân Viên :");
         employeeTypeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeTypeLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeTypeLabel.setName("employeeTypeLabel"); // NOI18N
 
         employeeTypeComboBox.setBackground(new java.awt.Color(204, 204, 204));
         employeeTypeComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        employeeTypeComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        employeeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(
-                new String[] { "Chính Thức", "Bán Thời Gian", "Thực Tập Sinh" }));
+        employeeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chính Thức", "Bán Thời Gian", "Thực Tập Sinh" }));
         employeeTypeComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         employeeTypeComboBox.setName("employeeTypeComboBox"); // NOI18N
 
@@ -426,353 +398,139 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         declineButton.setName("declineButton"); // NOI18N
 
         birthdateDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        birthdateDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         birthdateDatePicker.setName("birthdateDatePicker"); // NOI18N
 
         employStatusLabel.setText("Trạng thái :");
         employStatusLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employStatusLabel.setForeground(new java.awt.Color(0, 0, 0));
         employStatusLabel.setName("employStatusLabel"); // NOI18N
         employStatusLabel.setToolTipText("");
 
         employStatusComboBox.setBackground(new java.awt.Color(204, 204, 204));
         employStatusComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        employStatusComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        employStatusComboBox
-                .setModel(new javax.swing.DefaultComboBoxModel<>(
-                        new String[] { "Đang làm việc", "Đã nghỉ việc" }));
+        employStatusComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Đang làm việc", "Đã nghỉ việc" }));
         employStatusComboBox.setName("employStatusComboBox"); // NOI18N
         employStatusComboBox.setOpaque(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(30, 30, 30)
-                                .addGroup(jPanel1Layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel1Layout
-                                                .createParallelGroup(
-                                                        javax.swing.GroupLayout.Alignment.LEADING,
-                                                        false)
-                                                .addComponent(phoneNumberLabel,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                        200,
-                                                        Short.MAX_VALUE)
-                                                .addComponent(phoneNumberTextField,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        1,
-                                                        Short.MAX_VALUE))
-                                        .addGroup(jPanel1Layout
-                                                .createSequentialGroup()
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(
-                                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(jPanel1Layout
-                                                                .createParallelGroup(
-                                                                        javax.swing.GroupLayout.Alignment.LEADING)
-                                                                .addComponent(employeeNameTextField,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                        200,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(employeeNameLabel,
-                                                                        javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                        200,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                        .addComponent(nationLabel,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                200,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(nationComboBox,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                200,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGap(30, 30, 30)
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(
-                                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                                false)
-                                                        .addComponent(genderComboBox,
-                                                                0,
-                                                                235,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(genderLabel,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(ethicGroupLabel,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(ethicGroupComboBox,
-                                                                0,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(specialtyLabel,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(specialtyComboBox,
-                                                                0,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(employeeTypeLabel,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(employeeTypeComboBox,
-                                                                0,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)))
-                                        .addGroup(jPanel1Layout
-                                                .createParallelGroup(
-                                                        javax.swing.GroupLayout.Alignment.LEADING,
-                                                        false)
-                                                .addComponent(positionLabel,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                        Short.MAX_VALUE)
-                                                .addComponent(positionComboBox,
-                                                        0, 200,
-                                                        Short.MAX_VALUE)))
-                                .addGap(36, 36, 36)
-                                .addGroup(jPanel1Layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(degreeLabel,
-                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING,
-                                                jPanel1Layout
-                                                        .createSequentialGroup()
-                                                        .addComponent(confirmButton,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                130,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(
-                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                                22,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(declineButton,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                130,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(jPanel1Layout
-                                                .createSequentialGroup()
-                                                .addGap(0, 0, 0)
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(
-                                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                                false)
-                                                        .addComponent(birthdateDatePicker,
-                                                                javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                280,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(religionComboBox,
-                                                                0,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(birthdateLabel,
-                                                                javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(religionLabel,
-                                                                javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)))
-                                        .addComponent(degreeComboBox, 0,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                Short.MAX_VALUE)
-                                        .addComponent(employStatusLabel,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                Short.MAX_VALUE)
-                                        .addComponent(employStatusComboBox, 0,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                Short.MAX_VALUE))
-                                .addGap(30, 30, 30)));
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(phoneNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(phoneNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(employeeNameLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(nationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(genderComboBox, 0, 235, Short.MAX_VALUE)
+                            .addComponent(genderLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ethicGroupLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ethicGroupComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(specialtyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(specialtyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(employeeTypeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(employeeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(positionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(positionComboBox, 0, 200, Short.MAX_VALUE)))
+                .addGap(36, 36, 36)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(degreeLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                        .addComponent(declineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(birthdateDatePicker, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                        .addComponent(religionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(birthdateLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(religionLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(degreeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(employStatusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(employStatusComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(30, 30, 30))
+        );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel1Layout
-                                                .createSequentialGroup()
-                                                .addGap(30, 30, 30)
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(
-                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(employeeNameLabel,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                34,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(genderLabel,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                34,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-                                                jPanel1Layout.createSequentialGroup()
-                                                        .addContainerGap()
-                                                        .addComponent(birthdateLabel,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                34,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, 0)
-                                .addGroup(jPanel1Layout
-                                        .createParallelGroup(
-                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                false)
-                                        .addComponent(birthdateDatePicker,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                Short.MAX_VALUE)
-                                        .addGroup(jPanel1Layout
-                                                .createParallelGroup(
-                                                        javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(employeeNameTextField,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        40,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(genderComboBox,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        40,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel1Layout
-                                                .createSequentialGroup()
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(
-                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(phoneNumberLabel,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                34,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(ethicGroupLabel,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE))
-                                                .addGap(0, 0, 0)
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(
-                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(phoneNumberTextField,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                40,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(ethicGroupComboBox,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                Short.MAX_VALUE)))
-                                        .addGroup(jPanel1Layout
-                                                .createSequentialGroup()
-                                                .addComponent(religionLabel,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        32,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 0, 0)
-                                                .addComponent(religionComboBox)))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout
-                                        .createParallelGroup(
-                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                false)
-                                        .addGroup(jPanel1Layout
-                                                .createSequentialGroup()
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(
-                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(nationLabel,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                34,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(specialtyLabel,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                34,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGap(0, 0, 0)
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(
-                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(nationComboBox,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                40,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(specialtyComboBox,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                40,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGroup(jPanel1Layout
-                                                .createSequentialGroup()
-                                                .addComponent(degreeLabel,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        34,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 0, 0)
-                                                .addComponent(degreeComboBox)))
-                                .addGap(33, 33, 33)
-                                .addGroup(jPanel1Layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(positionLabel,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                34,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(employeeTypeLabel,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                34,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(employStatusLabel,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                34,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel1Layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(positionComboBox,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                40,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(employeeTypeComboBox,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                40,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(jPanel1Layout
-                                                .createSequentialGroup()
-                                                .addGap(0, 0, 0)
-                                                .addComponent(employStatusComboBox)))
-                                .addGap(56, 56, 56)
-                                .addGroup(jPanel1Layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(confirmButton,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(declineButton,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(30, 30, 30)));
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(genderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(birthdateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, 0)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(birthdateDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(genderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(phoneNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                            .addComponent(ethicGroupLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(phoneNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ethicGroupComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(religionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(religionComboBox)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(specialtyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(specialtyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(degreeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(degreeComboBox)))
+                .addGap(33, 33, 33)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(positionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(employeeTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(employStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(employStatusComboBox)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(positionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(employeeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(56, 56, 56)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(declineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING,
-                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                Short.MAX_VALUE));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING,
-                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                Short.MAX_VALUE));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         pack();
         setLocationRelativeTo(null);

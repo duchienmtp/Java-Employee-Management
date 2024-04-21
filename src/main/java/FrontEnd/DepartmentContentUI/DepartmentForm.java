@@ -1,5 +1,7 @@
 package FrontEnd.DepartmentContentUI;
+import FrontEnd.Redux.Redux;
 
+import BackEnd.DepartmentManagement.Department;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
@@ -12,18 +14,32 @@ import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.JRadioButton;
 
-public class DepartmentForm extends javax.swing.JFrame implements ActionListener, WindowListener {
-
+import BackEnd.DepartmentManagement.Department;
+import BackEnd.DepartmentManagement.DepartmentBUS;
+import BackEnd.EmployeeManagement.EmployeeBUS;
+import BackEnd.EmployeeManagement.Employee;
+import javax.swing.DefaultComboBoxModel;
+public class DepartmentForm extends javax.swing.JFrame 
+        implements ActionListener, WindowListener {
+    DepartmentBUS departmentBUS;
+    
     public boolean btnconfirmClicked = false;
     ArrayList<Object> formData;
 
     public DepartmentForm() {
         initComponents();
-
+        departmentBUS = new DepartmentBUS();
+        Redux.getAllEmployees();
         formData = new ArrayList<>();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
+                DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        for (Employee employee : Redux.employeeList) {
+            if (!employee.getDeleteStatus()) {
+                model.addElement(employee.getFullName());
+            }
+        }
+        managerIDComboBox.setModel(model);
         confirmButton.addActionListener(this);
         cancelButton.addActionListener(this);
 
@@ -310,5 +326,9 @@ public class DepartmentForm extends javax.swing.JFrame implements ActionListener
 
     @Override
     public void windowDeactivated(WindowEvent e) {
+    }
+
+    void showFormWithData(Department selectedDepartment) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

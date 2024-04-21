@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import BackEnd.DegreeManagement.Degree;
 import BackEnd.DegreeManagement.DegreeBUS;
+import BackEnd.DepartmentManagement.Department;
+import BackEnd.DepartmentManagement.DepartmentBUS;
 import BackEnd.EmployeeManagement.Employee;
 import BackEnd.EmployeeManagement.EmployeeBUS;
 import BackEnd.PositionManagement.Position;
@@ -20,6 +22,7 @@ public class Redux {
     public static ArrayList<Position> positionList;
     public static ArrayList<Specialty> specialtyList;
     public static ArrayList<Employee> employeeList;
+    public static ArrayList<Department> departmentList;
 
     public static void getAllEmployees() {
         employeeList = new EmployeeBUS().getEmployeeList();
@@ -35,5 +38,9 @@ public class Redux {
 
     public static void getAllSpecialties() {
         specialtyList = new SpecialtyBUS().getSpecialtyList();
+    }
+
+    public static void getAllDepartments() {
+        departmentList = new DepartmentBUS().getDepartmentList();
     }
 }
