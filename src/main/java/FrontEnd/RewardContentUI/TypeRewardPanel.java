@@ -1,5 +1,6 @@
 package FrontEnd.RewardContentUI;
-
+import BackEnd.RewardManagement.Reward;
+import BackEnd.RewardManagement.RewardBUS;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -18,7 +19,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class TypeRewardPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
-
+    RewardBUS rewardBUS = new RewardBUS();
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
@@ -46,18 +47,27 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         typeRewardTable.setDefaultRenderer(Double.class, centerRenderer);
 
         typeRewardTable.getSelectionModel().addListSelectionListener(this);
-        tableInit();
+        formInit();
+        tableInit(rewardBUS.getListReward());
         jPanel1.addMouseListener(this);
     }
 
-    public void tableInit() {
-        Object[] newRowData = {1, "RE001", "Nhân viên của năm", 1000000, "02/01/2024"};
-        DefaultTableModel model = (DefaultTableModel) typeRewardTable.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
-        }
+     public void formInit() {
+        typeRewardIDTextField.setText(rewardBUS.getNextID());
     }
 
+    public void tableInit(ArrayList<Reward> rewardBUS) {
+        DefaultTableModel model = (DefaultTableModel) typeRewardTable.getModel();
+        model.setRowCount(0);
+
+        for (int i = 0; i < rewardBUS.size(); i++) {
+            model.addRow(new Object[] {
+                    i + 1,
+                    rewardBUS.get(i).getRewardId(),
+                    rewardBUS.get(i).getRewardName(),
+                    rewardBUS.get(i).getReward(),});
+        }
+    }
     public ArrayList<Object> getDataFromForm() {
         String typeRewardID = (String) typeRewardIDTextField.getText(),
                 typeRewardName = typeRewardNameTextField.getText();
@@ -75,8 +85,10 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            rewardBUS. addReward(new Reward((String) formData.get(0), (String) formData.get(1),(int) formData.get(2)));
             clearFormContent();
             typeRewardTable.revalidate();
+            tableInit(rewardBUS.getListReward());
 
         }
     }
@@ -90,8 +102,10 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            rewardBUS. updateReward(new Reward((String) formData.get(0), (String) formData.get(1),(int) formData.get(2)));
             clearFormContent();
             typeRewardTable.revalidate();
+            tableInit(rewardBUS.getListReward());
         }
     }
 
@@ -106,8 +120,10 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
 
         if (confirmation == JOptionPane.YES_OPTION) {
             model.removeRow(selectedRow);
+            rewardBUS. deleteReward(new Reward((String) formData.get(0), (String) formData.get(1),(int) formData.get(2)));
             clearFormContent();
             typeRewardTable.revalidate();
+            tableInit(rewardBUS.getListReward());
         }
     }
 
@@ -161,7 +177,7 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
 
         TypeRewardLabel.setBackground(new java.awt.Color(255, 255, 255));
         TypeRewardLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        TypeRewardLabel.setForeground(new java.awt.Color(0, 0, 0));
+        TypeRewardLabel.setForeground(new java.awt.Color(0, 51, 51));
         TypeRewardLabel.setText("Tạo Loại Khen Thưởng");
         TypeRewardLabel.setName("TypeRewardLabel"); // NOI18N
         TypeRewardLabel.setOpaque(true);
@@ -170,14 +186,14 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         typeRewardForm.setName("typeRewardForm"); // NOI18N
 
         typeRewardIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        typeRewardIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        typeRewardIDLabel.setForeground(new java.awt.Color(0, 51, 51));
         typeRewardIDLabel.setText("Mã Loại Khen Thưởng:");
         typeRewardIDLabel.setName("typeRewardIDLabel"); // NOI18N
 
         typeRewardIDTextField.setBackground(new java.awt.Color(204, 204, 204));
         typeRewardIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        typeRewardIDTextField.setForeground(new java.awt.Color(0, 0, 0));
-        typeRewardIDTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        typeRewardIDTextField.setForeground(new java.awt.Color(0, 51, 51));
+        typeRewardIDTextField.setEnabled(false);
         typeRewardIDTextField.setName("typeRewardIDTextField"); // NOI18N
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
@@ -207,14 +223,13 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         updateButton.setOpaque(true);
 
         typeRewardNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        typeRewardNameLabel.setForeground(new java.awt.Color(0, 0, 0));
+        typeRewardNameLabel.setForeground(new java.awt.Color(0, 51, 51));
         typeRewardNameLabel.setText("Tên Loại Khen Thưởng :");
         typeRewardNameLabel.setName("typeRewardNameLabel"); // NOI18N
 
         typeRewardNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         typeRewardNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        typeRewardNameTextField.setForeground(new java.awt.Color(0, 0, 0));
-        typeRewardNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        typeRewardNameTextField.setForeground(new java.awt.Color(0, 51, 51));
         typeRewardNameTextField.setName("typeRewardNameTextField"); // NOI18N
 
         cancelButton.setBackground(new java.awt.Color(108, 117, 125));
@@ -224,7 +239,7 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
         cancelButton.setName("cancelButton"); // NOI18N
 
         moneyLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        moneyLabel.setForeground(new java.awt.Color(0, 0, 0));
+        moneyLabel.setForeground(new java.awt.Color(0, 51, 51));
         moneyLabel.setLabelFor(moneyTextField);
         moneyLabel.setText("Số Tiền Thưởng :");
         moneyLabel.setName("moneyLabel"); // NOI18N
@@ -232,8 +247,7 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
 
         moneyTextField.setBackground(new java.awt.Color(204, 204, 204));
         moneyTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        moneyTextField.setForeground(new java.awt.Color(0, 0, 0));
-        moneyTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        moneyTextField.setForeground(new java.awt.Color(0, 51, 51));
         moneyTextField.setName("moneyTextField"); // NOI18N
 
         javax.swing.GroupLayout typeRewardFormLayout = new javax.swing.GroupLayout(typeRewardForm);
@@ -311,7 +325,7 @@ public class TypeRewardPanel extends javax.swing.JPanel implements ActionListene
 
         typeRewardTableLabel.setBackground(new java.awt.Color(255, 255, 255));
         typeRewardTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        typeRewardTableLabel.setForeground(new java.awt.Color(0, 0, 0));
+        typeRewardTableLabel.setForeground(new java.awt.Color(0, 51, 51));
         typeRewardTableLabel.setText("Loại Khen Thưởng");
         typeRewardTableLabel.setName("typeRewardTableLabel"); // NOI18N
         typeRewardTableLabel.setOpaque(true);

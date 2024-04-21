@@ -4,11 +4,13 @@ public class Reward {
 
     private String rewardId, rewardName;
     private int reward;
+     private boolean deleteStatus;
 
     public Reward(String rewardId, String rewardName, int reward) {
         this.rewardId = rewardId;
         this.rewardName = rewardName;
         this.reward = reward;
+        this.deleteStatus = false;
     }
 
     public String getRewardId() {
@@ -33,5 +35,12 @@ public class Reward {
 
     public void setReward(int reward) {
         this.reward = reward;
+    }
+    public boolean getDeleteStatus() {
+        return deleteStatus;
+    }
+
+    public void setDeleteStatus(boolean deleteStatus) {
+        this.deleteStatus = deleteStatus;
     }
 }

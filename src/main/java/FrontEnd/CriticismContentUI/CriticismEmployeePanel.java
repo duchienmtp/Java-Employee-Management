@@ -1,5 +1,8 @@
 package FrontEnd.CriticismContentUI;
 
+import BackEnd.CriticismManagement.Criticism;
+import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticism;
+import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticismBUS ;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -20,14 +23,17 @@ import javax.swing.table.DefaultTableModel;
 
 public class CriticismEmployeePanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
 
+    EmployeesRewardsCriticismBUS  employeeRCBUS = new  EmployeesRewardsCriticismBUS();
     CriticismEmployeeForm criticismEmployeeForm;
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
+    ArrayList<Object> formData;
+   
 
     public CriticismEmployeePanel() {
         initComponents();
-
+        formData = new ArrayList<>();
         criticismEmployeeForm = new CriticismEmployeeForm();
 
         addButton.addActionListener(this);
@@ -52,19 +58,33 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
         jTable1.setDefaultRenderer(String.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
 
-        tableInit();
+       // formInit();
+        tableInit(employeeRCBUS.getlistEmployeeRC());
         jTable1.getSelectionModel().addListSelectionListener(this);
         addMouseListener(this);
         setVisible(true);
     }
 
-    public void tableInit() {
-        Object[] newRowData = {1, "EM001", "Nguyễn Văn Thành", "CR002", "Đi trễ", 2, 300000, "02/01/2024"};
+//    public void formInit() {
+//        criticismIDTextField.setText(criticismBUS.getNextID());
+//    }
+
+    public void tableInit(ArrayList<EmployeesRewardsCriticism> employeeRCBUS) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
+        model.setRowCount(0);
+
+        for (int i = 0; i < employeeRCBUS.size(); i++) {
+            model.addRow(new Object[] {
+                   i + 1,
+                    employeeRCBUS.get(i).getEmployeeId(),
+                    employeeRCBUS.get(i).getRewardId(),
+                    employeeRCBUS.get(i).getFaultCount(),
+                    employeeRCBUS.get(i).getCreatedAt(),});
         }
     }
+    
+
+
 
     public void updateTableRow(Object[] rowData, String employeeID) {
         // Create a new ArrayList
@@ -90,7 +110,11 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
             jTable1.revalidate();
         }
     }
-
+ public void refresh() {
+       employeeRCBUS.readDB();
+        tableInit(employeeRCBUS.getlistEmployeeRC());
+        searchTextField.setText("");
+      }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -102,6 +126,7 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
         searchOptionComboBox = new javax.swing.JComboBox<>();
         searchTextField = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
+        refreshButton = new javax.swing.JButton();
         exportExcel = new javax.swing.JButton();
         updateButton = new javax.swing.JButton();
         importExcel = new javax.swing.JButton();
@@ -133,15 +158,20 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
 
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
-        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mã Nhân Viên", "Tên Nhân Viên" }));
+        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã Nhân Viên", "Mã Kỷ Luật" }));
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
         searchTextField.setBackground(new java.awt.Color(204, 204, 204));
-        searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        searchTextField.setForeground(new java.awt.Color(0, 0, 0));
+        searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        searchTextField.setForeground(new java.awt.Color(0, 51, 51));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
+        searchTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchTextFieldActionPerformed(evt);
+            }
+        });
 
         searchButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchButton.setForeground(new java.awt.Color(255, 255, 255));
@@ -149,6 +179,20 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
         searchButton.setText("Tìm Kiếm");
         searchButton.setIconTextGap(10);
         searchButton.setName("searchButton"); // NOI18N
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+
+        refreshButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        refreshButton.setIcon(new javax.swing.ImageIcon("C:\\Users\\admin\\OneDrive\\Documents\\NetBeansProjects\\SieuThiMiNi\\src\\main\\java\\img\\refresh.png")); // NOI18N
+        refreshButton.setText("Làm Mới");
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -157,20 +201,24 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(searchButton)
                 .addGap(18, 18, 18)
-                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(refreshButton)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(searchOptionComboBox)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(searchTextField)
-                    .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
+                    .addComponent(searchOptionComboBox, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(refreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -203,25 +251,24 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
 
         tableLabel.setBackground(new java.awt.Color(255, 255, 255));
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
+        tableLabel.setForeground(new java.awt.Color(0, 51, 51));
         tableLabel.setText("Danh sách kỷ luật của nhân viên");
         tableLabel.setName("tableLabel"); // NOI18N
         tableLabel.setOpaque(true);
 
-        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "STT", "Mã Nhân Viên", "Họ và Tên", "Mã Khen Thưởng", "Tên Khen Thưởng", "Số Lần", "Tiền Thưởng", "Ngày Tạo"
+                "STT", "Mã Nhân Viên", "Mã Kỷ Luật", "Số Lần", "Tiền Phạt", "Ngày Tạo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true, false
+                false, false, false, false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -232,6 +279,7 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setRowHeight(40);
         jScrollPane2.setViewportView(jTable1);
 
@@ -302,9 +350,34 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, 641, 641, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        // TODO add your handling code here:
+         String searchType = searchOptionComboBox.getSelectedItem().toString();
+        String searchText = searchTextField.getText();
+        ArrayList<EmployeesRewardsCriticism> searchResult = employeeRCBUS.search(searchType, searchText);
+        tableInit(searchResult);
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        refreshButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                employeeRCBUS.readDB();
+
+                // Cập nhật dữ liệu lên bảng
+                tableInit(employeeRCBUS.getlistEmployeeRC());
+                searchTextField.setText("");
+            }
+        });
+    }//GEN-LAST:event_refreshButtonActionPerformed
+
+    private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchTextFieldActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
@@ -315,6 +388,7 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton refreshButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JComboBox<String> searchOptionComboBox;
     private javax.swing.JTextField searchTextField;
@@ -349,6 +423,11 @@ public class CriticismEmployeePanel extends javax.swing.JPanel implements Action
 
         } else if (e.getSource() == exportExcel) {
 
+        }else if (e.getSource() == searchButton){
+        String searchType = searchOptionComboBox.getSelectedItem().toString();
+        String searchText = searchTextField.getText();
+        ArrayList<EmployeesRewardsCriticism> searchResult = employeeRCBUS.search(searchType, searchText);
+        tableInit(searchResult);
         }
 
     }
