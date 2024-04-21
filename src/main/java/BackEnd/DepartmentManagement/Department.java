@@ -4,6 +4,12 @@ public class Department {
 
     private String departmentId, departmentName, departmentLeader;
 
+    public Department() {
+        this.departmentId = "DP000";
+        this.departmentName = "Chưa có phòng ban";
+        this.departmentLeader = "ADM001";
+    }
+
     public Department(String departmentId, String departmentName, String departmentLeader) {
         this.departmentId = departmentId;
         this.departmentName = departmentName;

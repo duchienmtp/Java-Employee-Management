@@ -1,62 +1,89 @@
 package BackEnd.EmployeeManagement;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+
+import BackEnd.DegreeManagement.Degree;
+import BackEnd.DepartmentManagement.Department;
+import BackEnd.PositionManagement.Position;
+import BackEnd.SpecialtyManagement.Specialty;
+
 public class Employee {
 
-    private String id, firstName,
-            lastName, gender,
+    private String id, fullName, gender,
             birthDate, phoneNumber,
-            group, typeId,
-            religion, degreeId,
-            nation, positionId,
-            departmentId, specialtyId;
+            ethnicGroup, type,
+            religion, nation;
+    private Degree degree;
+    private Position position;
+    private Department department;
+    private Specialty specialty;
     private boolean employStatus,
-            status;
+            deleteStatus;
 
-    public Employee(String id, String firstName, String lastName, String gender, String birthDate, String phoneNumber, String group, String typeId, String religion, String degreeId, String nation, String positionId, String departmentId, String specialtyId, boolean employStatus, boolean status) {
+    public Employee(String id, String fullName, String gender, String birthDate, String phoneNumber, String ethnicGroup,
+            String type, String religion, Degree degree, String nation, Position position, Department department,
+            Specialty specialty) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.fullName = fullName;
         this.gender = gender;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
-        this.group = group;
-        this.typeId = typeId;
+        this.ethnicGroup = ethnicGroup;
+        this.type = type;
         this.religion = religion;
-        this.degreeId = degreeId;
+        this.degree = degree;
         this.nation = nation;
-        this.positionId = positionId;
-        this.departmentId = departmentId;
-        this.specialtyId = specialtyId;
+        this.position = position;
+        this.department = department;
+        this.specialty = specialty;
+        this.employStatus = true;
+        this.deleteStatus = false;
+    }
+
+    public Employee(String id, String fullName, String gender, String birthDate, String phoneNumber, String ethnicGroup,
+            String type, String religion, Degree degree, String nation, Position position, Department department,
+            Specialty specialty, boolean employStatus, boolean deleteStatus) {
+        this.id = id;
+        this.fullName = fullName;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.phoneNumber = phoneNumber;
+        this.ethnicGroup = ethnicGroup;
+        this.type = type;
+        this.religion = religion;
+        this.degree = degree;
+        this.nation = nation;
+        this.position = position;
+        this.department = department;
+        this.specialty = specialty;
         this.employStatus = employStatus;
-        this.status = status;
+        this.deleteStatus = deleteStatus;
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return this.fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getGender() {
-        return gender;
+        return this.gender;
     }
 
     public void setGender(String gender) {
@@ -64,7 +91,7 @@ public class Employee {
     }
 
     public String getBirthDate() {
-        return birthDate;
+        return this.birthDate;
     }
 
     public void setBirthDate(String birthDate) {
@@ -72,90 +99,179 @@ public class Employee {
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+        return this.phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getGroup() {
-        return group;
+    public String getEthnicGroup() {
+        return this.ethnicGroup;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setEthnicGroup(String ethnicGroup) {
+        this.ethnicGroup = ethnicGroup;
     }
 
-    public String getTypeId() {
-        return typeId;
+    public String getType() {
+        return this.type;
     }
 
-    public void setTypeId(String typeId) {
-        this.typeId = typeId;
+    public void setType(String typeId) {
+        this.type = typeId;
     }
 
     public String getReligion() {
-        return religion;
+        return this.religion;
     }
 
     public void setReligion(String religion) {
         this.religion = religion;
     }
 
-    public String getDegreeId() {
-        return degreeId;
+    public Degree getDegree() {
+        return this.degree;
     }
 
-    public void setDegreeId(String degreeId) {
-        this.degreeId = degreeId;
+    public void setDegree(Degree degree) {
+        this.degree = degree;
     }
 
     public String getNation() {
-        return nation;
+        return this.nation;
     }
 
     public void setNation(String nation) {
         this.nation = nation;
     }
 
-    public String getPositionId() {
-        return positionId;
+    public Position getPosition() {
+        return this.position;
     }
 
-    public void setPositionId(String positionId) {
-        this.positionId = positionId;
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
-    public String getDepartmentId() {
-        return departmentId;
+    public Department getDepartment() {
+        return this.department;
     }
 
-    public void setDepartmentId(String departmentId) {
-        this.departmentId = departmentId;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
-    public String getSpecialtyId() {
-        return specialtyId;
+    public Specialty getSpecialty() {
+        return this.specialty;
     }
 
-    public void setSpecialtyId(String specialtyId) {
-        this.specialtyId = specialtyId;
+    public void setSpecialty(Specialty specialty) {
+        this.specialty = specialty;
     }
 
-    public boolean isEmployStatus() {
-        return employStatus;
+    public boolean getEmployStatus() {
+        return this.employStatus;
     }
 
-    public void setEmployStatus(boolean employStatus) {
-        this.employStatus = employStatus;
+    public void setEmployStatus(boolean employeeStatus) {
+        this.employStatus = employeeStatus;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean getDeleteStatus() {
+        return this.deleteStatus;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setDeleteStatus(boolean deleteStatus) {
+        this.deleteStatus = deleteStatus;
     }
+
+    public static String formatBirthDateToStandardTypeToStandardType(String birthDateString) {
+        SimpleDateFormat oldFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat newFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String newBirthDateString = "";
+        try {
+            Date birthDate = oldFormat.parse(birthDateString);
+            newBirthDateString = newFormat.format(birthDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return newBirthDateString;
+    }
+
+    public static String formatBirthDateToDatabaseType(String birthDateString) {
+        SimpleDateFormat oldFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String newBirthDateString = "";
+        try {
+            Date birthDate = oldFormat.parse(birthDateString);
+            newBirthDateString = newFormat.format(birthDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return newBirthDateString;
+    }
+
+    public static boolean isValidName(String name) {
+        boolean flag = true;
+        if (name.matches(
+                "(^[A-Z][a-zÃ€ÃÃ‚ÃƒÃˆÃ‰ÃŠÃŒÃÃ’Ã“Ã”Ã•Ã™ÃšÄ‚ÄÄ¨Å¨Æ Ã Ã¡Ã¢Ã£Ã¨Ã©ÃªÃ¬Ã­Ã²Ã³Ã´ÃµÃ¹ÃºÄƒÄ‘Ä©Å©Æ¡Æ¯Ä‚áº áº¢áº¤áº¦áº¨áºªáº¬áº®áº°áº²áº´áº¶áº¸áººáº¼á»€á»€á»‚áº¾Æ°Äƒáº¡áº£áº¥áº§áº©áº«áº­áº¯áº±áº³áºµáº·áº¹áº»áº½á»á»á»ƒáº¿á»„á»†á»ˆá»Šá»Œá»Žá»á»’á»”á»–á»˜á»šá»œá»žá» á»¢á»¤á»¦á»¨á»ªá»…á»‡á»‰á»‹á»á»á»‘á»“á»•á»—á»™á»›á»á»Ÿá»¡á»£á»¥á»§á»©á»«á»¬á»®á»°á»²á»´Ãá»¶á»¸á»­á»¯á»±á»³á»µá»·á»¹\\s\\W]+)([A-Z][a-zÃ€ÃÃ‚ÃƒÃˆÃ‰ÃŠÃŒÃÃ’Ã“Ã”Ã•Ã™ÃšÄ‚ÄÄ¨Å¨Æ Ã Ã¡Ã¢Ã£Ã¨Ã©ÃªÃ¬Ã­Ã²Ã³Ã´ÃµÃ¹ÃºÄƒÄ‘Ä©Å©Æ¡Æ¯Ä‚áº áº¢áº¤áº¦áº¨áºªáº¬áº®áº°áº²áº´áº¶áº¸áººáº¼á»€á»€á»‚áº¾Æ°Äƒáº¡áº£áº¥áº§áº©áº«áº­áº¯áº±áº³áºµáº·áº¹áº»áº½á»á»á»ƒáº¿á»„á»†á»ˆá»Šá»Œá»Žá»á»’á»”á»–á»˜á»šá»œá»žá» á»¢á»¤á»¦á»¨á»ªá»…á»‡á»‰á»‹á»á»á»‘á»“á»•á»—á»™á»›á»á»Ÿá»¡á»£á»¥á»§á»©á»«á»¬á»®á»°á»²á»´Ãá»¶á»¸á»­á»¯á»±á»³á»µá»·á»¹\\W]+){0,3}$")) {
+        } else
+
+        {
+            flag = false;
+            JOptionPane.showMessageDialog(null,
+                    "Tên không hợp lệ ! (Tên phải bắt đầu bằng chữ hoa, không được chứa ký số)", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        return flag;
+    }
+
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+        boolean flag = true;
+        if (phoneNumber.matches("^0\\d{9,10}$")) {
+
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "Số điện thoại không hợp lệ ! (SĐT phải bắt đầu bằng số 0, chiều dài từ 10 - 11 số, không được chứa ký tự)",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            flag = false;
+        }
+        return flag;
+    }
+
+    public List<Object> toList() {
+        try {
+            return Arrays.asList(id, fullName, gender, birthDate, phoneNumber, ethnicGroup, type, religion, nation,
+                    degree.getDegreeId(),
+                    position.getPositionId(), department, specialty.getPositionId(), employStatus, deleteStatus);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                " id='" + getId() + "'" +
+                ", fullName='" + getFullName() + "'" +
+                ", gender='" + getGender() + "'" +
+                ", birthDate='" + getBirthDate() + "'" +
+                ", phoneNumber='" + getPhoneNumber() + "'" +
+                ", ethnicGroup='" + getEthnicGroup() + "'" +
+                ", typeId='" + getType() + "'" +
+                ", religion='" + getReligion() + "'" +
+                ", nation='" + getNation() + "'" +
+                ", degree='" + getDegree().getDegreeId() + "'" +
+                ", position='" + getPosition().getPositionId() + "'" +
+                ", department='" + getDepartment().getDepartmentId() + "'" +
+                ", specialty='" + getSpecialty().getSpecialtyId() + "'" +
+                ", employStatus='" + getEmployStatus() + "'" +
+                ", deleteStatus='" + getDeleteStatus() + "'" +
+                "}";
+    }
+
 }
