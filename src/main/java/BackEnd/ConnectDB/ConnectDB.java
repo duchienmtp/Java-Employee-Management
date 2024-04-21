@@ -2,22 +2,24 @@ package BackEnd.ConnectDB;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
-
+import java.util.*;
 public class ConnectDB {
 
     // Tự setting theo máy của mỗi người
     private static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private static final String DB_URL = "jdbc:sqlserver://KAGAMI\\SQLEXPRESS01:1433;databaseName=QLNV;encrypt=true;trustServerCertificate=true";
+    private static final String DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=QLNV;encrypt=true;trustServerCertificate=true";
     private static final String USER = "sa";
     private static final String PASSWORD = "123456789";
     private static final String DB_Name = "QLNV";
 
     Connection conn = null;
     Statement stmt = null;
+    PreparedStatement pt = null;
     ResultSet rset = null;
 
     public ConnectDB() {
@@ -25,6 +27,29 @@ public class ConnectDB {
         setupConnect();
     }
 
+//    public ResultSet sqlPreparedStatement(String sql,ArrayList<Object> list){
+//        if(checkConnect()){
+//            try {
+//                pt = conn.prepareStatement(sql);
+//                for(int i = 0 ; i < list.size() ; i++){
+//                    if(list.get(i) instanceof String){
+//                        pt.setString(i, list.get(i).toString());
+//                    }
+//                    if(list.get(i) instanceof Boolean){
+//                        pt.setBoolean(i, list.get(i));
+//                    }
+//                }
+//                rset = pt.executeQuery();
+//                return rset;
+//
+//            } catch (SQLException ex) {
+//                JOptionPane.showMessageDialog(null,
+//                        "-- ERROR! Không thể lấy dữ liệu từ " + DB_Name + "\n" + ex.getLocalizedMessage());
+//                return null;
+//            }
+//        }
+//        return null;
+//    }
     private void checkDriver() {
         try {
             Class.forName(JDBC_DRIVER);

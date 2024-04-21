@@ -1,14 +1,31 @@
 package BackEnd.ProjectsManagemennt;
 
 public class Project {
-    private String businessTravelId, beginAt, completedAt, place, purpose;
+    private String projectId, projectName, departmentId, beginAt, completeAt, place;
+    private boolean deleteStatus;
 
-    public String getBusinessTravelId() {
-        return businessTravelId;
+    public String getProjectId() {
+        return projectId;
     }
 
-    public void setBusinessTravelId(String businessTravelId) {
-        this.businessTravelId = businessTravelId;
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(String departmentId) {
+        this.departmentId = departmentId;
     }
 
     public String getBeginAt() {
@@ -19,12 +36,12 @@ public class Project {
         this.beginAt = beginAt;
     }
 
-    public String getCompletedAt() {
-        return completedAt;
+    public String getCompleteAt() {
+        return completeAt;
     }
 
-    public void setCompletedAt(String completedAt) {
-        this.completedAt = completedAt;
+    public void setCompleteAt(String completeAt) {
+        this.completeAt = completeAt;
     }
 
     public String getPlace() {
@@ -35,20 +52,21 @@ public class Project {
         this.place = place;
     }
 
-    public String getPurpose() {
-        return purpose;
+    public boolean isDeleteStatus() {
+        return deleteStatus;
     }
 
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
+    public void setDeleteStatus(boolean deleteStatus) {
+        this.deleteStatus = deleteStatus;
     }
 
-    public Project(String businessTravelId, String beginAt, String completedAt, String place, String purpose) {
-        this.businessTravelId = businessTravelId;
+    public Project(String projectId, String projectName, String departmentId, String beginAt, String completeAt, String place, boolean deleteStatus) {
+        this.projectId = projectId;
+        this.projectName = projectName;
+        this.departmentId = departmentId;
         this.beginAt = beginAt;
-        this.completedAt = completedAt;
+        this.completeAt = completeAt;
         this.place = place;
-        this.purpose = purpose;
+        this.deleteStatus = deleteStatus;
     }
-    
 }

@@ -2,33 +2,24 @@ package BackEnd.EmployeeManagement;
 
 public class Employee {
 
-    private String id, firstName,
-            lastName, gender,
-            birthDate, phoneNumber,
-            group, typeId,
-            religion, degreeId,
-            nation, positionId,
-            departmentId, specialtyId;
-    private boolean employStatus,
-            status;
-
-    public Employee(String id, String firstName, String lastName, String gender, String birthDate, String phoneNumber, String group, String typeId, String religion, String degreeId, String nation, String positionId, String departmentId, String specialtyId, boolean employStatus, boolean status) {
+    private String id, fullName, gender, birthDate, phoneNumber, ethnicGroup, typeId, religion, degreenId, nation, positionId, departmentId, specialtyId;
+    private boolean employeeStatus, deleteStatus;
+    public Employee(String id, String fullName, String gender, String birthDate, String phoneNumber, String ethnicGroup, String typeId, String religion, String degreenId, String nation, String positionId, String departmentId, String specialtyId, boolean employeeStatus, boolean deleteStatus) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.fullName = fullName;
         this.gender = gender;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
-        this.group = group;
+        this.ethnicGroup = ethnicGroup;
         this.typeId = typeId;
         this.religion = religion;
-        this.degreeId = degreeId;
+        this.degreenId = degreenId;
         this.nation = nation;
         this.positionId = positionId;
         this.departmentId = departmentId;
         this.specialtyId = specialtyId;
-        this.employStatus = employStatus;
-        this.status = status;
+        this.employeeStatus = employeeStatus;
+        this.deleteStatus = deleteStatus;
     }
 
     public String getId() {
@@ -39,20 +30,12 @@ public class Employee {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getGender() {
@@ -79,12 +62,12 @@ public class Employee {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getGroup() {
-        return group;
+    public String getEthnicGroup() {
+        return ethnicGroup;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setEthnicGroup(String ethnicGroup) {
+        this.ethnicGroup = ethnicGroup;
     }
 
     public String getTypeId() {
@@ -103,12 +86,12 @@ public class Employee {
         this.religion = religion;
     }
 
-    public String getDegreeId() {
-        return degreeId;
+    public String getDegreenId() {
+        return degreenId;
     }
 
-    public void setDegreeId(String degreeId) {
-        this.degreeId = degreeId;
+    public void setDegreenId(String degreenId) {
+        this.degreenId = degreenId;
     }
 
     public String getNation() {
@@ -143,19 +126,20 @@ public class Employee {
         this.specialtyId = specialtyId;
     }
 
-    public boolean isEmployStatus() {
-        return employStatus;
+    public boolean isEmployeeStatus() {
+        return employeeStatus;
     }
 
-    public void setEmployStatus(boolean employStatus) {
-        this.employStatus = employStatus;
+    public void setEmployeeStatus(boolean employeeStatus) {
+        this.employeeStatus = employeeStatus;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isDeleteStatus() {
+        return deleteStatus;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setDeleteStatus(boolean deleteStatus) {
+        this.deleteStatus = deleteStatus;
     }
+    
 }
