@@ -1,54 +1,68 @@
 package BackEnd.EmployeeManagement;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
-import BackEnd.EmployeeManagement.Employee;
+
 public class EmployeeBUS {
-    private EmployeeDAO emD = new EmployeeDAO();
-    private ArrayList<Employee> list = new ArrayList<>();
+
+    private ArrayList<Employee> employeeList = new ArrayList<>();
+    private EmployeeDAO employeeDAO = new EmployeeDAO();
+
     public EmployeeBUS() {
-        list = emD.getAllEmployees();
+        employeeList = employeeDAO.getAllEmployee();
     }
-    public ArrayList<Employee> getEmployeeList(){
-        return list;
+
+    public ArrayList<Employee> getEmployeeList() {
+        return employeeList;
     }
-    public String getfullNameByEmployeeId(String employeeId){
-        String tmp = null;
-        if(emD.getNameOfEmployeeByEmployeeId(employeeId)!=null){
-            tmp = emD.getNameOfEmployeeByEmployeeId(employeeId);
+
+    public void readDB() {
+        employeeList = employeeDAO.getAllEmployee();
+    }
+
+    public String getNextID() {
+        String lastID = employeeList.get(employeeList.size() - 1).getId();
+        String characterPart = lastID.substring(0, 2);
+        int numberPart = Integer.parseInt(lastID.substring(2));
+        numberPart++;
+        String nextID = characterPart + String.format("%03d", numberPart);
+        return nextID;
+    }
+
+    public Employee getEmployeeById(String employeeId) {
+        return employeeDAO.getEmployeeById(employeeId);
+    }
+
+    public void addEmployee(Employee employee) {
+        Boolean ok = employeeDAO.addNewEmployee(employee);
+
+        if (ok) {
+            employeeList.add(employee);
+            JOptionPane.showMessageDialog(null, "Thêm mới thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
-        return tmp;
     }
-    public ArrayList<Employee> getEmployeeInDepartment(String departmentId){
-        ResultSet rs = emD.getEmployeeInDepartment(departmentId);
-        ArrayList<Employee> arr = new ArrayList<>();
-        try {
-            if(rs != null){
-                while(rs.next()){
-                    arr.add(new Employee(rs.getString(1), rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9),rs.getString(10),rs.getString(10),rs.getString(11),rs.getString(12),rs.getBoolean(13),rs.getBoolean(14)));
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "--ERROR! Lỗi đọc dữ liệu bảng nhân viên");
-        } 
-        return arr;
-    }
-    public void removeEmployee(String employeeId){
-        if(emD.deleteEmployee(employeeId)){
-            for(int i = 0 ; i < list.size() ; i++){
-                if(list.get(i).getId().equals(employeeId)){
-                    list.remove(i);
+
+    public void updateEmployee(Employee employee) {
+        Boolean ok = employeeDAO.updateEmployee(employee);
+
+        if (ok) {
+            for (int i = 0; i < employeeList.size(); i++) {
+                if (employeeList.get(i).getId().equals(employee.getId())) {
+                    employeeList.set(i, employee);
                     break;
                 }
             }
+            JOptionPane.showMessageDialog(null, "Cập nhật thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    public String getFullnameByEmployeeId(String id){
-        if(emD.getFullnameByEmployeeId(id)!=null){
-            return emD.getFullnameByEmployeeId(id);
+
+    public void deleteEmployee(Employee employee) {
+        Boolean ok = employeeDAO.deleteEmployee(employee);
+
+        if (ok) {
+            this.readDB();
+            JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
-        return null;
     }
 }

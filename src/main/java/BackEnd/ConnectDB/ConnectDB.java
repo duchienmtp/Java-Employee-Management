@@ -19,7 +19,7 @@ public class ConnectDB {
 
     Connection conn = null;
     Statement stmt = null;
-    PreparedStatement pt = null;
+    PreparedStatement pstmt = null;
     ResultSet rset = null;
 
     public ConnectDB() {
@@ -27,29 +27,6 @@ public class ConnectDB {
         setupConnect();
     }
 
-//    public ResultSet sqlPreparedStatement(String sql,ArrayList<Object> list){
-//        if(checkConnect()){
-//            try {
-//                pt = conn.prepareStatement(sql);
-//                for(int i = 0 ; i < list.size() ; i++){
-//                    if(list.get(i) instanceof String){
-//                        pt.setString(i, list.get(i).toString());
-//                    }
-//                    if(list.get(i) instanceof Boolean){
-//                        pt.setBoolean(i, list.get(i));
-//                    }
-//                }
-//                rset = pt.executeQuery();
-//                return rset;
-//
-//            } catch (SQLException ex) {
-//                JOptionPane.showMessageDialog(null,
-//                        "-- ERROR! Không thể lấy dữ liệu từ " + DB_Name + "\n" + ex.getLocalizedMessage());
-//                return null;
-//            }
-//        }
-//        return null;
-//    }
     private void checkDriver() {
         try {
             Class.forName(JDBC_DRIVER);
@@ -59,7 +36,7 @@ public class ConnectDB {
     }
 
     public Boolean checkConnect() {
-        if (conn == null || stmt == null) {
+        if (conn == null) {
             JOptionPane.showMessageDialog(null,
                     "-- ERROR! Chưa thiết lập kết nối tới '" + DB_Name + "'. Vui lòng đăng nhập để thiết lập kết nối!");
             return false;
@@ -72,8 +49,6 @@ public class ConnectDB {
         try {
             Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-            stmt = conn.createStatement();
-            System.out.println("**\nSuccess! Đã kết nối tới '" + DB_Name + "'");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -82,10 +57,18 @@ public class ConnectDB {
         }
     }
 
+    public Connection getConnection() {
+        if (checkConnect()) {
+            return conn;
+        }
+        return null;
+    }
+
     public ResultSet sqlQuery(String qry) {
         if (checkConnect()) {
             try {
-                rset = stmt.executeQuery(qry);
+                pstmt = conn.prepareStatement(qry);
+                rset = pstmt.executeQuery();
                 return rset;
 
             } catch (SQLException ex) {
@@ -100,7 +83,8 @@ public class ConnectDB {
     public Boolean sqlUpdate(String qry) {
         if (checkConnect()) {
             try {
-                stmt.executeUpdate(qry);
+                pstmt = conn.prepareStatement(qry);
+                pstmt.executeUpdate();
                 return true;
 
             } catch (SQLException ex) {
@@ -120,7 +104,9 @@ public class ConnectDB {
             if (stmt != null) {
                 stmt.close();
             }
-            System.out.println("Success! Đóng kết nối tới '" + DB_Name + "' thành công.\n**");
+            if (pstmt != null) {
+                pstmt.close();
+            }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null,
                     "-- ERROR! Không thể đóng kết nối tới " + DB_Name + "\n" + ex.getLocalizedMessage());

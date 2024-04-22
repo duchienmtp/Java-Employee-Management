@@ -16,13 +16,13 @@ VALUES
 ('DE006', 'Tiến Sĩ', '0'),
 ('DE007', 'Giáo Sư', '0');
 
-INSERT INTO [dbo].[Positions] ([positionId], [positionName], [deleteStatus])
+INSERT INTO [dbo].[Positions] ([positionId], [positionName], [deleteStatus], [positionSalaryAllowance])
 VALUES
-('PO001', 'Nhân Viên', '0'),
-('PO002', 'Phó Phòng', '0'),
-('PO003', 'Trưởng Phòng', '0'),
-('PO004', 'Phó Giám Đốc', '0'),
-('PO005', 'Giám Đốc', '0');
+('PO001', 'Nhân Viên', '0', 0.03),
+('PO002', 'Phó Phòng', '0', 0.07),
+('PO003', 'Trưởng Phòng', '0', 0.15),
+('PO004', 'Phó Giám Đốc', '0', 0.25),
+('PO005', 'Giám Đốc', '0', 0.4);
 
 INSERT INTO [dbo].[Criticism] ([criticismId], [criticismName], [judgement], [deleteStatus])
 VALUES
@@ -41,14 +41,6 @@ VALUES
 ('RE003', 'Thưởng dự án', 20000000, '0'),
 ('RE004', 'Hoàn thành deadline từ 1 đến 2 ngày', 100000, '0'),
 ('RE005', 'Hoàn thành deadline từ 3 ngày trở lên', 300000, '0');
-
-INSERT INTO [dbo].[PositionSalaries] ([postionId], [positionSalaryAllowance])
-VALUES
-('PO001', 0.03),
-('PO002', 0.07),
-('PO003', 0.15),
-('PO004', 0.25),
-('PO005', 0.4);
 
 INSERT INTO [dbo].[Specialties] ([specialtyId], [specialtyName], [baseSalary], [deleteStatus])
 VALUES
@@ -251,3 +243,10 @@ VALUES
 ('EM008', 'RE001', 'CR002', 1, 0, GETDATE()),
 ('EM009', 'RE001', 'CR002', 1, 0, GETDATE()),
 ('EM010', 'RE001', 'CR002', 1, 0, GETDATE());
+
+INSERT INTO EmployeeSalaries VALUES 
+('EM001', 10.5, 11366500, GETDATE(), 0),
+('EM002', 10.5, 9576500, GETDATE(), 0),
+('EM003', 10.5, 11366500, GETDATE(), 0),
+('EM004', 10.5, 7732800, GETDATE(), 0),
+('EM005', 10.5, 6533500, GETDATE(), 0);

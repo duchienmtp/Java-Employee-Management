@@ -1,21 +1,43 @@
 package BackEnd.AccountManagement;
 
+import BackEnd.EmployeeManagement.Employee;
+
 public class Account {
 
-    private String userId, username, password, email, avatar, authorization, createdAt;
-    private boolean status;
+    private Employee employee;
+    private String userId, username, password, email, avatar, authorization;
+    private boolean deleteStatus;
 
     public Account() {
     }
 
-    public Account(String userId, String username, String password, String email, String avatar, String authorization, String createdAt) {
+    public Account(String userId, String username, String password, String email, String avatar, String authorization) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.email = email;
         this.avatar = avatar;
         this.authorization = authorization;
-        this.createdAt = createdAt;
+        this.deleteStatus = false;
+    }
+
+    public Account(Employee employee, String username, String password, String email, String avatar,
+            String authorization) {
+        this.employee = employee;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.avatar = avatar;
+        this.authorization = authorization;
+        this.deleteStatus = false;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public String getUserId() {
@@ -66,20 +88,12 @@ public class Account {
         this.authorization = authorization;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public boolean getDeleteStatus() {
+        return deleteStatus;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setDeleteStatus(boolean deleteStatus) {
+        this.deleteStatus = deleteStatus;
     }
 
 }

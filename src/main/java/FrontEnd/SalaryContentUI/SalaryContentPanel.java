@@ -5,11 +5,18 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
+
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -17,18 +24,27 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class SalaryContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
+import BackEnd.EmployeeManagement.Employee;
+import BackEnd.EmployeeSalary.EmployeeSalary;
+import BackEnd.EmployeeSalary.EmployeeSalaryBUS;
+import FrontEnd.Redux.Redux;
+
+public class SalaryContentPanel extends javax.swing.JPanel
+        implements ActionListener, ListSelectionListener, MouseListener {
 
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
     ArrayList<Object> formData;
+    ArrayList<EmployeeSalary> employeeSalaryList;
 
     DetailSalaryInfo detailSalaryInfo;
+    EmployeeSalaryBUS employeeSalaryBUS = new EmployeeSalaryBUS();
 
     public SalaryContentPanel() {
         initComponents();
 
+        employeeSalaryList = employeeSalaryBUS.getAllEmployeeSalary();
         formData = new ArrayList<>();
 
         detailSalaryInfo = new DetailSalaryInfo();
@@ -42,6 +58,15 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         detailButton.addActionListener(this);
         cancelButton.addActionListener(this);
 
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement("Mã Nhân Viên");
+        for (Employee employee : Redux.employeeList) {
+            if (!employee.getDeleteStatus()) {
+                model.addElement(employee.getId());
+            }
+        }
+        employeeIDComboBox.setModel(model);
+
         jTable1.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -50,26 +75,40 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
         jTable1.setDefaultRenderer(Double.class, centerRenderer);
 
-        tableInit();
+        tableInit(employeeSalaryList);
         jTable1.getSelectionModel().addListSelectionListener(this);
-//        jTable1.addMouseListener(this);
         jPanel1.addMouseListener(this);
 
         setVisible(true);
     }
 
-    public void tableInit() {
-        Object[] newRowData = {1, "EM001", "Trần Đức Hiển", "4/2024", 30000000, "01/04/2024"};
+    public void tableInit(ArrayList<EmployeeSalary> employeeSalaryList) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
+        model.setRowCount(0);
+
+        for (int i = 0; i < employeeSalaryList.size(); i++) {
+            if (!employeeSalaryList.get(i).getDeleteStatus()) {
+                String date[] = new String[3];
+                date = employeeSalaryList.get(i).getCreatedAt().split("-");
+                model.addRow(new Object[] {
+                        i + 1,
+                        employeeSalaryList.get(i).getEmployee().getId(),
+                        employeeSalaryList.get(i).getEmployee().getFullName(),
+                        date[1],
+                        NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+                                .setRegion("DE").build())
+                                .format(employeeSalaryList.get(i).getNetSalary())
+                                + " VNĐ",
+                        employeeSalaryList.get(i).getCreatedAt()
+                });
+            }
         }
     }
 
     public ArrayList<Object> getDataFromForm() {
         String employeeID = (String) employeeIDComboBox.getSelectedItem(),
-                employeeName = employeeNameTextField.getText();
-        int monthOfSalary = Integer.parseInt((String) monthPickerComboBox.getSelectedItem());
+                employeeName = employeeNameTextField.getText(),
+                monthOfSalary = (String) monthPickerComboBox.getSelectedItem();
         double salary = Double.parseDouble((String) salarySumTextField.getText());
 
         return new ArrayList<>(Arrays.asList(employeeID, employeeName, monthOfSalary, salary));
@@ -122,32 +161,34 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
     public void fillDataSalaryForm(Object[] selectedRowData) {
         employeeIDComboBox.setSelectedItem((String) selectedRowData[1]);
         employeeNameTextField.setText((String) selectedRowData[2]);
-        monthPickerComboBox.setSelectedItem(Integer.toString((int) selectedRowData[3]));
-        salarySumTextField.setText(Integer.toString((int) selectedRowData[4]));
+        monthPickerComboBox.setSelectedItem(selectedRowData[3]);
+        salarySumTextField.setText(((String) selectedRowData[4]).replace(" VNĐ", "").replace(".", ""));
     }
 
     public void clearFormContent() {
         employeeIDComboBox.setSelectedItem("");
         employeeNameTextField.setText("");
-        monthPickerComboBox.setSelectedItem("1");
+        monthPickerComboBox.setSelectedItem(LocalDate.now().getMonthValue());
         salarySumTextField.setText("");
     }
 
     public boolean isFormFilled() {
-        return !(employeeNameTextField.getText().equals("") || ((String) monthPickerComboBox.getSelectedItem()).equals(""));
+        return !(employeeNameTextField.getText().equals("")
+                || ((String) monthPickerComboBox.getSelectedItem()).equals(""));
     }
 
     @Override
     public void valueChanged(ListSelectionEvent event) {
-        if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
+        if (!event.getValueIsAdjusting()) { // Ensure selection is stable
             selectionConfirmed = true;
             selectedRow = jTable1.getSelectedRow();
-            if (selectedRow >= 0) {  // Check if a row is selected
+            if (selectedRow >= 0) { // Check if a row is selected
                 selectedRowData = new Object[jTable1.getColumnCount()];
                 for (int i = 0; i < jTable1.getColumnCount(); i++) {
                     selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
                 }
                 fillDataSalaryForm(selectedRowData);
+                addButton.setEnabled(false);
             }
         }
     }
@@ -158,33 +199,40 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
             if (isFormFilled()) {
                 insertTableRow();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
                 deleteTableRow();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == updateButton) {
             if (selectedRow >= 0) {
                 if (isFormFilled()) {
                     updateTableRow();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == cancelButton) {
             clearFormContent();
         } else if (e.getSource() == detailButton) {
             if (selectedRow >= 0) {
                 detailSalaryInfo.setVisible(true);
+                // detailSalaryInfo.showFormWithData(selectedRowData);
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         }
+        addButton.setEnabled(true);
     }
 
     @Override
@@ -213,7 +261,10 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -292,7 +343,6 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         employeeIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
         employeeIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         employeeIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        employeeIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "EM001", "EM002", "EM003", " " }));
         employeeIDComboBox.setName("employeeIDComboBox"); // NOI18N
         employeeIDComboBox.setOpaque(true);
 
@@ -307,7 +357,8 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         monthPickerComboBox.setBackground(new java.awt.Color(204, 204, 204));
         monthPickerComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         monthPickerComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        monthPickerComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " " }));
+        monthPickerComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(
+                new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " " }));
         monthPickerComboBox.setName("monthPickerComboBox"); // NOI18N
         monthPickerComboBox.setOpaque(true);
 
@@ -368,82 +419,179 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         javax.swing.GroupLayout salaryFormLayout = new javax.swing.GroupLayout(salaryForm);
         salaryForm.setLayout(salaryFormLayout);
         salaryFormLayout.setHorizontalGroup(
-            salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(salaryFormLayout.createSequentialGroup()
-                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(monthPickerLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(salarySumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(employeeNameTextField)
-                    .addComponent(monthPickerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(salarySumTextField)))
-            .addGroup(salaryFormLayout.createSequentialGroup()
-                .addComponent(employeeIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(employeeIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, salaryFormLayout.createSequentialGroup()
-                .addComponent(detailButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(salaryFormLayout.createSequentialGroup()
-                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
-        );
+                salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(salaryFormLayout.createSequentialGroup()
+                                .addGroup(salaryFormLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.TRAILING,
+                                        false)
+                                        .addComponent(monthPickerLabel,
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(employeeNameLabel,
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(salarySumLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(salaryFormLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(employeeNameTextField)
+                                        .addComponent(monthPickerComboBox, 0,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(salarySumTextField)))
+                        .addGroup(salaryFormLayout.createSequentialGroup()
+                                .addComponent(employeeIDLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        109,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(employeeIDComboBox, 0,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, salaryFormLayout
+                                .createSequentialGroup()
+                                .addComponent(detailButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        160,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE)
+                                .addComponent(cancelButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        160,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(salaryFormLayout.createSequentialGroup()
+                                .addComponent(addButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        112,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(deleteButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        105,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(updateButton,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        119, Short.MAX_VALUE)));
         salaryFormLayout.setVerticalGroup(
-            salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, salaryFormLayout.createSequentialGroup()
-                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(employeeIDComboBox))
-                .addGap(18, 18, 18)
-                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(employeeNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(monthPickerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(monthPickerComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(salarySumTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(salarySumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(detailButton, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
-                .addGroup(salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(deleteButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+                salaryFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, salaryFormLayout
+                                .createSequentialGroup()
+                                .addGroup(salaryFormLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.TRAILING,
+                                        false)
+                                        .addComponent(employeeIDLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(employeeIDComboBox))
+                                .addGap(18, 18, 18)
+                                .addGroup(salaryFormLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                        false)
+                                        .addComponent(employeeNameLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(employeeNameTextField,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(salaryFormLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                        false)
+                                        .addComponent(monthPickerLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(monthPickerComboBox,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(salaryFormLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                        false)
+                                        .addComponent(salarySumTextField,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40, Short.MAX_VALUE)
+                                        .addComponent(salarySumLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(salaryFormLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                        false)
+                                        .addComponent(detailButton,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                50, Short.MAX_VALUE)
+                                        .addComponent(cancelButton,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        120, Short.MAX_VALUE)
+                                .addGroup(salaryFormLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                        false)
+                                        .addComponent(deleteButton,
+                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(updateButton,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(addButton,
+                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap()));
 
         javax.swing.GroupLayout salaryFormContainerLayout = new javax.swing.GroupLayout(salaryFormContainer);
         salaryFormContainer.setLayout(salaryFormContainerLayout);
         salaryFormContainerLayout.setHorizontalGroup(
-            salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(salaryFormContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(salaryLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(salaryForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(salaryFormContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(salaryFormContainerLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(salaryLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(salaryForm,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
+                                .addContainerGap()));
         salaryFormContainerLayout.setVerticalGroup(
-            salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(salaryFormContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(salaryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(salaryForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+                salaryFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(salaryFormContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(salaryLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(salaryForm,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE)
+                                .addContainerGap()));
 
         salaryTableContainer.setBackground(new java.awt.Color(255, 255, 255));
         salaryTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -458,26 +606,26 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         salaryTableLabel.setOpaque(true);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "STT", "ID", "Tên Nhân Viên", "Lương Tháng", "Thực Lãnh", "Ngày Tạo"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Object.class
+                },
+                new String[] {
+                        "STT", "ID", "Tên Nhân Viên", "Lương Tháng", "Thực Lãnh", "Ngày Tạo"
+                }) {
+            Class[] types = new Class[] {
+                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         jTable1.setName("degreeTable"); // NOI18N
@@ -487,70 +635,100 @@ public class SalaryContentPanel extends javax.swing.JPanel implements ActionList
         javax.swing.GroupLayout salaryTableContainerLayout = new javax.swing.GroupLayout(salaryTableContainer);
         salaryTableContainer.setLayout(salaryTableContainerLayout);
         salaryTableContainerLayout.setHorizontalGroup(
-            salaryTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(salaryTableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(salaryTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(salaryTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                salaryTableContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(salaryTableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(salaryTableContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(salaryTableLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(jScrollPane1,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                523, Short.MAX_VALUE))
+                                .addContainerGap()));
         salaryTableContainerLayout.setVerticalGroup(
-            salaryTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(salaryTableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(salaryTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+                salaryTableContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(salaryTableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(salaryTableLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane1,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        464,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap()));
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 0, Short.MAX_VALUE));
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 100, Short.MAX_VALUE));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(salaryFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(salaryTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50))
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(50, 50, 50)
+                                .addComponent(salaryFormContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32)
+                                .addComponent(salaryTableContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(50, 50, 50))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(salaryTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(salaryFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(50, 50, 50))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout
+                                .createSequentialGroup()
+                                .addComponent(jPanel2,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(50, 50, 50)
+                                .addGroup(jPanel1Layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                        false)
+                                        .addComponent(salaryTableContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(salaryFormContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(50, 50, 50)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
