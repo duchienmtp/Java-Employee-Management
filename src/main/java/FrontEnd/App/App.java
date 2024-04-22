@@ -1,7 +1,7 @@
 package FrontEnd.App;
 
 import BackEnd.EmployeeManagement.EmployeeBUS;
-import BackEnd.ProjectsManagemennt.ProjectBUS;
+import BackEnd.ProjectsManagement.ProjectBUS;
 import FrontEnd.AccountContentUI.AccountContentPanel;
 import FrontEnd.CriticismContentUI.CriticismContentPanel;
 import FrontEnd.DepartmentContentUI.DepartmentContentPanel;

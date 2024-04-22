@@ -289,6 +289,9 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="18" style="1"/>
             </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Danh s&#xe1;ch c&#xf4;ng t&#xe1;c c&#x1ee7;a nh&#xe2;n vi&#xea;n"/>
             <Property name="name" type="java.lang.String" value="tableLabel" noResource="true"/>
             <Property name="opaque" type="boolean" value="true"/>

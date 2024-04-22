@@ -21,12 +21,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import BackEnd.AssignmentManagement.AssignmentBUS;
 import BackEnd.EmployeeManagement.EmployeeBUS;
+import BackEnd.ProjectsManagement.Project;
+import BackEnd.ProjectsManagement.ProjectBUS;
 import BackEnd.EmployeeManagement.Employee;
-import BackEnd.ProjectsManagemennt.ProjectBUS;
-import BackEnd.ProjectsManagemennt.Project;
+
 import javax.swing.JTable;
-public class AssignmentManagementContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
-    
+
+public class AssignmentManagementContentPanel extends javax.swing.JPanel
+        implements ActionListener, ListSelectionListener, MouseListener {
+
     AssignmentForm assignmentForm;
     int selectedRow = -1;
     boolean selectionConfirmed;
@@ -34,6 +37,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
     AssignmentBUS asmB = new AssignmentBUS();
     ProjectBUS pjB = new ProjectBUS();
     EmployeeBUS emB = new EmployeeBUS();
+
     public AssignmentManagementContentPanel() {
         initComponents();
         tableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
@@ -46,7 +50,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
                 Color.BLACK // Text color
         );
         jPanel1.setBorder(titledBorder);
-        
+
         assignmentForm = new AssignmentForm();
 
         addButton.addActionListener(this);
@@ -66,7 +70,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
         jTable1.addMouseListener(this);
         addMouseListener(this);
         jTable1.addMouseListener(this);
-       
+
         setVisible(true);
     }
 
@@ -81,17 +85,19 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
             }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
-                
+
                 deleteTableRow(selectedRow);
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == editButton) {
             if (selectedRow >= 0) {
                 updateTableRow(selectedRowData);
                 assignmentForm.setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == importExcel) {
 
@@ -102,18 +108,26 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
             if (!tmp.isEmpty()) {
                 search(tmp);
             } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập họ tên hoặc id hoặc mã công tác của nhân viên cần tìm kiếm!");
+                JOptionPane.showMessageDialog(this,
+                        "Vui lòng nhập họ tên hoặc id hoặc mã công tác của nhân viên cần tìm kiếm!");
             }
         }
     }
+
     public void search(String searchText) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int check = 0;
         for (int i = 0; i < jTable1.getRowCount(); i++) {
             String btid = model.getValueAt(i, 1).toString().trim().toLowerCase();
-            String name = model.getValueAt(i, 3).toString().trim().toLowerCase(); // Lấy tên từ dòng hiện tại và chuyển thành chữ thường
-            String id = model.getValueAt(i, 2).toString().trim().toLowerCase(); // Lấy ID từ dòng hiện tại và chuyển thành chữ thường
-            if (name.contains(searchText.toLowerCase()) || id.contains(searchText.toLowerCase()) || btid.contains(searchText.toLowerCase())) { // So sánh tên hoặc ID với nội dung tìm kiếm
+            String name = model.getValueAt(i, 3).toString().trim().toLowerCase(); // Lấy tên từ dòng hiện
+            // tại và chuyển
+            // thành chữ thường
+            String id = model.getValueAt(i, 2).toString().trim().toLowerCase(); // Lấy ID từ dòng hiện tại
+            // và chuyển
+            // thành chữ thường
+            if (name.contains(searchText.toLowerCase()) || id.contains(searchText.toLowerCase())
+                    || btid.contains(searchText.toLowerCase())) { // So sánh tên hoặc ID với nội
+                // dung tìm kiếm
                 jTable1.getSelectionModel().setSelectionInterval(i, i); // Chọn dòng tìm thấy
                 Rectangle rect = jTable1.getCellRect(i, 0, true);
                 jTable1.scrollRectToVisible(rect); // Cuộn tới dòng tìm thấy
@@ -129,22 +143,24 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
     public void tableInit() {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
-        int index = 1;
-//        for(int i = 0 ; i < emB.getEmployeeList().size() ; i++){
-//            for(int j = 0 ; j < pjB.getProjectList().size() ; j++){
-//                if(emB.getEmployeeList().get(i).getDepartmentId().equalsIgnoreCase(pjB.getProjectList().get(j).getDepartmentId())){
-//                    model.addRow(new Object[]{index++,emB.getEmployeeList().get(i).getId(),emB.getEmployeeList().get(i).getFullName(),pjB.getProjectList().get(j).getProjectId(),pjB.getProjectList().get(j).getProjectName(),pjB.getProjectList().get(j).getPlace(),pjB.getProjectList().get(j).getBeginAt(),pjB.getProjectList().get(j).getCompleteAt()});
-//                }
-//            }
-//        } 
-        for(int i = 0 ; i < asmB.getAssignmentsList().size() ; i++){
-            model.addRow(new Object[]{i + 1, asmB.getAssignmentsList().get(i).getEmployeeId(), emB.getFullnameByEmployeeId(asmB.getAssignmentsList().get(i).getEmployeeId()),pjB.searchInProject(asmB.getAssignmentsList().get(i).getProjectId()).getProjectId(),pjB.searchInProject(asmB.getAssignmentsList().get(i).getProjectId()).getProjectName(),pjB.searchInProject(asmB.getAssignmentsList().get(i).getProjectId()).getPlace(),pjB.searchInProject(asmB.getAssignmentsList().get(i).getProjectId()).getBeginAt(),pjB.searchInProject(asmB.getAssignmentsList().get(i).getProjectId()).getCompleteAt()});
+        for (int i = 0; i < asmB.getAssignmentsList().size(); i++) {
+            model.addRow(new Object[] { i + 1,
+                    asmB.getAssignmentsList().get(i).getEmployee().getId(),
+                    asmB.getAssignmentsList().get(i).getEmployee().getFullName(),
+                    asmB.getAssignmentsList().get(i).getProject().getProjectId(),
+                    asmB.getAssignmentsList().get(i).getProject().getProjectName(),
+                    asmB.getAssignmentsList().get(i).getProject().getPlace(),
+                    Employee.formatBirthDateToStandardTypeToStandardType(
+                            asmB.getAssignmentsList().get(i).getProject().getBeginAt()),
+                    Employee.formatBirthDateToStandardTypeToStandardType(
+                            asmB.getAssignmentsList().get(i).getProject().getCompleteAt()) });
         }
     }
 
-    public static JTable getAssignmentManagementContentTable(){
+    public static JTable getAssignmentManagementContentTable() {
         return jTable1;
     }
+
     public void updateTableRow(Object[] rowData) {
         // Create a new ArrayList
         ArrayList<Object> dataList = new ArrayList<>(rowData.length);
@@ -157,10 +173,13 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
 
     public void deleteTableRow(int selectedRow) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        int confirmation = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn là muốn xóa thông tin công tác của nhân viên này? ", "Thông báo", JOptionPane.YES_NO_OPTION);
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có chắc chắn là muốn xóa thông tin công tác của nhân viên này? ", "Thông báo",
+                JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            Assignment asm = new Assignment(model.getValueAt(selectedRow, 1).toString(), model.getValueAt(selectedRow, 3).toString(), true);
+            Assignment asm = new Assignment(model.getValueAt(selectedRow, 1).toString(),
+                    model.getValueAt(selectedRow, 3).toString(), true);
             asmB.deleteAssignment(asm);
             model.removeRow(selectedRow);
             jTable1.revalidate();
@@ -169,10 +188,10 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
 
     @Override
     public void valueChanged(ListSelectionEvent event) {
-        if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
+        if (!event.getValueIsAdjusting()) { // Ensure selection is stable
             selectionConfirmed = true;
             selectedRow = jTable1.getSelectedRow();
-            if (selectedRow >= 0) {  // Check if a row is selected
+            if (selectedRow >= 0) { // Check if a row is selected
                 selectedRowData = new Object[jTable1.getColumnCount()];
                 for (int i = 0; i < jTable1.getColumnCount(); i++) {
                     selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
@@ -182,7 +201,9 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         addButton = new javax.swing.JButton();
@@ -236,7 +257,8 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
 
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
-        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo Tên", "Theo Mã Công Tác" }));
+        searchOptionComboBox
+                .setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo Tên", "Theo Mã Công Tác" }));
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
@@ -255,26 +277,28 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap()));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(searchOptionComboBox)
-                    .addComponent(searchTextField)
-                    .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(searchOptionComboBox)
+                                        .addComponent(searchTextField)
+                                        .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49,
+                                                Short.MAX_VALUE))
+                                .addContainerGap()));
 
         importExcel.setBackground(new java.awt.Color(13, 110, 253));
         importExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -290,32 +314,34 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
 
         tableLabel.setBackground(new java.awt.Color(255, 255, 255));
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
         tableLabel.setText("Danh sách công tác của nhân viên");
         tableLabel.setName("tableLabel"); // NOI18N
         tableLabel.setOpaque(true);
 
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "STT", "ID", "Họ và Tên", "Mã Công Tác", "Tên Công Tác", "Nơi Công Tác", "Ngày Bắt Đầu", "Ngày Kết Thúc"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+                },
+                new String[] {
+                        "STT", "ID", "Họ và Tên", "Mã Công Tác", "Tên Công Tác", "Nơi Công Tác", "Ngày Bắt Đầu",
+                        "Ngày Kết Thúc"
+                }) {
+            Class[] types = new Class[] {
+                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         jTable1.setRowHeight(40);
@@ -324,61 +350,77 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
         javax.swing.GroupLayout tableContainerLayout = new javax.swing.GroupLayout(tableContainer);
         tableContainer.setLayout(tableContainerLayout);
         tableContainerLayout.setHorizontalGroup(
-            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
-                    .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(25, 25, 25))
-        );
+                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(tableContainerLayout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addGroup(tableContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 811,
+                                                Short.MAX_VALUE)
+                                        .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(25, 25, 25)));
         tableContainerLayout.setVerticalGroup(
-            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
+                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(tableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(21, Short.MAX_VALUE)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(96, 96, 96)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(63, 63, 63)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69)
-                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
-                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(96, 96, 96))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(96, 96, 96)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(63, 63, 63)
+                                                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(69, 69, 69)
+                                                .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(62, 62, 62)
+                                                .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(96, 96, 96)));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
-                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(43, 43, 43)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(52, 52, 52)
+                                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(43, 43, 43)));
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

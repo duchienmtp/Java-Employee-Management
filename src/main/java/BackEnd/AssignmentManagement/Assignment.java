@@ -1,12 +1,46 @@
 package BackEnd.AssignmentManagement;
 
+import BackEnd.EmployeeManagement.Employee;
+import BackEnd.ProjectsManagement.Project;
+
 public class Assignment {
+    private Employee employee;
+    private Project project;
     private String employeeId, projectId;
     private boolean deleteStatus;
-    public Assignment(String employyeeId, String projectId, boolean deleteStatus) {
-        this.employeeId = employyeeId;
+
+    public Assignment(String employeeId, String projectId, boolean deleteStatus) {
+        this.employeeId = employeeId;
         this.projectId = projectId;
         this.deleteStatus = deleteStatus;
+    }
+
+    public Assignment(Employee employee, String projectId, boolean deleteStatus) {
+        this.employee = employee;
+        this.projectId = projectId;
+        this.deleteStatus = deleteStatus;
+    }
+
+    public Assignment(Employee employee, Project project, boolean deleteStatus) {
+        this.employee = employee;
+        this.project = project;
+        this.deleteStatus = deleteStatus;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     public String getEmployeeId() {

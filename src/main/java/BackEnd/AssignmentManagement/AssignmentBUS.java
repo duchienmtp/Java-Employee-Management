@@ -69,10 +69,10 @@ public class AssignmentBUS {
             }
         }
     }
-//    
-    public boolean checkInList(String employeeID,String projectId){
+
+    public boolean checkInList(String employeeID, String projectId){
         for(Assignment it : list){
-            if(it.getEmployeeId().equalsIgnoreCase(employeeID) && it.getProjectId().equalsIgnoreCase(projectId)){
+            if(it.getEmployee().getId().equalsIgnoreCase(employeeID) && it.getProjectId().equalsIgnoreCase(projectId)){
                 return true;
             }
         }

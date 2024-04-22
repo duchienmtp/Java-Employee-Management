@@ -1,7 +1,10 @@
-package BackEnd.ProjectsManagemennt;
+package BackEnd.ProjectsManagement;
+
+import BackEnd.DepartmentManagement.Department;
 
 public class Project {
     private String projectId, projectName, departmentId, beginAt, completeAt, place;
+    private Department department;
     private boolean deleteStatus;
 
     public String getProjectId() {
@@ -18,6 +21,14 @@ public class Project {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public String getDepartmentId() {
@@ -60,10 +71,22 @@ public class Project {
         this.deleteStatus = deleteStatus;
     }
 
-    public Project(String projectId, String projectName, String departmentId, String beginAt, String completeAt, String place, boolean deleteStatus) {
+    public Project(String projectId, String projectName, String departmentId, String beginAt, String completeAt,
+            String place, boolean deleteStatus) {
         this.projectId = projectId;
         this.projectName = projectName;
         this.departmentId = departmentId;
+        this.beginAt = beginAt;
+        this.completeAt = completeAt;
+        this.place = place;
+        this.deleteStatus = deleteStatus;
+    }
+
+    public Project(String projectId, String projectName, Department department, String beginAt, String completeAt,
+            String place, boolean deleteStatus) {
+        this.projectId = projectId;
+        this.projectName = projectName;
+        this.department = department;
         this.beginAt = beginAt;
         this.completeAt = completeAt;
         this.place = place;

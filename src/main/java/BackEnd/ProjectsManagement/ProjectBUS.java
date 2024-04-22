@@ -1,18 +1,26 @@
-package BackEnd.ProjectsManagemennt;
+package BackEnd.ProjectsManagement;
+
 import java.util.*;
+
+import javax.swing.JOptionPane;
+
 public class ProjectBUS {
     private ArrayList<Project> list = new ArrayList<>();
     private ProjectDAO pjD = new ProjectDAO();
-    public ProjectBUS(){
+
+    public ProjectBUS() {
         list = pjD.getAllProject();
     }
-    public void readProject(){
+
+    public void readProject() {
         list = pjD.getAllProject();
     }
-    public ArrayList<Project> getProjectList(){
+
+    public ArrayList<Project> getProjectList() {
         return list;
     }
-    public String getNextID(){
+
+    public String getNextID() {
         String lastID = list.get(list.size() - 1).getProjectId();
         String characterPart = lastID.substring(0, 2);
         int numberPart = Integer.parseInt(lastID.substring(2));
@@ -20,6 +28,7 @@ public class ProjectBUS {
         String nextID = characterPart + String.format("%03d", numberPart);
         return nextID;
     }
+
     public Project getProjectById(String projectId) {
         for (Project pj : list) {
             if (pj.getProjectId().equalsIgnoreCase(projectId)) {
@@ -34,6 +43,7 @@ public class ProjectBUS {
 
         if (ok) {
             list.add(pj);
+            JOptionPane.showMessageDialog(null, "Thêm mới thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -47,6 +57,7 @@ public class ProjectBUS {
                     break;
                 }
             }
+            JOptionPane.showMessageDialog(null, "Cập nhật thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -54,19 +65,16 @@ public class ProjectBUS {
         Boolean ok = pjD.deleteProject(pj);
 
         if (ok) {
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getProjectId().equals(pj)) {
-                    list.remove(i);
-                    break;
-                }
-            }
+            this.readProject();
+            JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    public Project searchInProject(String pjId){
-        if(pjD.searchInProject(pjId)!=null){
+
+    public Project searchInProject(String pjId) {
+        if (pjD.searchInProject(pjId) != null) {
             return pjD.searchInProject(pjId);
         }
         return null;
     }
-    
+
 }

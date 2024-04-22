@@ -109,8 +109,8 @@ CREATE TABLE [Projects] (
   [projectId] nvarchar(255) PRIMARY KEY,
   [projectName] nvarchar(255) not null,
   [departmentId] nvarchar(255) not null,
-  [beginAt] DATETIME not null,
-  [completedAt] DATETIME not null,
+  [beginAt] DATE not null,
+  [completedAt] DATE not null,
   [place] nvarchar(255) not null,
   [deleteStatus] bit not null
 )
