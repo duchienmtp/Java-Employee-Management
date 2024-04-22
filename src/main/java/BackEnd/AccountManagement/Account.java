@@ -1,7 +1,10 @@
 package BackEnd.AccountManagement;
 
+import BackEnd.EmployeeManagement.Employee;
+
 public class Account {
 
+    private Employee employee;
     private String userId, username, password, email, avatar, authorization;
     private boolean deleteStatus;
 
@@ -16,6 +19,25 @@ public class Account {
         this.avatar = avatar;
         this.authorization = authorization;
         this.deleteStatus = false;
+    }
+
+    public Account(Employee employee, String username, String password, String email, String avatar,
+            String authorization) {
+        this.employee = employee;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.avatar = avatar;
+        this.authorization = authorization;
+        this.deleteStatus = false;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public String getUserId() {

@@ -1,18 +1,17 @@
 package BackEnd.AccountManagement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class AccountBUS {
     private ArrayList<Account> accountList = new ArrayList<>();
     private AccountDAO accountDAO = new AccountDAO();
+
     public AccountBUS() {
         accountList = accountDAO.getAllAccount();
     }
-public void readDB() {
+
+    public void readDB() {
         accountList = accountDAO.getAllAccount();
     }
 
@@ -21,7 +20,7 @@ public void readDB() {
     }
 
     public String getNextID() {
-        String lastID = accountList.get(accountList.size() - 1).getUserId();
+        String lastID = accountList.get(accountList.size() - 1).getEmployee().getId();
         String characterPart = lastID.substring(0, 2);
         int numberPart = Integer.parseInt(lastID.substring(2));
         numberPart++;
@@ -46,7 +45,7 @@ public void readDB() {
         }
         return ok;
     }
-    
+
     public void updateAccount(Account account) {
         Boolean ok = accountDAO.updateAccount(account);
 
@@ -60,20 +59,20 @@ public void readDB() {
         }
     }
 
-//    public void deleteAccount(Account account) {
-//        Boolean ok = accountDAO.deleteAccount(account);
-//
-//        if (ok) {
-//            for (int i = 0; i < accountList.size(); i++) {
-//                if (accountList.get(i).getUserId().equals(account.getUserId())) {
-//                    accountList.remove(i);
-//                    break;
-//                }
-//            }
-//        }
-//    }
+    // public void deleteAccount(Account account) {
+    // Boolean ok = accountDAO.deleteAccount(account);
+    //
+    // if (ok) {
+    // for (int i = 0; i < accountList.size(); i++) {
+    // if (accountList.get(i).getUserId().equals(account.getUserId())) {
+    // accountList.remove(i);
+    // break;
+    // }
+    // }
+    // }
+    // }
     public void deleteAccount(Account account) {
-    // Kiểm tra tính hợp lệ của tham số đầu vào
+        // Kiểm tra tính hợp lệ của tham số đầu vào
         if (account == null) {
             return;
         }

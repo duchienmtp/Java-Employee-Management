@@ -6,13 +6,15 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import BackEnd.ConnectDB.ConnectDB;
+import BackEnd.EmployeeManagement.EmployeeDAO;
 
 public class AccountDAO {
-    
+
     ConnectDB dbConnection;
- 
+
     public AccountDAO() {
     }
+
     public ArrayList<Account> getAllAccount() {
         ArrayList<Account> listAccount = new ArrayList<>();
         dbConnection = new ConnectDB();
@@ -28,7 +30,8 @@ public class AccountDAO {
                             email = rs.getString("email"),
                             avatar = rs.getString("avatar"),
                             authorization = rs.getString("authorization");
-                    listAccount.add(new Account(userId, username, password, email, avatar, authorization));
+                    listAccount.add(new Account(new EmployeeDAO().getEmployeeById(userId), username, password, email,
+                            avatar, authorization));
                 }
             }
         } catch (SQLException ex) {
@@ -42,27 +45,34 @@ public class AccountDAO {
     public Boolean addNewAccount(Account account) {
         dbConnection = new ConnectDB();
         Boolean ok = false;
-       try {
-           // JOptionPane.showMessageDialog(, "im here", "CẢNH BÁO 12", JOptionPane.INFORMATION_MESSAGE);
-            String query = "INSERT INTO Account (userId, username, password, email, [authorization], deleteStatus) VALUES ('" + account.getUserId() + "', '" + account.getUsername()
-                  + "', '" + account.getPassword() + "', '" + account.getEmail() + "', '" + account.getAuthorization() + "', '" + account.getDeleteStatus() + "')";
+        try {
+            // JOptionPane.showMessageDialog(, "im here", "CẢNH BÁO 12",
+            // JOptionPane.INFORMATION_MESSAGE);
+            String query = "INSERT INTO Account (userId, username, password, email, [authorization], deleteStatus) VALUES ('"
+                    + account.getEmployee().getId() + "', '" + account.getUsername()
+                    + "', '" + account.getPassword() + "', '" + account.getEmail() + "', '" + account.getAuthorization()
+                    + "', '" + account.getDeleteStatus() + "')";
             ok = dbConnection.sqlUpdate(query);
         } finally {
             dbConnection.closeConnect();
         }
-//    Boolean ok = dbConnection.sqlUpdate("INSERT INTO Account (`userId`, `username`, `password`, `email`, 'authorization') VALUES ('"
-//                + account.getUserId() + "', '" + account.getUsername() + "', '" + account.getPassword() + "', '" + account.getEmail() + "', '" + account.getAuthorization()+"');");
-//        dbConnection.closeConnect();
-        return ok; 
-            
+        // Boolean ok = dbConnection.sqlUpdate("INSERT INTO Account (`userId`,
+        // `username`, `password`, `email`, 'authorization') VALUES ('"
+        // + account.getUserId() + "', '" + account.getUsername() + "', '" +
+        // account.getPassword() + "', '" + account.getEmail() + "', '" +
+        // account.getAuthorization()+"');");
+        // dbConnection.closeConnect();
+        return ok;
+
     }
 
     public Boolean updateAccount(Account account) {
         dbConnection = new ConnectDB();
         Boolean ok = false;
         try {
-            String query = "UPDATE Account SET (username, password, email,[authorization] ) = '" + account.getUsername()+ account.getPassword()+ account.getEmail()+ account.getAuthorization() + "' WHERE userId = '"
-                    + account.getUserId() + "'";
+            String query = "UPDATE Account SET (username, password, email,[authorization] ) = '" + account.getUsername()
+                    + account.getPassword() + account.getEmail() + account.getAuthorization() + "' WHERE userId = '"
+                    + account.getEmployee().getId() + "'";
             ok = dbConnection.sqlUpdate(query);
         } finally {
             dbConnection.closeConnect();
@@ -74,7 +84,7 @@ public class AccountDAO {
         dbConnection = new ConnectDB();
         Boolean ok = false;
         try {
-            String query = "UPDATE Account SET deleteStatus = 1 WHERE userId = '" + account.getUserId() + "'";
+            String query = "UPDATE Account SET deleteStatus = 1 WHERE userId = '" + account.getEmployee().getId() + "'";
             ok = dbConnection.sqlUpdate(query);
         } finally {
             dbConnection.closeConnect();
