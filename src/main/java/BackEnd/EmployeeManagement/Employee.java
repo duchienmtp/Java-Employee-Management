@@ -273,5 +273,4 @@ public class Employee {
                 ", deleteStatus='" + getDeleteStatus() + "'" +
                 "}";
     }
-
 }

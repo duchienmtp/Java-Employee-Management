@@ -1,5 +1,6 @@
 package FrontEnd.ProjectContentUI;
 
+import BackEnd.AssignmentManagement.Assignment;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -18,19 +19,24 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
+import BackEnd.AssignmentManagement.AssignmentBUS;
+import BackEnd.EmployeeManagement.EmployeeBUS;
+import BackEnd.EmployeeManagement.Employee;
+import BackEnd.ProjectsManagemennt.ProjectBUS;
+import BackEnd.ProjectsManagemennt.Project;
+import javax.swing.JTable;
 public class AssignmentManagementContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
-
+    
     AssignmentForm assignmentForm;
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
-
+    AssignmentBUS asmB = new AssignmentBUS();
+    ProjectBUS pjB = new ProjectBUS();
+    EmployeeBUS emB = new EmployeeBUS();
     public AssignmentManagementContentPanel() {
         initComponents();
-
         tableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
-
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1), // Line color and stroke size
                 "Tìm kiếm",
@@ -40,7 +46,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
                 Color.BLACK // Text color
         );
         jPanel1.setBorder(titledBorder);
-
+        
         assignmentForm = new AssignmentForm();
 
         addButton.addActionListener(this);
@@ -60,7 +66,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
         jTable1.addMouseListener(this);
         addMouseListener(this);
         jTable1.addMouseListener(this);
-
+       
         setVisible(true);
     }
 
@@ -75,6 +81,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
             }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
+                
                 deleteTableRow(selectedRow);
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
@@ -99,7 +106,6 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
             }
         }
     }
-
     public void search(String searchText) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int check = 0;
@@ -121,13 +127,24 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
     }
 
     public void tableInit() {
-        Object[] newRowData = {1, "EM001", "Lữ Thị Cẩm Tri", "BT001", "Lập trình Java", "Hà Nội", "10/10/2023", "10/02/2024"};
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
+        model.setRowCount(0);
+        int index = 1;
+//        for(int i = 0 ; i < emB.getEmployeeList().size() ; i++){
+//            for(int j = 0 ; j < pjB.getProjectList().size() ; j++){
+//                if(emB.getEmployeeList().get(i).getDepartmentId().equalsIgnoreCase(pjB.getProjectList().get(j).getDepartmentId())){
+//                    model.addRow(new Object[]{index++,emB.getEmployeeList().get(i).getId(),emB.getEmployeeList().get(i).getFullName(),pjB.getProjectList().get(j).getProjectId(),pjB.getProjectList().get(j).getProjectName(),pjB.getProjectList().get(j).getPlace(),pjB.getProjectList().get(j).getBeginAt(),pjB.getProjectList().get(j).getCompleteAt()});
+//                }
+//            }
+//        } 
+        for(int i = 0 ; i < asmB.getAssignmentsList().size() ; i++){
+            model.addRow(new Object[]{i + 1, asmB.getAssignmentsList().get(i).getEmployeeId(), emB.getFullnameByEmployeeId(asmB.getAssignmentsList().get(i).getEmployeeId()),pjB.searchInProject(asmB.getAssignmentsList().get(i).getProjectId()).getProjectId(),pjB.searchInProject(asmB.getAssignmentsList().get(i).getProjectId()).getProjectName(),pjB.searchInProject(asmB.getAssignmentsList().get(i).getProjectId()).getPlace(),pjB.searchInProject(asmB.getAssignmentsList().get(i).getProjectId()).getBeginAt(),pjB.searchInProject(asmB.getAssignmentsList().get(i).getProjectId()).getCompleteAt()});
         }
     }
 
+    public static JTable getAssignmentManagementContentTable(){
+        return jTable1;
+    }
     public void updateTableRow(Object[] rowData) {
         // Create a new ArrayList
         ArrayList<Object> dataList = new ArrayList<>(rowData.length);
@@ -143,6 +160,8 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
         int confirmation = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn là muốn xóa thông tin công tác của nhân viên này? ", "Thông báo", JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            Assignment asm = new Assignment(model.getValueAt(selectedRow, 1).toString(), model.getValueAt(selectedRow, 3).toString(), true);
+            asmB.deleteAssignment(asm);
             model.removeRow(selectedRow);
             jTable1.revalidate();
         }
@@ -223,7 +242,6 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
 
         searchTextField.setBackground(new java.awt.Color(204, 204, 204));
         searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        searchTextField.setForeground(new java.awt.Color(0, 0, 0));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
 
@@ -272,7 +290,6 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
 
         tableLabel.setBackground(new java.awt.Color(255, 255, 255));
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
         tableLabel.setText("Danh sách công tác của nhân viên");
         tableLabel.setName("tableLabel"); // NOI18N
         tableLabel.setOpaque(true);
@@ -372,7 +389,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel impleme
     private javax.swing.JButton importExcel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
+    public static javax.swing.JTable jTable1;
     private javax.swing.JButton searchButton;
     private javax.swing.JComboBox<String> searchOptionComboBox;
     private javax.swing.JTextField searchTextField;

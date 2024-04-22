@@ -1,5 +1,6 @@
 package FrontEnd.ProjectContentUI;
 
+import BackEnd.ProjectsManagemennt.*;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class ProjectManagementContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
 
+    ProjectBUS pjB = new ProjectBUS();
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
@@ -63,14 +65,14 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         jTable1.getSelectionModel().addListSelectionListener(this);
 //        jTable1.addMouseListener(this);
         jPanel1.addMouseListener(this);
+        
         setVisible(true);
     }
 
     public void tableInit() {
-        Object[] newRowData = {1, "DP001", "Java", "Hà Nội", "01/01/2024", "02/02/2024", "blablala"};
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
+        for (int i = 0; i < pjB.getProjectList().size(); i++) {
+            model.addRow(new Object[]{i + 1, pjB.getProjectList().get(i).getProjectId(),pjB.getProjectList().get(i).getProjectName(),pjB.getProjectList().get(i).getPlace(),pjB.getProjectList().get(i).getBeginAt(),pjB.getProjectList().get(i).getCompleteAt(),pjB.getProjectList().get(i).getDepartmentId()});
         }
     }
 
@@ -86,13 +88,16 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
 
     public void insertTableRow() {
         formData = getDataFromForm();
-
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Bạn có muốn thêm mới dữ liệu dự án với ID " + formData.get(0) + " ?",
                 "THÊM MỚI ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            model.addRow(new Object[]{jTable1.getRowCount() + 1, projectIDTextField.getText(),projectNameTextField.getText(),projectPlaceTextField.getText(),startDatePicker.getText(),endDatePicker.getText(),projectPlaceTextField.getText()});
+            Project tmp = new Project(projectIDTextField.getText().toString(),projectNameTextField.getText().toString(),DepartmentIdCombo.getSelectedItem().toString(),startDatePicker.getText().toString(),endDatePicker.getText().toString(),projectPlaceTextField.getText().toString(),false);
+            pjB.addProject(tmp);
             clearFormContent();
             jTable1.revalidate();
         }
@@ -107,6 +112,8 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            Project tmp = new Project(projectIDTextField.getText().toString(),projectNameTextField.getText().toString(),DepartmentIdCombo.getSelectedItem().toString(),startDatePicker.getText().toString(),endDatePicker.getText().toString(),projectPlaceTextField.getText().toString(),false);
+            pjB.updateProject(tmp);
             clearFormContent();
             jTable1.revalidate();
         }
@@ -122,6 +129,8 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            String pjId = model.getValueAt(selectedRow, 1).toString();
+            pjB.deleteProject(pjId);
             model.removeRow(selectedRow);
             clearFormContent();
             jTable1.revalidate();
@@ -241,6 +250,8 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         endDatePicker = new com.github.lgooddatepicker.components.DatePicker();
         projectPlaceTextField = new javax.swing.JTextField();
         projectPlaceLabel = new javax.swing.JLabel();
+        label1 = new java.awt.Label();
+        DepartmentIdCombo = new javax.swing.JComboBox<>();
         projectTableContainer = new javax.swing.JPanel();
         projectTableLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -259,7 +270,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         projectLabel.setText("Dự Án");
         projectLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        projectLabel.setForeground(new java.awt.Color(0, 0, 0));
         projectLabel.setName("projectLabel"); // NOI18N
         projectLabel.setOpaque(true);
 
@@ -267,7 +277,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         projectIDLabel.setText("Mã Dự Án :");
         projectIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        projectIDLabel.setForeground(new java.awt.Color(0, 0, 0));
         projectIDLabel.setName("projectIDLabel"); // NOI18N
         projectIDLabel.setOpaque(true);
 
@@ -275,15 +284,11 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         employeeNameLabel.setText("Tên Dự Án :");
         employeeNameLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameLabel.setName("employeeNameLabel"); // NOI18N
         employeeNameLabel.setOpaque(true);
 
         projectNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         projectNameTextField.setBackground(new java.awt.Color(204, 204, 204));
-        projectNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        projectNameTextField.setEnabled(false);
-        projectNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         projectNameTextField.setName("projectNameTextField"); // NOI18N
         projectNameTextField.setOpaque(true);
 
@@ -317,14 +322,12 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         monthPickerLabel.setText("Bắt Đầu Từ :");
         monthPickerLabel.setBackground(new java.awt.Color(255, 255, 255));
         monthPickerLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        monthPickerLabel.setForeground(new java.awt.Color(0, 0, 0));
         monthPickerLabel.setName("monthPickerLabel"); // NOI18N
         monthPickerLabel.setOpaque(true);
 
         salarySumLabel.setText("Kết Thúc :");
         salarySumLabel.setBackground(new java.awt.Color(255, 255, 255));
         salarySumLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        salarySumLabel.setForeground(new java.awt.Color(0, 0, 0));
         salarySumLabel.setName("salarySumLabel"); // NOI18N
         salarySumLabel.setOpaque(true);
 
@@ -337,8 +340,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
 
         projectIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         projectIDTextField.setBackground(new java.awt.Color(204, 204, 204));
-        projectIDTextField.setEnabled(false);
-        projectIDTextField.setForeground(new java.awt.Color(0, 0, 0));
         projectIDTextField.setName("projectIDTextField"); // NOI18N
         projectIDTextField.setOpaque(true);
 
@@ -349,8 +350,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
 
         projectPlaceTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         projectPlaceTextField.setBackground(new java.awt.Color(204, 204, 204));
-        projectPlaceTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        projectPlaceTextField.setForeground(new java.awt.Color(0, 0, 0));
         projectPlaceTextField.setName("projectPlaceTextField"); // NOI18N
         projectPlaceTextField.setOpaque(true);
 
@@ -358,9 +357,11 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         projectPlaceLabel.setText("Dự Án Tại :");
         projectPlaceLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectPlaceLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        projectPlaceLabel.setForeground(new java.awt.Color(0, 0, 0));
         projectPlaceLabel.setName("projectPlaceLabel"); // NOI18N
         projectPlaceLabel.setOpaque(true);
+
+        label1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        label1.setText("Phòng quản lí: ");
 
         javax.swing.GroupLayout projectFormContainerLayout = new javax.swing.GroupLayout(projectFormContainer);
         projectFormContainer.setLayout(projectFormContainerLayout);
@@ -369,7 +370,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
             .addGroup(projectFormContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(projectLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(projectFormContainerLayout.createSequentialGroup()
                         .addComponent(addButton)
@@ -396,7 +396,12 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                     .addGroup(projectFormContainerLayout.createSequentialGroup()
                         .addComponent(projectPlaceLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(projectPlaceTextField)))
+                        .addComponent(projectPlaceTextField))
+                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(projectFormContainerLayout.createSequentialGroup()
+                        .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24)
+                        .addComponent(DepartmentIdCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         projectFormContainerLayout.setVerticalGroup(
@@ -425,6 +430,10 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                     .addComponent(projectPlaceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                     .addComponent(projectPlaceTextField))
                 .addGap(18, 18, 18)
+                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(label1, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                    .addComponent(DepartmentIdCombo))
+                .addGap(22, 22, 22)
                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -442,7 +451,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         projectTableLabel.setText("Bảng Dự Án");
         projectTableLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        projectTableLabel.setForeground(new java.awt.Color(0, 0, 0));
         projectTableLabel.setName("projectTableLabel"); // NOI18N
         projectTableLabel.setOpaque(true);
 
@@ -514,9 +522,9 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(40, 40, 40)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(projectFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
+                    .addComponent(projectFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
                     .addComponent(projectTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -532,6 +540,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> DepartmentIdCombo;
     private javax.swing.JButton addButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteButton;
@@ -540,6 +549,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private java.awt.Label label1;
     private javax.swing.JLabel monthPickerLabel;
     private javax.swing.JPanel projectFormContainer;
     private javax.swing.JLabel projectIDLabel;

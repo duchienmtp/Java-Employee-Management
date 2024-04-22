@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
-
+import java.util.*;
 public class ConnectDB {
 
     // Tự setting theo máy của mỗi người

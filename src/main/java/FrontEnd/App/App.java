@@ -1,5 +1,7 @@
 package FrontEnd.App;
 
+import BackEnd.EmployeeManagement.EmployeeBUS;
+import BackEnd.ProjectsManagemennt.ProjectBUS;
 import FrontEnd.AccountContentUI.AccountContentPanel;
 import FrontEnd.CriticismContentUI.CriticismContentPanel;
 import FrontEnd.DepartmentContentUI.DepartmentContentPanel;
@@ -667,6 +669,15 @@ public class App extends javax.swing.JFrame implements MouseListener {
 
     public static void main(String args[]) {
         FlatDarkLaf.setup();
+//        ProjectBUS bus = new ProjectBUS();
+//        for(int i = 0 ; i < bus.getProjectList().size() ; i++){
+//            System.out.println(bus.getProjectList().get(i).getDepartmentId());
+//        }
+//        System.out.println("----------");
+//        EmployeeBUS emB = new EmployeeBUS();
+//        for(int i = 0 ; i < emB.getEmployeeList().size() ; i++){
+//            System.out.println(emB.getEmployeeList().get(i).getDepartmentId());
+//        }
         java.awt.EventQueue.invokeLater(() -> {
             new App().setVisible(true);
         });
