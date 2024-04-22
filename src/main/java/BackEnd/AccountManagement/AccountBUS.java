@@ -20,7 +20,7 @@ public class AccountBUS {
     }
 
     public String getNextID() {
-        String lastID = accountList.get(accountList.size() - 1).getUserId();
+        String lastID = accountList.get(accountList.size() - 1).getEmployee().getId();
         String characterPart = lastID.substring(0, 2);
         int numberPart = Integer.parseInt(lastID.substring(2));
         numberPart++;

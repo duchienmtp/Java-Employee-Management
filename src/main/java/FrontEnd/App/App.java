@@ -69,8 +69,8 @@ public class App extends javax.swing.JFrame implements MouseListener {
         menuAccountItem.setBorder(new CompoundBorder(menuAccountBorder, margin));
         menuStatisticItem.setBorder(new CompoundBorder(menuStatisticBorder, margin));
 
-        userInfoContentPanel = new UserInfoContentPanel();
         employeeContentPanel = new EmployeeContentPanel();
+        userInfoContentPanel = new UserInfoContentPanel();
         departmentContentPanel = new DepartmentContentPanel();
         salaryContentPanel = new SalaryContentPanel();
         travelContentPanel = new AssignmentContentPanel();

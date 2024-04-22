@@ -1,8 +1,9 @@
 package FrontEnd.AccountContentUI;
 
-
 import BackEnd.AccountManagement.Account;
 import BackEnd.AccountManagement.AccountBUS;
+import FrontEnd.Redux.Redux;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -25,6 +26,7 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class AccountForm extends javax.swing.JFrame implements ActionListener, WindowListener {
+
     AccountBUS accountBUS = new AccountBUS();
     JFileChooser fileChooser;
     ArrayList<Object> formData;
@@ -33,13 +35,13 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
     ImageIcon imageIcon = null;
     private Consumer<ArrayList<Object>> submitCallback;
 
-    public void setSubmitCallback(Consumer<ArrayList<Object>>  callback) {
+    public void setSubmitCallback(Consumer<ArrayList<Object>> callback) {
         this.submitCallback = callback;
     }
 
     public AccountForm() {
         initComponents();
-        
+
         formData = new ArrayList<>();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -57,28 +59,27 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         fileChooser.setFileFilter(imageFilter);
 
         deleteFileButton.setVisible(false);
-        
+
         formInit();
-        
+
         fileChooserButton.addActionListener(this);
         confirmButton.addActionListener(this);
         declineButton.addActionListener(this);
         addWindowListener(this);
     }
+
     public void formInit() {
         employeeIDTextField.setText(accountBUS.getNextID());
     }
-    
 
     public ArrayList<Object> getDataFromForm() {
         String employeeID = employeeIDTextField.getText(),
                 employeeName = employeeNameTextField.getText(),
                 password = String.valueOf(passwordField.getPassword()),
                 email = emailTextField.getText(),
-                
                 confirmPassword = String.valueOf(confirmPasswordField.getPassword()),
                 selectedValue = "";
-        
+
         Enumeration<AbstractButton> allRadioButton = buttonGroup1.getElements();
         while (allRadioButton.hasMoreElements()) {
             JRadioButton temp = (JRadioButton) allRadioButton.nextElement();
@@ -86,11 +87,14 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                 selectedValue = temp.getName();
             }
         }
-//        String qlnv =   employeeID + ' ' + employeeName +' '+ password+' ' + email +' '+confirmPassword+' '+selectedValue;
-//        JOptionPane.showMessageDialog(this,qlnv , "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
-        return new ArrayList<>(Arrays.asList( employeeID, employeeName, password, email,fileName,confirmPassword,
+        // String qlnv = employeeID + ' ' + employeeName +' '+ password+' ' + email +'
+        // '+confirmPassword+' '+selectedValue;
+        // JOptionPane.showMessageDialog(this,qlnv , "CẢNH BÁO",
+        // JOptionPane.INFORMATION_MESSAGE);
+        return new ArrayList<>(Arrays.asList(employeeID, employeeName, password, email, fileName, confirmPassword,
                 selectedValue));
     }
+
     public void insertTableRow() {
         formData = getDataFromForm();
 
@@ -100,13 +104,15 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            accountBUS.addAccount(new Account((String) formData.get(0), (String) formData.get(1),(String) formData.get(2),(String) formData.get(3),(String) formData.get(4),(String) formData.get(6)));
+            accountBUS.addAccount(new Account(Redux.getEmployeeById((String) formData.get(0)), (String) formData.get(1),
+                    (String) formData.get(2), (String) formData.get(3), (String) formData.get(4),
+                    (String) formData.get(6)));
             clearFormData();
-            //jTable1.revalidate();
-            //tableInit(accountBUS.getAccountList());
+            // jTable1.revalidate();
+            // tableInit(accountBUS.getAccountList());
         }
     }
-    
+
     public void handleSubmitForm() {
         formData = getDataFromForm();
 
@@ -153,7 +159,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
     public void showFormWithData(ArrayList<Object> data) {
         if (data != null) {
-            //formSetEnable(false);
+            // formSetEnable(false);
             // if (data.get(2) != null) {
             //// avatarLabel.setIcon(icon);
             // } else {
@@ -169,14 +175,13 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                 ButtonModel employeeRadioButtonModel = employeeRadioButton.getModel();
                 buttonGroup1.setSelected(employeeRadioButtonModel, true);
             }
-            
-            
+
         }
     }
 
     public void clearFormData() {
         formInit();
-        //formSetEnable(true);
+        // formSetEnable(true);
         avatarLabel.setText("Không có tệp nào được chọn");
         avatarContainer.setIcon(null);
         emailTextField.setText("");
@@ -188,15 +193,14 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         buttonGroup1.setSelected(employeeRadioButtonModel, false);
     }
 
-//    public void formSetEnable(boolean isEnable) {
-//        //fileChooserButton.setEnabled(isEnable);
-//        employeeIDComboBox.setEnabled(isEnable);
-//        //employeeNameTextField.setEnabled(isEnable);
-//        //emailTextField.setEnabled(isEnable);
-//        //passwordField.setEnabled(isEnable);
-//        //confirmPasswordField.setEnabled(isEnable);
-//    }
-
+    // public void formSetEnable(boolean isEnable) {
+    // //fileChooserButton.setEnabled(isEnable);
+    // employeeIDComboBox.setEnabled(isEnable);
+    // //employeeNameTextField.setEnabled(isEnable);
+    // //emailTextField.setEnabled(isEnable);
+    // //passwordField.setEnabled(isEnable);
+    // //confirmPasswordField.setEnabled(isEnable);
+    // }
     public boolean isFormFilled() {
         return !(employeeNameTextField.getText().equals("")
                 || emailTextField.getText().equals("")
@@ -205,6 +209,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                 || (!adminRadioButton.isSelected()
                 && !employeeRadioButton.isSelected()));
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == fileChooserButton) {
@@ -231,7 +236,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                 avatarContainer.setIcon(imageIcon);
             }
         } else if (e.getSource() == confirmButton) {
-             if (isFormFilled()) {
+            if (isFormFilled()) {
                 if (submitCallback != null) {
                     ArrayList<Object> data = getDataFromForm();
                     JOptionPane.showMessageDialog(this, data, "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
@@ -239,10 +244,10 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                     dispose();
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy nhập đủ thông tin!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy nhập đủ thông tin!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
-            }
-         else if (e.getSource() == declineButton) {
+        } else if (e.getSource() == declineButton) {
             if (isFormFilled()) {
                 cancelSubmitForm();
             } else {
@@ -257,7 +262,9 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
             deleteFileButton.setVisible(false);
         }
     }
+
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
@@ -295,6 +302,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
         jLabel6.setBackground(new java.awt.Color(255, 255, 255));
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setLabelFor(fileChooserPanel);
         jLabel6.setText("Chọn Hình Ảnh :");
 
@@ -310,6 +318,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         fileChooserButton.setPreferredSize(new java.awt.Dimension(91, 36));
 
         avatarLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        avatarLabel.setForeground(new java.awt.Color(0, 0, 0));
         avatarLabel.setText("Không có tệp nào được chọn");
         avatarLabel.setName("avatarLabel"); // NOI18N
 
@@ -330,12 +339,14 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
         employeeIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        employeeIDLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeIDLabel.setText("Mã Nhân Viên :");
         employeeIDLabel.setName("employeeIDLabel"); // NOI18N
         employeeIDLabel.setOpaque(true);
 
         employeeNameLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        employeeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameLabel.setLabelFor(employeeNameTextField);
         employeeNameLabel.setText("Tên Nhân Viên :");
         employeeNameLabel.setName("employeeNameLabel"); // NOI18N
@@ -348,6 +359,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
         emailLabel.setBackground(new java.awt.Color(255, 255, 255));
         emailLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        emailLabel.setForeground(new java.awt.Color(0, 0, 0));
         emailLabel.setLabelFor(emailTextField);
         emailLabel.setText("Email :");
         emailLabel.setName("emailLabel"); // NOI18N
@@ -360,6 +372,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
         passwordLabel.setBackground(new java.awt.Color(255, 255, 255));
         passwordLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        passwordLabel.setForeground(new java.awt.Color(0, 0, 0));
         passwordLabel.setLabelFor(passwordField);
         passwordLabel.setText("Mật Khẩu :");
         passwordLabel.setName("passwordLabel"); // NOI18N
@@ -367,6 +380,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
         confirmPasswordLabel.setBackground(new java.awt.Color(255, 255, 255));
         confirmPasswordLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        confirmPasswordLabel.setForeground(new java.awt.Color(0, 0, 0));
         confirmPasswordLabel.setLabelFor(confirmPasswordField);
         confirmPasswordLabel.setText("Xác Nhận Mật Khẩu :");
         confirmPasswordLabel.setName("confirmPasswordLabel"); // NOI18N
@@ -384,6 +398,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
         authenticateLabel.setBackground(new java.awt.Color(255, 255, 255));
         authenticateLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        authenticateLabel.setForeground(new java.awt.Color(0, 0, 0));
         authenticateLabel.setText("Phân Quyền :");
         authenticateLabel.setName("authenticateLabel"); // NOI18N
         authenticateLabel.setOpaque(true);
@@ -391,6 +406,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         adminRadioButton.setBackground(new java.awt.Color(255, 255, 255));
         buttonGroup1.add(adminRadioButton);
         adminRadioButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        adminRadioButton.setForeground(new java.awt.Color(0, 0, 0));
         adminRadioButton.setText("Quản Trị");
         adminRadioButton.setIconTextGap(10);
         adminRadioButton.setName("admin"); // NOI18N
@@ -399,6 +415,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         employeeRadioButton.setBackground(new java.awt.Color(255, 255, 255));
         buttonGroup1.add(employeeRadioButton);
         employeeRadioButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        employeeRadioButton.setForeground(new java.awt.Color(0, 0, 0));
         employeeRadioButton.setText("Nhân Viên :");
         employeeRadioButton.setIconTextGap(10);
         employeeRadioButton.setName("employee"); // NOI18N
@@ -569,13 +586,13 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
-       
-    }//GEN-LAST:event_confirmButtonActionPerformed
-
     private void deleteFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFileButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_deleteFileButtonActionPerformed
+
+    private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_confirmButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton adminRadioButton;
