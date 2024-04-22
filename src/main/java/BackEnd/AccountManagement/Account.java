@@ -2,20 +2,20 @@ package BackEnd.AccountManagement;
 
 public class Account {
 
-    private String userId, username, password, email, avatar, authorization, createdAt;
-    private boolean status;
+    private String userId, username, password, email, avatar, authorization;
+    private boolean deleteStatus;
 
     public Account() {
     }
 
-    public Account(String userId, String username, String password, String email, String avatar, String authorization, String createdAt) {
+    public Account(String userId, String username, String password, String email, String avatar, String authorization) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.email = email;
         this.avatar = avatar;
         this.authorization = authorization;
-        this.createdAt = createdAt;
+        this.deleteStatus = false;
     }
 
     public String getUserId() {
@@ -66,20 +66,12 @@ public class Account {
         this.authorization = authorization;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public boolean getDeleteStatus() {
+        return deleteStatus;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setDeleteStatus(boolean deleteStatus) {
+        this.deleteStatus = deleteStatus;
     }
 
 }
