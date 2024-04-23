@@ -11,12 +11,6 @@ public class Degree {
         this.deleteStatus = false;
     }
 
-    public Degree(String degreeId, String degreeName, boolean deleteStatus) {
-        this.degreeId = degreeId;
-        this.degreeName = degreeName;
-        this.deleteStatus = deleteStatus;
-    }
-
     public String getDegreeId() {
         return degreeId;
     }

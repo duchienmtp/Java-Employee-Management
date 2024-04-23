@@ -15,7 +15,7 @@ public class DegreeDAO {
     }
 
     public ArrayList<Degree> getAllDegree() {
-        ArrayList<Degree> degreeList = new ArrayList<>();
+        ArrayList<Degree> listDegree = new ArrayList<>();
         dbConnection = new ConnectDB();
         try {
             String query = "SELECT * FROM Degrees";
@@ -25,16 +25,15 @@ public class DegreeDAO {
                 while (rs.next()) {
                     String degreeId = rs.getString("degreeId"),
                             degreeName = rs.getString("degreeName");
-                    boolean deleteStatus = rs.getBoolean("deleteStatus");
-                    degreeList.add(new Degree(degreeId, degreeName, deleteStatus));
+                    listDegree.add(new Degree(degreeId, degreeName));
                 }
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Degrees");
+            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng nhân viên");
         } finally {
             dbConnection.closeConnect();
         }
-        return degreeList;
+        return listDegree;
     }
 
     public Boolean addNewDegree(Degree degree) {
@@ -73,25 +72,5 @@ public class DegreeDAO {
             dbConnection.closeConnect();
         }
         return ok;
-    }
-
-    public Degree getDegreeById(String degreeId) {
-        dbConnection = new ConnectDB();
-        Degree degree = null;
-        try {
-            String query = "SELECT * FROM Degrees WHERE degreeId = '" + degreeId + "'";
-            ResultSet rs = dbConnection.sqlQuery(query);
-
-            if (rs.next()) {
-                String degreeName = rs.getString("degreeName");
-                boolean deleteStatus = rs.getBoolean("deleteStatus");
-                degree = new Degree(degreeId, degreeName, deleteStatus);
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Degrees");
-        } finally {
-            dbConnection.closeConnect();
-        }
-        return degree;
     }
 }

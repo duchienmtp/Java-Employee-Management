@@ -2,8 +2,6 @@ package BackEnd.DegreeManagement;
 
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
 public class DegreeBUS {
 
     private ArrayList<Degree> degreeList = new ArrayList<>();
@@ -31,12 +29,8 @@ public class DegreeBUS {
     }
 
     public Degree getDegreeById(String degreeId) {
-        return degreeDAO.getDegreeById(degreeId);
-    }
-
-    public Degree getDegreeByName(String degreeName) {
         for (Degree degree : degreeList) {
-            if (degree.getDegreeName().equalsIgnoreCase(degreeName)) {
+            if (degree.getDegreeId().equals(degreeId)) {
                 return degree;
             }
         }
@@ -48,7 +42,6 @@ public class DegreeBUS {
 
         if (ok) {
             degreeList.add(degree);
-            JOptionPane.showMessageDialog(null, "Thêm mới thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -62,15 +55,19 @@ public class DegreeBUS {
                     break;
                 }
             }
-            JOptionPane.showMessageDialog(null, "Cập nhật thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
     public void deleteDegree(Degree degree) {
         Boolean ok = degreeDAO.deleteDegree(degree);
+
         if (ok) {
-            this.readDB();
-            JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
+            for (int i = 0; i < degreeList.size(); i++) {
+                if (degreeList.get(i).getDegreeId().equals(degree)) {
+                    degreeList.remove(i);
+                    break;
+                }
+            }
         }
     }
 }

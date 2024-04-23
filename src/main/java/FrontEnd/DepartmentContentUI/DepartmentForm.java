@@ -1,7 +1,5 @@
 package FrontEnd.DepartmentContentUI;
-import FrontEnd.Redux.Redux;
 
-import BackEnd.DepartmentManagement.Department;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
@@ -13,47 +11,75 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.JRadioButton;
-
 import BackEnd.DepartmentManagement.Department;
 import BackEnd.DepartmentManagement.DepartmentBUS;
-import BackEnd.EmployeeManagement.EmployeeBUS;
-import BackEnd.EmployeeManagement.Employee;
 import javax.swing.DefaultComboBoxModel;
-public class DepartmentForm extends javax.swing.JFrame 
-        implements ActionListener, WindowListener {
-    DepartmentBUS departmentBUS;
-    
+public class DepartmentForm extends javax.swing.JFrame implements ActionListener, WindowListener {
+DepartmentBUS departmentBUS = new DepartmentBUS();
     public boolean btnconfirmClicked = false;
     ArrayList<Object> formData;
 
     public DepartmentForm() {
         initComponents();
-        departmentBUS = new DepartmentBUS();
-        Redux.getAllEmployees();
+        managerIDComboBox.addActionListener(this);
         formData = new ArrayList<>();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        for (Employee employee : Redux.employeeList) {
-            if (!employee.getDeleteStatus()) {
-                model.addElement(employee.getFullName());
-            }
-        }
-        managerIDComboBox.setModel(model);
+
         confirmButton.addActionListener(this);
         cancelButton.addActionListener(this);
+        formInit();
+        initializeManagerComboBox();
+
+
+
 
         addWindowListener(this);
     }
+ public void formInit() {
+        departmentIDTextField.setText(departmentBUS.getNextID());
+    }    
+// Trong phương thức IntcomBobox()
+  public void initializeManagerComboBox() {
+        ArrayList<String> employeeIDsAndNames = departmentBUS.getAllEmployeeIDs();
+        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
+        for (String employeeIDAndName : employeeIDsAndNames) {
+            comboBoxModel.addElement(employeeIDAndName);
+        }
+        managerIDComboBox.setModel(comboBoxModel);
+        managerIDComboBox.addActionListener(this);
+    }
+
+
+
 
     public void showFormWithData(ArrayList<Object> data) {
-        if (data != null) {
-            departmentIDTextField.setText((String) data.get(1));
-            departmentNameTextField.setText((String) data.get(2));
-            managerIDComboBox.setSelectedItem(data.get(3));
-            managerNameTextField.setText((String) data.get(4));
+    if (data != null) {
+        departmentIDTextField.setText((String) data.get(1));
+        departmentNameTextField.setText((String) data.get(2));
+        String managerID = (String) data.get(3);
+        managerIDComboBox.setSelectedItem(managerID);
+
+        // Lấy danh sách ID và tên của người quản lý
+        ArrayList<String> employeeIDsAndNames = departmentBUS.getAllEmployeeIDs();
+        // Tìm tên của người quản lý dựa trên ID
+        String employeeName = null;
+        for (String employeeIDAndName : employeeIDsAndNames) {
+            String[] parts = employeeIDAndName.split(" - ");
+            String employeeID = parts[0];
+            if (employeeID.equals(managerID)) {
+                employeeName = parts[1];
+                break;
+            }
+        }
+        // Hiển thị tên của người quản lý trong managerNameTextField
+        if (employeeName != null) {
+            managerNameTextField.setText(employeeName);
+        } else {
+            managerNameTextField.setText("");
         }
     }
+}
 
     public void clearFormData() {
         departmentIDTextField.setText("");
@@ -62,20 +88,20 @@ public class DepartmentForm extends javax.swing.JFrame
         managerNameTextField.setText("");
     }
 
-    public boolean isFormFilled() {
-        return !(departmentNameTextField.getText().equals("")
-                || ((String) managerIDComboBox.getSelectedItem()).equals("")
-                || managerNameTextField.getText().equals(""));
+  public boolean isFormFilled() {
+        return !(departmentNameTextField.getText().isEmpty()
+                || managerIDComboBox.getSelectedItem().toString().isEmpty()
+                || managerNameTextField.getText().isEmpty());
     }
 
     public ArrayList<Object> getDataFromForm() {
-        String departmentID = (String) departmentIDTextField.getText(),
-                departmentName = departmentNameTextField.getText(),
-                managerID = (String) managerIDComboBox.getSelectedItem(),
-                managerName = managerNameTextField.getText();
-
+        String departmentID = departmentIDTextField.getText();
+        String departmentName = departmentNameTextField.getText();
+        String managerID = managerIDComboBox.getSelectedItem().toString();
+        String managerName = managerNameTextField.getText();
         return new ArrayList<>(Arrays.asList(departmentID, departmentName, managerID, managerName));
     }
+
 
     public void handleSubmitForm() {
         formData = getDataFromForm();
@@ -93,16 +119,15 @@ public class DepartmentForm extends javax.swing.JFrame
 
     public void cancelSubmitForm() {
         formData = getDataFromForm();
-
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Xác nhận thao tác ?",
                 "HỦY BỎ ?",
                 JOptionPane.YES_NO_OPTION);
-
         if (confirmation == JOptionPane.YES_OPTION) {
             clearFormData();
         }
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -118,6 +143,14 @@ public class DepartmentForm extends javax.swing.JFrame
             } else {
                 clearFormData();
                 dispose();
+            }
+        } else if (e.getSource() == managerIDComboBox) {
+            String selectedEmployeeIDAndName = managerIDComboBox.getSelectedItem().toString();
+            String[] parts = selectedEmployeeIDAndName.split(" - ");
+            if (parts.length == 2) {
+                managerNameTextField.setText(parts[1]);
+            } else {
+                managerNameTextField.setText("");
             }
         }
     }
@@ -144,59 +177,52 @@ public class DepartmentForm extends javax.swing.JFrame
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(600, 600));
 
-        departmentIDLabel.setLabelFor(departmentIDTextField);
-        departmentIDLabel.setText("Mã Phòng Ban :");
         departmentIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         departmentIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        departmentIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        departmentIDLabel.setLabelFor(departmentIDTextField);
+        departmentIDLabel.setText("Mã Phòng Ban :");
         departmentIDLabel.setName("departmentIDLabel"); // NOI18N
         departmentIDLabel.setOpaque(true);
 
-        departmentNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         departmentNameTextField.setBackground(new java.awt.Color(204, 204, 204));
-        departmentNameTextField.setEnabled(false);
-        departmentNameTextField.setForeground(new java.awt.Color(0, 0, 0));
+        departmentNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         departmentNameTextField.setName("departmentNameTextField"); // NOI18N
         departmentNameTextField.setOpaque(true);
 
-        managerIDLabel.setLabelFor(managerIDComboBox);
-        managerIDLabel.setText("Mã Người Quản Lý :");
         managerIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         managerIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        managerIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        managerIDLabel.setLabelFor(managerIDComboBox);
+        managerIDLabel.setText("Mã Người Quản Lý :");
         managerIDLabel.setName("managerIDLabel"); // NOI18N
         managerIDLabel.setOpaque(true);
 
-        departmentNameLabel.setLabelFor(departmentNameTextField);
-        departmentNameLabel.setText("Tên Phòng Ban :");
         departmentNameLabel.setBackground(new java.awt.Color(255, 255, 255));
         departmentNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        departmentNameLabel.setForeground(new java.awt.Color(0, 0, 0));
+        departmentNameLabel.setLabelFor(departmentNameTextField);
+        departmentNameLabel.setText("Tên Phòng Ban :");
         departmentNameLabel.setName("departmentNameLabel"); // NOI18N
         departmentNameLabel.setOpaque(true);
 
-        cancelButton.setText("Hủy Bỏ");
         cancelButton.setBackground(new java.awt.Color(108, 117, 125));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         cancelButton.setForeground(new java.awt.Color(255, 255, 255));
-        cancelButton.setOpaque(true);
+        cancelButton.setText("Hủy Bỏ");
         cancelButton.setToolTipText("cancelButton");
+        cancelButton.setOpaque(true);
 
-        confirmButton.setText("Xác Nhận");
         confirmButton.setBackground(new java.awt.Color(13, 110, 253));
         confirmButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         confirmButton.setForeground(new java.awt.Color(255, 255, 255));
+        confirmButton.setText("Xác Nhận");
         confirmButton.setName("confirmButton"); // NOI18N
         confirmButton.setOpaque(true);
 
         departmentIDTextField.setBackground(new java.awt.Color(204, 204, 204));
         departmentIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        departmentIDTextField.setForeground(new java.awt.Color(0, 0, 0));
         departmentIDTextField.setOpaque(true);
 
         managerNameLabel.setBackground(new java.awt.Color(255, 255, 255));
         managerNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        managerNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         managerNameLabel.setLabelFor(managerNameTextField);
         managerNameLabel.setText("Tên Người Quản Lý :");
         managerNameLabel.setName("managerIDLabel"); // NOI18N
@@ -204,15 +230,17 @@ public class DepartmentForm extends javax.swing.JFrame
 
         managerNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         managerNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        managerNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         managerNameTextField.setEnabled(false);
         managerNameTextField.setName("managerIDTextField"); // NOI18N
         managerNameTextField.setOpaque(true);
 
         managerIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
         managerIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        managerIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        managerIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        managerIDComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                managerIDComboBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -285,6 +313,10 @@ public class DepartmentForm extends javax.swing.JFrame
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void managerIDComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_managerIDComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_managerIDComboBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton confirmButton;
@@ -328,7 +360,4 @@ public class DepartmentForm extends javax.swing.JFrame
     public void windowDeactivated(WindowEvent e) {
     }
 
-    void showFormWithData(Department selectedDepartment) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

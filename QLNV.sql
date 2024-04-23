@@ -47,8 +47,13 @@ GO
 CREATE TABLE [Positions] (
   [positionId] nvarchar(255) PRIMARY KEY,
   [positionName] nvarchar(255) not null,
-  [positionSalaryAllowance] numeric(5,3) not null,
   [deleteStatus] bit not null
+)
+GO
+
+CREATE TABLE [PositionSalaries] (
+  [postionId] nvarchar(255) PRIMARY KEY,
+  [positionSalaryAllowance] numeric(5,3) not null,
 )
 GO
 
@@ -89,9 +94,10 @@ GO
 
 CREATE TABLE [EmployeeSalaries] (
   [employeeId] nvarchar(255),
-  [insurance] decimal(18,1) not null,
+  [advance] int not null,
+  [insurance] decimal not null,
   [netSalary] decimal not null,
-  [createdAt] DATE not null,
+  [createdAt] DATETIME not null,
   [deleteStatus] bit not null
   PRIMARY KEY ([employeeId], [createdAt])
 )
@@ -134,6 +140,9 @@ ALTER TABLE [Employees] ADD FOREIGN KEY ([degreeId]) REFERENCES [Degrees] ([degr
 GO
 
 ALTER TABLE [Employees] ADD FOREIGN KEY ([positionId]) REFERENCES [Positions] ([positionId])
+GO
+
+ALTER TABLE [PositionSalaries] ADD FOREIGN KEY ([postionId]) REFERENCES [Positions] ([positionId])
 GO
 
 ALTER TABLE [EmployeesRewardsCriticism] ADD FOREIGN KEY ([rewardId]) REFERENCES [Rewards] ([rewardId]);

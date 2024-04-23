@@ -19,7 +19,6 @@ import javax.swing.table.DefaultTableModel;
 
 import BackEnd.DegreeManagement.Degree;
 import BackEnd.DegreeManagement.DegreeBUS;
-import FrontEnd.Redux.Redux;
 
 public class DegreeContentPanel extends javax.swing.JPanel
         implements ActionListener, ListSelectionListener, MouseListener {
@@ -34,7 +33,6 @@ public class DegreeContentPanel extends javax.swing.JPanel
     public DegreeContentPanel() {
         initComponents();
 
-        Redux.getAllDegrees();
         formData = new ArrayList<>();
 
         degreeLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
@@ -53,7 +51,7 @@ public class DegreeContentPanel extends javax.swing.JPanel
         jTable1.setDefaultRenderer(Object.class, centerRenderer);
 
         formInit();
-        tableInit(Redux.degreeList);
+        tableInit(degreeBUS.getDegreeList());
 
         jTable1.getSelectionModel().addListSelectionListener(this);
         jPanel1.addMouseListener(this);
@@ -64,17 +62,15 @@ public class DegreeContentPanel extends javax.swing.JPanel
         degreeIDTextField.setText(degreeBUS.getNextID());
     }
 
-    public void tableInit(ArrayList<Degree> degreeList) {
+    public void tableInit(ArrayList<Degree> degreeBUS) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
 
-        for (int i = 0; i < degreeList.size(); i++) {
-            if (!degreeList.get(i).getDeleteStatus()) {
-                model.addRow(new Object[]{
+        for (int i = 0; i < degreeBUS.size(); i++) {
+            model.addRow(new Object[] {
                     i + 1,
-                    degreeList.get(i).getDegreeId(),
-                    degreeList.get(i).getDegreeName(),});
-            }
+                    degreeBUS.get(i).getDegreeId(),
+                    degreeBUS.get(i).getDegreeName(), });
         }
     }
 
@@ -97,8 +93,7 @@ public class DegreeContentPanel extends javax.swing.JPanel
             degreeBUS.addDegree(new Degree((String) formData.get(0), (String) formData.get(1)));
             clearFormContent();
             jTable1.revalidate();
-            Redux.getAllDegrees();
-            tableInit(Redux.degreeList);
+            tableInit(degreeBUS.getDegreeList());
         }
     }
 
@@ -114,8 +109,7 @@ public class DegreeContentPanel extends javax.swing.JPanel
             degreeBUS.updateDegree(new Degree((String) formData.get(0), (String) formData.get(1)));
             clearFormContent();
             jTable1.revalidate();
-            Redux.getAllDegrees();
-            tableInit(Redux.degreeList);
+            tableInit(degreeBUS.getDegreeList());
 
         }
     }
@@ -123,6 +117,7 @@ public class DegreeContentPanel extends javax.swing.JPanel
     public void deleteTableRow() {
         formData = getDataFromForm();
 
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Bạn có muốn xóa bỏ dữ liệu bằng cấp với ID " + formData.get(0) + " ?",
                 "XÓA BỎ ?",
@@ -132,8 +127,7 @@ public class DegreeContentPanel extends javax.swing.JPanel
             degreeBUS.deleteDegree(degreeBUS.getDegreeById((String) formData.get(0)));
             clearFormContent();
             jTable1.revalidate();
-            Redux.getAllDegrees();
-            tableInit(Redux.degreeList);
+            tableInit(degreeBUS.getDegreeList());
         }
     }
 
@@ -146,6 +140,7 @@ public class DegreeContentPanel extends javax.swing.JPanel
     public void clearFormContent() {
         formInit();
         degreeNameTextField.setText("");
+        degreeIDTextField.setEnabled(false);
         addButton.setEnabled(true);
     }
 

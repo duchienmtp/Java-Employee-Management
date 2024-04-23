@@ -5,13 +5,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
 import java.net.URL;
 import javax.swing.ImageIcon;
-
+//import com.itextpdf.text.Document;
+//import com.itextpdf.text.Paragraph;
+//import com.itextpdf.text.DocumentException;
+//import com.itextpdf.text.pdf.PdfWriter;
 public class UserInfoContentPanel extends javax.swing.JPanel implements ActionListener {
 
     UserInformationForm userInformationFrom;
@@ -76,17 +80,44 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
         }
 
     }
-
-    @Override
+//public void exportToPDF() throws DocumentException, IOException {
+//    Document document = new Document();
+//    FileOutputStream fos = new FileOutputStream("user_info.pdf");
+//    PdfWriter.getInstance(document, fos);
+//
+//    document.open();
+//
+//    document.add(new Paragraph("User Information"));
+//    document.add(new Paragraph("Name: " + employeeName.getText()));
+//    document.add(new Paragraph("ID: " + employeeID.getText()));
+//    document.add(new Paragraph("Gender: " + employeeGender.getText()));
+//    document.add(new Paragraph("Birthdate: " + employeeBirthdate.getText()));
+//    document.add(new Paragraph("Phone: " + employeePhoneNumber.getText()));
+//    document.add(new Paragraph("Ethnic Group: " + employeeEthicGroup.getText()));
+//    document.add(new Paragraph("Religion: " + employeeReligion.getText()));
+//    document.add(new Paragraph("Nation: " + employeeNation.getText()));
+//    document.add(new Paragraph("Specialty: " + employeeSpecialty.getText()));
+//    document.add(new Paragraph("Degree: " + employeeDegree.getText()));
+//    document.add(new Paragraph("Position: " + employeePosition.getText()));
+//    document.add(new Paragraph("Employee Type: " + employeeType.getText()));
+//
+//    document.close();
+//    fos.close();
+//}
+     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == updateButton) {
+            if (e.getSource() == updateButton) {
             updateTableRow();
             userInformationFrom.setVisible(true);
-        } else if (e.getSource() == exportPDFButton) {
-
-        }
+//        } else if (e.getSource() == exportPDFButton) {
+//            try {
+//                exportToPDF();
+//            } catch (DocumentException | IOException ex) {
+//                System.err.println("Error exporting to PDF: " + ex.getMessage());
+//            }
+//        }
     }
-
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -142,7 +173,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Thông Tin Nhân Viên");
         jLabel1.setOpaque(true);
 
@@ -152,7 +182,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeeNameLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameLabel.setText("Tên Nhân Viên :");
         employeeNameLabel.setName("employeeNameLabel"); // NOI18N
         employeeNameLabel.setOpaque(true);
@@ -160,7 +189,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeePhoneNumberLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeePhoneNumberLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeePhoneNumberLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeePhoneNumberLabel.setText("Số Điện Thoại :");
         employeePhoneNumberLabel.setName("employeePhoneNumberLabel"); // NOI18N
         employeePhoneNumberLabel.setOpaque(true);
@@ -168,7 +196,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeeReligionLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeReligionLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeReligionLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeReligionLabel.setText("Tôn Giáo :");
         employeeReligionLabel.setName("employeeReligionLabel"); // NOI18N
         employeeReligionLabel.setOpaque(true);
@@ -176,7 +203,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeeSpecialtyLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeSpecialtyLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeSpecialtyLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeSpecialtyLabel.setText("Chuyên Môn :");
         employeeSpecialtyLabel.setName("employeeSpecialtyLabel"); // NOI18N
         employeeSpecialtyLabel.setOpaque(true);
@@ -184,7 +210,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeeGenderLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeGenderLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeGenderLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeGenderLabel.setText("Giới Tính :");
         employeeGenderLabel.setName("employeeGenderLabel"); // NOI18N
         employeeGenderLabel.setOpaque(true);
@@ -192,47 +217,40 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeePositionLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeePositionLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeePositionLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeePositionLabel.setText("Chức Vụ :");
         employeePositionLabel.setName("employeePositionLabel"); // NOI18N
         employeePositionLabel.setOpaque(true);
         employeePositionLabel.setPreferredSize(new java.awt.Dimension(130, 50));
 
         employeePhoneNumber.setBackground(new java.awt.Color(255, 255, 255));
-        employeePhoneNumber.setForeground(new java.awt.Color(0, 0, 0));
         employeePhoneNumber.setText("123456789");
         employeePhoneNumber.setName("employeePhoneNumber"); // NOI18N
         employeePhoneNumber.setOpaque(true);
         employeePhoneNumber.setPreferredSize(new java.awt.Dimension(150, 50));
 
         employeeName.setBackground(new java.awt.Color(255, 255, 255));
-        employeeName.setForeground(new java.awt.Color(0, 0, 0));
         employeeName.setText("Huỳnh Nguyên Khánh Linh");
         employeeName.setName("employeeName"); // NOI18N
         employeeName.setOpaque(true);
         employeeName.setPreferredSize(new java.awt.Dimension(150, 50));
 
         employeeGender.setBackground(new java.awt.Color(255, 255, 255));
-        employeeGender.setForeground(new java.awt.Color(0, 0, 0));
         employeeGender.setText("Nam");
         employeeGender.setName("employeeGender"); // NOI18N
         employeeGender.setOpaque(true);
         employeeGender.setPreferredSize(new java.awt.Dimension(150, 50));
 
-        employeeReligion.setForeground(new java.awt.Color(0, 0, 0));
         employeeReligion.setText("Phật Giáo");
         employeeReligion.setName("employeeReligion"); // NOI18N
         employeeReligion.setPreferredSize(new java.awt.Dimension(150, 50));
 
         employeeSpecialty.setBackground(new java.awt.Color(255, 255, 255));
-        employeeSpecialty.setForeground(new java.awt.Color(0, 0, 0));
         employeeSpecialty.setText("BackEnd Dev");
         employeeSpecialty.setName("employeeSpecialty"); // NOI18N
         employeeSpecialty.setOpaque(true);
         employeeSpecialty.setPreferredSize(new java.awt.Dimension(150, 50));
 
         employeePosition.setBackground(new java.awt.Color(255, 255, 255));
-        employeePosition.setForeground(new java.awt.Color(0, 0, 0));
         employeePosition.setText("Trưởng Phòng");
         employeePosition.setName("employeePosition"); // NOI18N
         employeePosition.setOpaque(true);
@@ -240,7 +258,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeeIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeIDLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeIDLabel.setText("Mã Nhân Viên :");
         employeeIDLabel.setName("employeeIDLabel"); // NOI18N
         employeeIDLabel.setOpaque(true);
@@ -248,7 +265,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeeBirthdateLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeBirthdateLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeBirthdateLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeBirthdateLabel.setText("Ngày Sinh :");
         employeeBirthdateLabel.setName("employeeBirthdateLabel"); // NOI18N
         employeeBirthdateLabel.setOpaque(true);
@@ -256,7 +272,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeeEthicGroupLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeEthicGroupLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeEthicGroupLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeEthicGroupLabel.setText("Dân Tộc :");
         employeeEthicGroupLabel.setName("employeeEthicGroupLabel"); // NOI18N
         employeeEthicGroupLabel.setOpaque(true);
@@ -264,7 +279,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeeNationLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeNationLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeNationLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeNationLabel.setText("Quốc Tịch :");
         employeeNationLabel.setName("employeeNationLabel"); // NOI18N
         employeeNationLabel.setOpaque(true);
@@ -272,7 +286,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeeDegreeLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeDegreeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeDegreeLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeDegreeLabel.setText("Bằng Cấp :");
         employeeDegreeLabel.setName("employeeDegreeLabel"); // NOI18N
         employeeDegreeLabel.setOpaque(true);
@@ -280,49 +293,42 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
         employeeTypeLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeTypeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeTypeLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeTypeLabel.setText("Loại Nhân Viên :");
         employeeTypeLabel.setName("employeeTypeLabel"); // NOI18N
         employeeTypeLabel.setOpaque(true);
         employeeTypeLabel.setPreferredSize(new java.awt.Dimension(130, 50));
 
         employeeID.setBackground(new java.awt.Color(255, 255, 255));
-        employeeID.setForeground(new java.awt.Color(0, 0, 0));
         employeeID.setText("NV001");
         employeeID.setName("employeeID"); // NOI18N
         employeeID.setOpaque(true);
         employeeID.setPreferredSize(new java.awt.Dimension(150, 50));
 
         employeeBirthdate.setBackground(new java.awt.Color(255, 255, 255));
-        employeeBirthdate.setForeground(new java.awt.Color(0, 0, 0));
         employeeBirthdate.setText("23/09/2004");
         employeeBirthdate.setName("employeeBirthdate"); // NOI18N
         employeeBirthdate.setOpaque(true);
         employeeBirthdate.setPreferredSize(new java.awt.Dimension(150, 50));
 
         employeeEthicGroup.setBackground(new java.awt.Color(255, 255, 255));
-        employeeEthicGroup.setForeground(new java.awt.Color(0, 0, 0));
         employeeEthicGroup.setText("Kinh");
         employeeEthicGroup.setName("employeeEthicGroup"); // NOI18N
         employeeEthicGroup.setOpaque(true);
         employeeEthicGroup.setPreferredSize(new java.awt.Dimension(150, 50));
 
         employeeNation.setBackground(new java.awt.Color(255, 255, 255));
-        employeeNation.setForeground(new java.awt.Color(0, 0, 0));
         employeeNation.setText("Việt Nam");
         employeeNation.setName("employeeNation"); // NOI18N
         employeeNation.setOpaque(true);
         employeeNation.setPreferredSize(new java.awt.Dimension(150, 50));
 
         employeeDegree.setBackground(new java.awt.Color(255, 255, 255));
-        employeeDegree.setForeground(new java.awt.Color(0, 0, 0));
         employeeDegree.setText("Kỹ Sư");
         employeeDegree.setName("employeeDegree"); // NOI18N
         employeeDegree.setOpaque(true);
         employeeDegree.setPreferredSize(new java.awt.Dimension(150, 50));
 
         employeeType.setBackground(new java.awt.Color(255, 255, 255));
-        employeeType.setForeground(new java.awt.Color(0, 0, 0));
         employeeType.setText("Chính Thức");
         employeeType.setName("employeeType"); // NOI18N
         employeeType.setOpaque(true);
@@ -344,6 +350,11 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
         exportPDFButton.setIconTextGap(10);
         exportPDFButton.setName("exportPDFButton"); // NOI18N
         exportPDFButton.setOpaque(true);
+        exportPDFButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportPDFButtonActionPerformed(evt);
+            }
+        });
 
         avatarPanel.setBackground(new java.awt.Color(255, 255, 255));
         avatarPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -534,6 +545,12 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
                 .addGap(42, 42, 42))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void exportPDFButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportPDFButtonActionPerformed
+        // TODO add your handling code here:
+        
+
+    }//GEN-LAST:event_exportPDFButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel avatarLabel;
