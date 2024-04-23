@@ -39,7 +39,8 @@ public class AssignmentDAO {
         con = new ConnectDB();
         boolean flag = false;
         try {
-            String sql = "insert into Assignments values ('" + asm.getEmployee().getId() + "','" + asm.getProjectId()
+            String sql = "insert into Assignments values ('" + asm.getEmployee().getId() + "','"
+                    + asm.getProject().getProjectId()
                     + "','"
                     + asm.isDeleteStatus() + "')";
             flag = con.sqlUpdate(sql);
@@ -49,25 +50,14 @@ public class AssignmentDAO {
         return flag;
     }
 
-    public boolean updateAssignmentWithEmployeeId(Assignment asm) {
+    public boolean updateAssignment(ArrayList<Object> prevState, Assignment newasm) {
         con = new ConnectDB();
         boolean flag = false;
         try {
-            String sql = "update set projectId = '" + asm.getProjectId() + "' where employeeId = '"
-                    + asm.getEmployee().getId() + "'";
-            flag = con.sqlUpdate(sql);
-        } finally {
-            con.closeConnect();
-        }
-        return flag;
-    }
-
-    public boolean updateAssignmentWithProjectId(Assignment asm) {
-        con = new ConnectDB();
-        boolean flag = false;
-        try {
-            String sql = "update set employeeId = '" + asm.getEmployee().getId() + "' where projectId = '"
-                    + asm.getProjectId() + "'";
+            String sql = "update Assignments set employeeId = '" + newasm.getEmployee().getId() + "', projectId = '"
+                    + newasm.getProject().getProjectId() + "', deleteStatus = '" + newasm.isDeleteStatus()
+                    + "' where employeeId = '" + (String) prevState.get(1) + "' and projectId = '"
+                    + (String) prevState.get(3) + "'";
             flag = con.sqlUpdate(sql);
         } finally {
             con.closeConnect();
@@ -80,7 +70,7 @@ public class AssignmentDAO {
         boolean flag = false;
         try {
             String sql = "update Assignments set deleteStatus = 1 where employeeId = '" + asm.getEmployee().getId()
-                    + "' and projectId = '" + asm.getProjectId() + "'";
+                    + "' and projectId = '" + asm.getProject().getProjectId() + "'";
             flag = con.sqlUpdate(sql);
         } finally {
             con.closeConnect();
@@ -88,4 +78,23 @@ public class AssignmentDAO {
         return flag;
     }
 
+    public Assignment findAssignmentByEmployeeIdAndProjectId(String employeeId, String projectId) {
+        con = new ConnectDB();
+        Assignment assignment = null;
+        try {
+            String sql = "SELECT * FROM Assignments WHERE employeeId = '" + employeeId + "' AND projectId = '"
+                    + projectId + "'";
+            ResultSet rs = con.sqlQuery(sql);
+            if (rs != null && rs.next()) {
+                assignment = new Assignment(new EmployeeDAO().getEmployeeById(rs.getString(1)),
+                        new ProjectDAO().searchInProject(rs.getString(2)),
+                        rs.getBoolean(3));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng phân công");
+        } finally {
+            con.closeConnect();
+        }
+        return assignment;
+    }
 }

@@ -2,7 +2,6 @@ package FrontEnd.ProjectContentUI;
 
 import BackEnd.AssignmentManagement.Assignment;
 import BackEnd.AssignmentManagement.AssignmentBUS;
-import BackEnd.EmployeeManagement.Employee;
 import BackEnd.EmployeeManagement.EmployeeBUS;
 import BackEnd.ProjectsManagement.ProjectBUS;
 
@@ -10,18 +9,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
-import com.github.lgooddatepicker.components.DatePickerSettings;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 
 public class AssignmentForm extends javax.swing.JFrame implements ActionListener, WindowListener {
 
     public boolean btnconfirmClicked = false;
     ArrayList<Object> formData;
+    ArrayList<Object> prevState;
     EmployeeBUS emB = new EmployeeBUS();
     AssignmentBUS asmB = new AssignmentBUS();
     ProjectBUS pjB = new ProjectBUS();
@@ -30,17 +28,9 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         initComponents();
 
         formData = new ArrayList<>();
+        prevState = new ArrayList<>();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        DatePickerSettings pickerSettingsBegin = new DatePickerSettings();
-        pickerSettingsBegin.setFormatForDatesCommonEra("dd/MM/yyyy");
-        startDatePicker.setSettings(pickerSettingsBegin);
-        startDatePicker.setDateToToday();
-
-        DatePickerSettings pickerSettingsComplete = new DatePickerSettings();
-        pickerSettingsComplete.setFormatForDatesCommonEra("dd/MM/yyyy");
-        endDatePicker.setSettings(pickerSettingsComplete);
-        endDatePicker.setDateToToday();
 
         confirmButton.addActionListener(this);
         cancelButton.addActionListener(this);
@@ -57,13 +47,9 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         String employeeID = (String) employeeIDComboBox.getSelectedItem(),
                 employeeName = employeeNameTextField.getText(),
                 projectID = (String) projectIDComboBox.getSelectedItem(),
-                projectName = employeeNameTextField.getText(),
-                startDate = Employee.formatBirthDateToDatabaseType(startDatePicker.getText()),
-                endDate = Employee.formatBirthDateToDatabaseType(endDatePicker.getText()),
-                projectPlace = (String) projectPlaceComboBox.getSelectedItem();
+                projectName = employeeNameTextField.getText();
 
-        return new ArrayList<>(Arrays.asList(employeeID, employeeName, projectID, projectName, startDate, endDate,
-                projectPlace));
+        return new ArrayList<>(Arrays.asList(employeeID, employeeName, projectID, projectName));
     }
 
     public void showFormWithData(ArrayList<Object> data) {
@@ -72,9 +58,8 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
             employeeNameTextField.setText((String) data.get(2));
             projectIDComboBox.setSelectedItem(data.get(3));
             projectNameTextField.setText((String) data.get(4));
-            startDatePicker.setText((String) data.get(6));
-            endDatePicker.setText((String) data.get(7));
-            projectPlaceComboBox.setSelectedItem(data.get(5));
+
+            prevState = data;
         }
     }
 
@@ -83,9 +68,6 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         employeeNameTextField.setText("");
         projectIDComboBox.setSelectedItem("");
         projectNameTextField.setText("");
-        startDatePicker.setText("");
-        endDatePicker.setText("");
-        projectPlaceComboBox.setSelectedItem("");
     }
 
     public static String getEmployeeIdFromAssignmentForm() {
@@ -105,27 +87,29 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
 
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Xác nhận thao tác ?",
-                "CẬP NHẬT ?",
+                "XÁC NHẬN ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            if (asmB.checkInList(employeeIDComboBox.getSelectedItem().toString(),
-                    projectIDComboBox.getSelectedItem().toString())) {
-                JOptionPane.showMessageDialog(null, "Nhân viên này đã được đăng kí công tác này.");
+            if (this.getTitle().contains("THÊM MỚI")) {
+                if (asmB.checkInList(employeeIDComboBox.getSelectedItem().toString(),
+                        projectIDComboBox.getSelectedItem().toString())) {
+                    JOptionPane.showMessageDialog(null, "Nhân viên này đã được đăng kí công tác này.");
+                }
+
+                Assignment newasm = new Assignment(
+                        new EmployeeBUS().getEmployeeById(employeeIDComboBox.getSelectedItem().toString()),
+                        new ProjectBUS().getProjectById(projectIDComboBox.getSelectedItem().toString()), false);
+
+                asmB.addNewAssignment(newasm);
+            } else {
+                Assignment newasm = new Assignment(
+                        new EmployeeBUS().getEmployeeById(employeeIDComboBox.getSelectedItem().toString()),
+                        new ProjectBUS().getProjectById(projectIDComboBox.getSelectedItem().toString()), false);
+
+                asmB.updateAssignment(prevState, newasm);
             }
-            DefaultTableModel model = (DefaultTableModel) AssignmentManagementContentPanel
-                    .getAssignmentManagementContentTable().getModel();
-            Object tmp = new Object[]{
-                AssignmentManagementContentPanel.getAssignmentManagementContentTable().getRowCount() + 1,
-                employeeIDComboBox.getSelectedItem(), employeeNameTextField.getText(),
-                projectIDComboBox.getSelectedItem(), projectNameTextField.getText(),
-                projectPlaceComboBox.getSelectedItem(), startDatePicker.getDate(), endDatePicker.getDate()};
-            model.addColumn(tmp);
-            AssignmentManagementContentPanel.getAssignmentManagementContentTable().setModel(model);
-            Assignment newasm = new Assignment(employeeIDComboBox.getSelectedItem().toString(),
-                    projectIDComboBox.getSelectedItem().toString(), false);
-            asmB.addNewAssignment(newasm);
-            clearFormData();
+            AssignmentManagementContentPanel.tableInit(asmB.getAssignmentsList());
             dispose();
         }
     }
@@ -146,10 +130,7 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
 
     public boolean isFormFilled() {
         return !(employeeNameTextField.getText().equals("")
-                || projectNameTextField.getText().equals("")
-                || startDatePicker.getText().equals("")
-                || endDatePicker.getText().equals("")
-                || ((String) projectPlaceComboBox.getSelectedItem()).equals(""));
+                || projectNameTextField.getText().equals(""));
     }
 
     @Override
@@ -174,7 +155,9 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -186,14 +169,8 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         employeeIDComboBox = new javax.swing.JComboBox<>();
         employeeNameLabel = new javax.swing.JLabel();
         projectNameTextField = new javax.swing.JTextField();
-        startDatePickerLabel = new javax.swing.JLabel();
-        endDatePicker = new com.github.lgooddatepicker.components.DatePicker();
-        endDatePickerLabel = new javax.swing.JLabel();
-        startDatePicker = new com.github.lgooddatepicker.components.DatePicker();
-        projectPlaceLabel = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         confirmButton = new javax.swing.JButton();
-        projectPlaceComboBox = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("THÊM MỚI THÔNG TIN CÔNG TÁC CỦA NHÂN VIÊN");
@@ -284,35 +261,6 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         projectNameTextField.setName("projectNameTextField"); // NOI18N
         projectNameTextField.setOpaque(true);
 
-        startDatePickerLabel.setLabelFor(startDatePicker);
-        startDatePickerLabel.setText("Ngày Bắt Đầu :");
-        startDatePickerLabel.setBackground(new java.awt.Color(255, 255, 255));
-        startDatePickerLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        startDatePickerLabel.setForeground(new java.awt.Color(0, 0, 0));
-        startDatePickerLabel.setOpaque(true);
-        startDatePickerLabel.setToolTipText("startDatePickerLabel");
-
-        endDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        endDatePicker.setName("endDatePicker"); // NOI18N
-
-        endDatePickerLabel.setLabelFor(endDatePicker);
-        endDatePickerLabel.setText("Ngày Kết Thúc :");
-        endDatePickerLabel.setBackground(new java.awt.Color(255, 255, 255));
-        endDatePickerLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        endDatePickerLabel.setForeground(new java.awt.Color(0, 0, 0));
-        endDatePickerLabel.setName("endDatePickerLabel"); // NOI18N
-        endDatePickerLabel.setOpaque(true);
-
-        startDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        startDatePicker.setName("startDatePicker"); // NOI18N
-
-        projectPlaceLabel.setText("Dự Án Tại :");
-        projectPlaceLabel.setBackground(new java.awt.Color(255, 255, 255));
-        projectPlaceLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        projectPlaceLabel.setForeground(new java.awt.Color(0, 0, 0));
-        projectPlaceLabel.setName("projectPlaceLabel"); // NOI18N
-        projectPlaceLabel.setOpaque(true);
-
         cancelButton.setText("Hủy Bỏ");
         cancelButton.setBackground(new java.awt.Color(108, 117, 125));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -327,104 +275,99 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         confirmButton.setName("confirmButton"); // NOI18N
         confirmButton.setOpaque(true);
 
-        projectPlaceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TP HCM", "Hải Phòng", "Hà Nội", "Đà Nẵng", " " }));
-        projectPlaceComboBox.setBackground(new java.awt.Color(204, 204, 204));
-        projectPlaceComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        projectPlaceComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        projectPlaceComboBox.setName("projectPlaceComboBox"); // NOI18N
-        projectPlaceComboBox.setOpaque(true);
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(startDatePickerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                            .addComponent(projectNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addComponent(projectNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(startDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(endDatePickerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(endDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
-                            .addComponent(projectIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(projectIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(employeeNameTextField)
-                            .addComponent(employeeIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(projectPlaceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(projectPlaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(30, 30, 30))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(projectNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        150, Short.MAX_VALUE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(projectNameTextField,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 372,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGroup(jPanel1Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(jPanel1Layout
+                                                                .createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                        false)
+                                                                .addComponent(employeeIDLabel,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        Short.MAX_VALUE)
+                                                                .addComponent(employeeNameLabel,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE, 150,
+                                                                        Short.MAX_VALUE))
+                                                        .addComponent(projectIDLabel,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 150,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(18, 18, 18)
+                                                .addGroup(jPanel1Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(projectIDComboBox, 0,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(employeeNameTextField)
+                                                        .addComponent(employeeIDComboBox, 0,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout
+                                                .createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(30, 30, 30)));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(33, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(employeeIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(projectIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(projectIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(projectNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startDatePickerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(endDatePickerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(endDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(projectPlaceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(projectPlaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(60, 60, 60)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(36, 36, 36)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(employeeIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 41,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(employeeIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 41,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(projectIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(projectIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(projectNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(41, 41, 41)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(187, 187, 187)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 380,
+                                javax.swing.GroupLayout.PREFERRED_SIZE));
 
         pack();
         setLocationRelativeTo(null);
@@ -454,9 +397,6 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         for (int i = 0; i < pjB.getProjectList().size(); i++) {
             if (pjId.equalsIgnoreCase(pjB.getProjectList().get(i).getProjectId())) {
                 projectNameTextField.setText(pjB.getProjectList().get(i).getProjectName());
-                startDatePicker.setText(pjB.getProjectList().get(i).getBeginAt());
-                endDatePicker.setText(pjB.getProjectList().get(i).getCompleteAt());
-                projectPlaceComboBox.setSelectedItem(pjB.getProjectList().get(i).getPlace());
             }
         }
     }// GEN-LAST:event_projectIDComboBoxItemStateChanged
@@ -468,17 +408,11 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
     private javax.swing.JLabel employeeIDLabel;
     private javax.swing.JLabel employeeNameLabel;
     private javax.swing.JTextField employeeNameTextField;
-    private com.github.lgooddatepicker.components.DatePicker endDatePicker;
-    private javax.swing.JLabel endDatePickerLabel;
     private javax.swing.JPanel jPanel1;
     public static javax.swing.JComboBox<String> projectIDComboBox;
     private javax.swing.JLabel projectIDLabel;
     private javax.swing.JLabel projectNameLabel;
     private javax.swing.JTextField projectNameTextField;
-    private javax.swing.JComboBox<String> projectPlaceComboBox;
-    private javax.swing.JLabel projectPlaceLabel;
-    private com.github.lgooddatepicker.components.DatePicker startDatePicker;
-    private javax.swing.JLabel startDatePickerLabel;
     // End of variables declaration//GEN-END:variables
 
     @Override

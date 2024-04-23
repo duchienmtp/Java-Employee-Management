@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -19,15 +20,25 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener, ItemListener {
+import BackEnd.DepartmentManagement.Department;
+import BackEnd.EmployeeManagement.Employee;
+import BackEnd.EmployeeManagement.EmployeeBUS;
+import FrontEnd.Redux.Redux;
+
+public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
+        implements ActionListener, ListSelectionListener, MouseListener {
 
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
     ArrayList<Object> formData;
+    EmployeeBUS employeeBUS = new EmployeeBUS();
 
     public AddEmployeeToDepartmentContentPanel() {
         initComponents();
+
+        Redux.getAllEmployees();
+        Redux.getAllDepartments();
 
         formData = new ArrayList<>();
 
@@ -35,7 +46,6 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
         projectTableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 
         addButton.addActionListener(this);
-        updateButton.addActionListener(this);
         deleteButton.addActionListener(this);
         cancelButton.addActionListener(this);
 
@@ -47,19 +57,80 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
         jTable1.setDefaultRenderer(Double.class, centerRenderer);
 
-        tableInit();
+        formInit();
+
+        tableInit(Redux.employeeList);
 
         jTable1.getSelectionModel().addListSelectionListener(this);
-        departmentIDComboBox.addItemListener(this);
         jPanel1.addMouseListener(this);
         setVisible(true);
     }
 
-    public void tableInit() {
-        Object[] newRowData = {1, "EM001", "Trần Đức Hiển", "DP001", "Quản Lý", "Lalala"};
+    public void formInit() {
+
+        DefaultComboBoxModel<String> departmentModel = new DefaultComboBoxModel<>();
+        for (Department department : Redux.departmentList) {
+            if (!department.isDeleteStatus()) {
+                departmentModel.addElement(department.getDepartmentId());
+            }
+        }
+        departmentIDComboBox.setModel(departmentModel);
+        departmentIDComboBox.setSelectedIndex(0);
+        departmentNameTextField.setText(Redux.departmentList.get(0).getDepartmentName());
+        departmentManagerNameTextField.setText(Redux.departmentList.get(0).getDepartmentLeader().getFullName());
+
+        departmentIDComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                String selectedDepartmentId = (String) departmentIDComboBox.getSelectedItem();
+                for (Department department : Redux.departmentList) {
+                    if (department.getDepartmentId().equalsIgnoreCase(selectedDepartmentId)) {
+                        departmentNameTextField.setText(department.getDepartmentName());
+                        departmentManagerNameTextField.setText(department.getDepartmentLeader().getFullName());
+                    }
+                }
+                tableInit(Redux.employeeList);
+            }
+        });
+
+        DefaultComboBoxModel<String> employeeModel = new DefaultComboBoxModel<>();
+        for (Employee employee : Redux.employeeList) {
+            if (!employee.getDeleteStatus()) {
+                if (employee.getDepartment().getDepartmentId().equalsIgnoreCase("DP000")) {
+                    employeeModel.addElement(employee.getId());
+                }
+            }
+        }
+        employeeIDComboBox.setModel(employeeModel);
+
+        employeeIDComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                String selectedEmployeeId = (String) employeeIDComboBox.getSelectedItem();
+                for (Employee employee : Redux.employeeList) {
+                    if (employee.getId().equalsIgnoreCase(selectedEmployeeId)) {
+                        employeeNameTextField.setText(employee.getFullName());
+                    }
+                }
+            }
+        });
+    }
+
+    public void tableInit(ArrayList<Employee> employeeList) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
+        model.setRowCount(0);
+
+        for (int i = 0; i < employeeList.size(); i++) {
+            if (!employeeList.get(i).getDeleteStatus()) {
+                if (employeeList.get(i).getDepartment().getDepartmentId().equalsIgnoreCase(
+                        (String) departmentIDComboBox.getSelectedItem())) {
+                    Object[] newRowData = {
+                            i + 1, employeeList.get(i).getId(), employeeList.get(i).getFullName(),
+                            employeeList.get(i).getDepartment().getDepartmentId(),
+                            employeeList.get(i).getDepartment().getDepartmentName(),
+                            employeeList.get(i).getDepartment().getDepartmentLeader().getFullName()
+                    };
+                    model.addRow(newRowData);
+                }
+            }
         }
     }
 
@@ -70,7 +141,9 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
                 employeeID = (String) employeeIDComboBox.getSelectedItem(),
                 employeeName = employeeNameTextField.getText();
 
-        return new ArrayList<>(Arrays.asList(departmentID, departmentName, departmentManagerName, employeeID, employeeName));
+        return new ArrayList<>(
+                Arrays.asList(departmentID, departmentName, departmentManagerName, employeeID,
+                        employeeName));
     }
 
     public void insertTableRow() {
@@ -82,55 +155,67 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            clearFormContent();
-            jTable1.revalidate();
-        }
-    }
 
-    public void updateTableRow() {
-        formData = getDataFromForm();
+            if (employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem()).getDepartment()
+                    .getDepartmentId()
+                    .equalsIgnoreCase("DP000")) {
 
-        int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn cập nhật dữ liệu phòng ban nhân viên với ID " + formData.get(3) + " ?",
-                "CẬP NHẬT ?",
-                JOptionPane.YES_NO_OPTION);
+                Department department = Redux.departmentList.get(departmentIDComboBox.getSelectedIndex());
+                Employee employee = employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem());
+                employee.setDepartment(department);
 
-        if (confirmation == JOptionPane.YES_OPTION) {
-            clearFormContent();
-            jTable1.revalidate();
+                employeeBUS.updateEmployee(employee);
+                clearFormContent();
+                jTable1.revalidate();
+                Redux.getAllEmployees();
+                formInit();
+                tableInit(Redux.employeeList);
+            } else {
+                JOptionPane.showMessageDialog(this, "Nhân viên đã thuộc 1 phòng ban!", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
     public void deleteTableRow() {
         formData = getDataFromForm();
 
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Bạn có muốn xóa bỏ dữ liệu phòng ban nhân viên với ID " + formData.get(3) + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            model.removeRow(selectedRow);
+            Department department = new Department();
+            Employee employee = new EmployeeBUS().getEmployeeById((String) formData.get(3));
+            employee.setDepartment(department);
+            employeeBUS.updateEmployee(employee);
             clearFormContent();
             jTable1.revalidate();
+            Redux.getAllEmployees();
+            formInit();
+            tableInit(Redux.employeeList);
         }
     }
 
     public void fillDataDepartmentForm(Object[] selectedRowData) {
-        departmentIDComboBox.setSelectedItem(selectedRowData[1]);
-        departmentNameTextField.setText((String) selectedRowData[2]);
-        departmentManagerNameTextField.setText((String) selectedRowData[3]);
-        employeeIDComboBox.setSelectedItem(selectedRowData[4]);
-        employeeNameTextField.setText((String) selectedRowData[5]);
+        DefaultComboBoxModel<String> employeeModel = (DefaultComboBoxModel<String>) employeeIDComboBox.getModel();
+        employeeModel.removeAllElements();
+        employeeModel.addElement((String) selectedRowData[1]);
+        employeeIDComboBox.setSelectedItem(selectedRowData[1]);
+        employeeNameTextField.setText((String) selectedRowData[2]);
+        departmentIDComboBox.setSelectedItem(selectedRowData[3]);
+        departmentNameTextField.setText((String) selectedRowData[4]);
+        departmentManagerNameTextField.setText((String) selectedRowData[5]);
     }
 
     public void clearFormContent() {
         departmentIDComboBox.setSelectedItem("");
         departmentNameTextField.setText("");
         departmentManagerNameTextField.setText("");
-        employeeIDComboBox.setSelectedItem("");
-        employeeNameTextField.setText("");
+        DefaultComboBoxModel<String> employeeModel = (DefaultComboBoxModel<String>) employeeIDComboBox.getModel();
+        employeeModel.removeAllElements();
+        formInit();
     }
 
     public boolean isFormFilled() {
@@ -139,15 +224,16 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
 
     @Override
     public void valueChanged(ListSelectionEvent event) {
-        if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
+        if (!event.getValueIsAdjusting()) { // Ensure selection is stable
             selectionConfirmed = true;
             selectedRow = jTable1.getSelectedRow();
-            if (selectedRow >= 0) {  // Check if a row is selected
+            if (selectedRow >= 0) { // Check if a row is selected
                 selectedRowData = new Object[jTable1.getColumnCount()];
                 for (int i = 0; i < jTable1.getColumnCount(); i++) {
                     selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
                 }
                 fillDataDepartmentForm(selectedRowData);
+                addButton.setEnabled(false);
             }
         }
     }
@@ -158,38 +244,20 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
             if (isFormFilled()) {
                 insertTableRow();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
                 deleteTableRow();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else if (e.getSource() == updateButton) {
-            if (selectedRow >= 0) {
-                if (isFormFilled()) {
-                    updateTableRow();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == cancelButton) {
             clearFormContent();
         }
-    }
-
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-            // Get the selected item
-            String selectedItem = (String) e.getItem();
-
-            // Do something with the selected item
-            System.out.println("Selected item: " + selectedItem);
-        }
+        addButton.setEnabled(true);
     }
 
     @Override
@@ -198,6 +266,7 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
         if (clickedComponent != jTable1 && selectionConfirmed) {
             jTable1.getSelectionModel().clearSelection();
             selectionConfirmed = false;
+            addButton.setEnabled(true);
         }
     }
 
@@ -218,7 +287,9 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -229,7 +300,6 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
         departmentNameTextField = new javax.swing.JTextField();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
-        updateButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         employeeIDLabel = new javax.swing.JLabel();
         departmentManagerNameLabel = new javax.swing.JLabel();
@@ -253,33 +323,33 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
         projectFormContainer.setName("projectFormContainer"); // NOI18N
         projectFormContainer.setPreferredSize(new java.awt.Dimension(396, 545));
 
-        projectLabel.setText("Nhân Viên Phòng Ban");
         projectLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         projectLabel.setForeground(new java.awt.Color(0, 0, 0));
+        projectLabel.setText("Nhân Viên Phòng Ban");
         projectLabel.setName("projectLabel"); // NOI18N
         projectLabel.setOpaque(true);
 
-        departmentIDLabel.setText("Mã Phòng :");
         departmentIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         departmentIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         departmentIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        departmentIDLabel.setText("Mã Phòng :");
         departmentIDLabel.setName("departmentIDLabel"); // NOI18N
         departmentIDLabel.setOpaque(true);
 
-        departmentNameLabel.setLabelFor(departmentNameTextField);
-        departmentNameLabel.setText("Tên Phòng :");
         departmentNameLabel.setBackground(new java.awt.Color(255, 255, 255));
         departmentNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         departmentNameLabel.setForeground(new java.awt.Color(0, 0, 0));
+        departmentNameLabel.setLabelFor(departmentNameTextField);
+        departmentNameLabel.setText("Tên Phòng :");
         departmentNameLabel.setName("departmentNameLabel"); // NOI18N
         departmentNameLabel.setOpaque(true);
 
-        departmentNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         departmentNameTextField.setBackground(new java.awt.Color(204, 204, 204));
+        departmentNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        departmentNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         departmentNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         departmentNameTextField.setEnabled(false);
-        departmentNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         departmentNameTextField.setName("departmentNameTextField"); // NOI18N
         departmentNameTextField.setOpaque(true);
 
@@ -302,25 +372,17 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
         deleteButton.setName("deleteButton"); // NOI18N
         deleteButton.setOpaque(true);
 
-        updateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
-        updateButton.setText("Sửa");
-        updateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        updateButton.setForeground(new java.awt.Color(255, 255, 255));
-        updateButton.setIconTextGap(10);
-        updateButton.setName("updateButton"); // NOI18N
-        updateButton.setOpaque(true);
-
-        cancelButton.setText("Hủy Bỏ");
         cancelButton.setBackground(new java.awt.Color(108, 117, 125));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         cancelButton.setForeground(new java.awt.Color(255, 255, 255));
+        cancelButton.setText("Hủy Bỏ");
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.setOpaque(true);
 
-        employeeIDLabel.setText("Mã NV :");
         employeeIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         employeeIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        employeeIDLabel.setText("Mã NV :");
         employeeIDLabel.setName("employeeIDLabel"); // NOI18N
         employeeIDLabel.setOpaque(true);
 
@@ -344,13 +406,11 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
         departmentIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
         departmentIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         departmentIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        departmentIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         departmentIDComboBox.setPreferredSize(new java.awt.Dimension(299, 40));
 
         employeeIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
         employeeIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         employeeIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        employeeIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         employeeIDComboBox.setOpaque(true);
         employeeIDComboBox.setPreferredSize(new java.awt.Dimension(299, 40));
 
@@ -374,106 +434,172 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
         javax.swing.GroupLayout projectFormContainerLayout = new javax.swing.GroupLayout(projectFormContainer);
         projectFormContainer.setLayout(projectFormContainerLayout);
         projectFormContainerLayout.setHorizontalGroup(
-            projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectFormContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(projectLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addComponent(addButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addComponent(departmentNameLabel)
-                        .addGap(2, 2, 2)
-                        .addComponent(departmentNameTextField))
-                    .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addComponent(departmentIDLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(departmentIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(departmentManagerNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
-                            .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(2, 2, 2)
-                        .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(departmentManagerNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(employeeIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(employeeNameTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
-        );
+                projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(projectLabel, javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                                .addComponent(departmentNameLabel)
+                                                .addGap(2, 2, 2)
+                                                .addComponent(departmentNameTextField))
+                                        .addGroup(projectFormContainerLayout
+                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(
+                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(deleteButton,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 160,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                                        .addGroup(projectFormContainerLayout
+                                                                .createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                                                .addGroup(projectFormContainerLayout
+                                                                        .createSequentialGroup()
+                                                                        .addComponent(departmentIDLabel)
+                                                                        .addPreferredGap(
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                        .addComponent(departmentIDComboBox, 0,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addGroup(projectFormContainerLayout
+                                                                        .createSequentialGroup()
+                                                                        .addGroup(projectFormContainerLayout
+                                                                                .createParallelGroup(
+                                                                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                                                                        false)
+                                                                                .addComponent(
+                                                                                        departmentManagerNameLabel,
+                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                        82, Short.MAX_VALUE)
+                                                                                .addComponent(employeeIDLabel,
+                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                        Short.MAX_VALUE)
+                                                                                .addComponent(employeeNameLabel,
+                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                        Short.MAX_VALUE))
+                                                                        .addGap(2, 2, 2)
+                                                                        .addGroup(projectFormContainerLayout
+                                                                                .createParallelGroup(
+                                                                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                .addComponent(
+                                                                                        departmentManagerNameTextField,
+                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(employeeIDComboBox,
+                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(employeeNameTextField,
+                                                                                        javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addContainerGap()));
         projectFormContainerLayout.setVerticalGroup(
-            projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectFormContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(projectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(departmentIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(departmentIDComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(departmentNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(departmentNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(departmentManagerNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(departmentManagerNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(employeeIDComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(updateButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
+                projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(projectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(departmentIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(departmentIDComboBox, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(departmentNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(departmentNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40,
+                                                Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(departmentManagerNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(departmentManagerNameTextField,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(employeeIDComboBox, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88,
+                                        Short.MAX_VALUE)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap()));
 
         projectTableContainer.setBackground(new java.awt.Color(255, 255, 255));
         projectTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         projectTableContainer.setName("projectTableContainer"); // NOI18N
 
-        projectTableLabel.setText("Danh Sách Nhân Viên Của Phòng Ban");
         projectTableLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectTableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         projectTableLabel.setForeground(new java.awt.Color(0, 0, 0));
+        projectTableLabel.setText("Danh Sách Nhân Viên Của Phòng Ban");
         projectTableLabel.setName("projectTableLabel"); // NOI18N
         projectTableLabel.setOpaque(true);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Mã Phòng Ban", "Tên Phòng Ban", "Quản Lý"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                },
+                new String[] {
+                        "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Mã Phòng Ban", "Tên Phòng Ban", "Quản Lý"
+                }) {
+            Class[] types = new Class[] {
+                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -484,55 +610,62 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
         javax.swing.GroupLayout projectTableContainerLayout = new javax.swing.GroupLayout(projectTableContainer);
         projectTableContainer.setLayout(projectTableContainerLayout);
         projectTableContainerLayout.setHorizontalGroup(
-            projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectTableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(projectTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(projectTableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(projectTableContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(projectTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513,
+                                                Short.MAX_VALUE))
+                                .addContainerGap()));
         projectTableContainerLayout.setVerticalGroup(
-            projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectTableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(projectTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 465, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+                projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(projectTableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(projectTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 465,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap()));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(projectFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addComponent(projectTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(50, 50, 50)
+                                .addComponent(projectFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32,
+                                        Short.MAX_VALUE)
+                                .addComponent(projectTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(50, 50, 50)));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(projectFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
-                    .addComponent(projectTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(40, 40, 40)
+                                .addGroup(jPanel1Layout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(projectFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 554,
+                                                Short.MAX_VALUE)
+                                        .addComponent(projectTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(46, Short.MAX_VALUE)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -556,6 +689,5 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel impl
     private javax.swing.JLabel projectLabel;
     private javax.swing.JPanel projectTableContainer;
     private javax.swing.JLabel projectTableLabel;
-    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }

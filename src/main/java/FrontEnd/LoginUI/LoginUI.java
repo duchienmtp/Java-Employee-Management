@@ -28,8 +28,6 @@ public class LoginUI extends javax.swing.JFrame {
             String email = emailTextField.getText();
             String password = new String(passwordTextField.getPassword());
 
-            System.out.println("email: " + email + " password: " + password);
-
             Redux.handleLogin(email, password);
 
             if (Redux.isLoggedIn) {

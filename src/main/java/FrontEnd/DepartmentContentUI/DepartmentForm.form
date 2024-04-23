@@ -118,10 +118,6 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="departmentIDLabel">
           <Properties>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="departmentIDTextField"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="M&#xe3; Ph&#xf2;ng Ban :"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
@@ -131,19 +127,22 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="departmentIDTextField"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="M&#xe3; Ph&#xf2;ng Ban :"/>
             <Property name="name" type="java.lang.String" value="departmentIDLabel" noResource="true"/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="departmentNameTextField">
           <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="12" style="1"/>
-            </Property>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
             </Property>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="12" style="1"/>
+            </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
@@ -153,10 +152,6 @@
         </Component>
         <Component class="javax.swing.JLabel" name="managerIDLabel">
           <Properties>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="managerIDComboBox"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="M&#xe3; Ng&#x1b0;&#x1edd;i Qu&#x1ea3;n L&#xfd; :"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
@@ -166,16 +161,16 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="managerIDComboBox"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="M&#xe3; Ng&#x1b0;&#x1edd;i Qu&#x1ea3;n L&#xfd; :"/>
             <Property name="name" type="java.lang.String" value="managerIDLabel" noResource="true"/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="departmentNameLabel">
           <Properties>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="departmentNameTextField"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="T&#xea;n Ph&#xf2;ng Ban :"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
@@ -185,13 +180,16 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
+            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="departmentNameTextField"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="T&#xea;n Ph&#xf2;ng Ban :"/>
             <Property name="name" type="java.lang.String" value="departmentNameLabel" noResource="true"/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="cancelButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="H&#x1ee7;y B&#x1ecf;"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="7d" green="75" red="6c" type="rgb"/>
             </Property>
@@ -201,13 +199,13 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="opaque" type="boolean" value="true"/>
+            <Property name="text" type="java.lang.String" value="H&#x1ee7;y B&#x1ecf;"/>
             <Property name="toolTipText" type="java.lang.String" value="cancelButton"/>
+            <Property name="opaque" type="boolean" value="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="confirmButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="X&#xe1;c Nh&#x1ead;n"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fd" green="6e" red="d" type="rgb"/>
             </Property>
@@ -217,6 +215,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
+            <Property name="text" type="java.lang.String" value="X&#xe1;c Nh&#x1ead;n"/>
             <Property name="name" type="java.lang.String" value="confirmButton" noResource="true"/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
@@ -282,12 +281,7 @@
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
-              </StringArray>
+              <StringArray count="0"/>
             </Property>
           </Properties>
           <AuxValues>

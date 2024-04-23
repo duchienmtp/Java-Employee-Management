@@ -16,7 +16,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
 import java.util.List;
 
 import BackEnd.DegreeManagement.DegreeBUS;
@@ -41,9 +40,6 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
         initComponents();
 
         Redux.getAllEmployees();
-
-        userInfoForm = new UserInformationForm();
-        userInfoFrame = new UserInformationFrame();
 
         addButton.addActionListener(this);
         editButton.addActionListener(this);
@@ -93,6 +89,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
     }
 
     public void insertTableRow() {
+        userInfoForm = new UserInformationForm();
         userInfoForm.setTitle("THÊM MỚI THÔNG TIN CÁ NHÂN CỦA NHÂN VIÊN");
         userInfoForm.setVisible(true);
     }
@@ -102,10 +99,8 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
         List<Object> employeePropertiesValue = selectedEmployee.toList();
 
         for (int i = 0; i < employeePropertiesValue.size(); i++) {
-            // Get value
             Object value = employeePropertiesValue.get(i);
 
-            // Set value (example)
             if (value instanceof String) {
                 switch (i) {
                     case 3:
@@ -159,6 +154,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
         // Add all elements from the array to the ArrayList
         dataList.addAll(employeePropertiesValue);
 
+        userInfoForm = new UserInformationForm();
         userInfoForm.setTitle("CẬP NHẬT THÔNG TIN CÁ NHÂN CỦA NHÂN VIÊN");
         userInfoForm.setVisible(true);
         userInfoForm.showFormWithData(dataList);
@@ -531,6 +527,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
                 if (selectedRow != -1) {
                     Employee employee = employeeBUS.getEmployeeById((String) selectedRowData[1]);
                     // Open a new frame with information from the selected row
+                    userInfoFrame = new UserInformationFrame();
                     userInfoFrame.setVisible(true);
                     userInfoFrame.showFormWithData(employee);
                 }

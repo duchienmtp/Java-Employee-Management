@@ -49,9 +49,9 @@ public class Redux {
         specialtyList = new SpecialtyBUS().getSpecialtyList();
     }
 
-
     public static void getAllDepartments() {
         departmentList = new DepartmentBUS().getDepartmentList();
+    }
 
     public static void handleLogin(String username, String password) {
         dbConnection = new ConnectDB();

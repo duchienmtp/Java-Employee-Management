@@ -34,12 +34,16 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
+    ArrayList<Assignment> assignmentList;
     AssignmentBUS asmB = new AssignmentBUS();
     ProjectBUS pjB = new ProjectBUS();
     EmployeeBUS emB = new EmployeeBUS();
 
     public AssignmentManagementContentPanel() {
         initComponents();
+
+        assignmentList = asmB.getAssignmentsList();
+
         tableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1), // Line color and stroke size
@@ -64,7 +68,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         jTable1.setDefaultRenderer(String.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
 
-        tableInit();
+        tableInit(assignmentList);
 
         jTable1.getSelectionModel().addListSelectionListener(this);
         jTable1.addMouseListener(this);
@@ -140,20 +144,16 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         }
     }
 
-    public void tableInit() {
+    public static void tableInit(ArrayList<Assignment> list) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
-        for (int i = 0; i < asmB.getAssignmentsList().size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             model.addRow(new Object[] { i + 1,
-                    asmB.getAssignmentsList().get(i).getEmployee().getId(),
-                    asmB.getAssignmentsList().get(i).getEmployee().getFullName(),
-                    asmB.getAssignmentsList().get(i).getProject().getProjectId(),
-                    asmB.getAssignmentsList().get(i).getProject().getProjectName(),
-                    asmB.getAssignmentsList().get(i).getProject().getPlace(),
-                    Employee.formatBirthDateToStandardTypeToStandardType(
-                            asmB.getAssignmentsList().get(i).getProject().getBeginAt()),
-                    Employee.formatBirthDateToStandardTypeToStandardType(
-                            asmB.getAssignmentsList().get(i).getProject().getCompleteAt()) });
+                    list.get(i).getEmployee().getId(),
+                    list.get(i).getEmployee().getFullName(),
+                    list.get(i).getProject().getProjectId(),
+                    list.get(i).getProject().getProjectName(),
+                    list.get(i).getProject().getPlace() });
         }
     }
 
@@ -172,17 +172,15 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
     }
 
     public void deleteTableRow(int selectedRow) {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Bạn có chắc chắn là muốn xóa thông tin công tác của nhân viên này? ", "Thông báo",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            Assignment asm = new Assignment(model.getValueAt(selectedRow, 1).toString(),
-                    model.getValueAt(selectedRow, 3).toString(), true);
-            asmB.deleteAssignment(asm);
-            model.removeRow(selectedRow);
+            asmB.deleteAssignment(asmB.findAssignmentByEmployeeIdAndProjectId((String) selectedRowData[1],
+                    (String) selectedRowData[3]));
             jTable1.revalidate();
+            tableInit(asmB.getAssignmentsList());
         }
     }
 
@@ -201,6 +199,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
     }
 
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
@@ -222,55 +221,55 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
 
         setBackground(new java.awt.Color(255, 255, 255));
 
+        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
+        addButton.setText("Thêm");
         addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         addButton.setForeground(new java.awt.Color(255, 255, 255));
-        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
-        addButton.setText("Thêm");
         addButton.setIconTextGap(10);
         addButton.setName("addButton"); // NOI18N
 
+        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
+        deleteButton.setText("Xóa");
         deleteButton.setBackground(new java.awt.Color(220, 53, 69));
         deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         deleteButton.setForeground(new java.awt.Color(255, 255, 255));
-        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
-        deleteButton.setText("Xóa");
         deleteButton.setIconTextGap(10);
         deleteButton.setName("deleteButton"); // NOI18N
 
+        exportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
+        exportExcel.setText("Xuất");
         exportExcel.setBackground(new java.awt.Color(13, 202, 240));
         exportExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         exportExcel.setForeground(new java.awt.Color(255, 255, 255));
-        exportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
-        exportExcel.setText("Xuất");
         exportExcel.setIconTextGap(10);
         exportExcel.setName("exportExcel"); // NOI18N
 
-        editButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        editButton.setForeground(new java.awt.Color(255, 255, 255));
         editButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
         editButton.setText("Sửa");
+        editButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        editButton.setForeground(new java.awt.Color(255, 255, 255));
         editButton.setIconTextGap(10);
         editButton.setName("editButton"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
+        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(
+                new String[] { "Theo Tên", "Theo Mã Công Tác" }));
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
-        searchOptionComboBox
-                .setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo Tên", "Theo Mã Công Tác" }));
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
-        searchTextField.setBackground(new java.awt.Color(204, 204, 204));
         searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        searchTextField.setBackground(new java.awt.Color(204, 204, 204));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
 
-        searchButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        searchButton.setForeground(new java.awt.Color(255, 255, 255));
         searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
         searchButton.setText("Tìm Kiếm");
+        searchButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        searchButton.setForeground(new java.awt.Color(255, 255, 255));
         searchButton.setIconTextGap(10);
         searchButton.setName("searchButton"); // NOI18N
 
@@ -280,31 +279,39 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133,
+                                .addComponent(searchOptionComboBox,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        133,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538,
+                                .addComponent(searchTextField,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        538,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(searchButton,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE)
                                 .addContainerGap()));
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(15, 15, 15)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(searchOptionComboBox)
                                         .addComponent(searchTextField)
-                                        .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49,
-                                                Short.MAX_VALUE))
+                                        .addComponent(searchButton,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                49, Short.MAX_VALUE))
                                 .addContainerGap()));
 
+        importExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
+        importExcel.setText("Nhập ");
         importExcel.setBackground(new java.awt.Color(13, 110, 253));
         importExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         importExcel.setForeground(new java.awt.Color(255, 255, 255));
-        importExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
-        importExcel.setText("Nhập ");
         importExcel.setIconTextGap(10);
         importExcel.setName("importExcel"); // NOI18N
 
@@ -312,28 +319,26 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         tableContainer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         tableContainer.setName("tableContainer"); // NOI18N
 
+        tableLabel.setText("Danh sách công tác của nhân viên");
         tableLabel.setBackground(new java.awt.Color(255, 255, 255));
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         tableLabel.setForeground(new java.awt.Color(0, 0, 0));
-        tableLabel.setText("Danh sách công tác của nhân viên");
         tableLabel.setName("tableLabel"); // NOI18N
         tableLabel.setOpaque(true);
 
-        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][] {
 
                 },
                 new String[] {
-                        "STT", "ID", "Họ và Tên", "Mã Công Tác", "Tên Công Tác", "Nơi Công Tác", "Ngày Bắt Đầu",
-                        "Ngày Kết Thúc"
+                        "STT", "ID", "Họ và Tên", "Mã Công Tác", "Tên Công Tác", "Nơi Công Tác"
                 }) {
             Class[] types = new Class[] {
-                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
-                    java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean[] {
-                    false, false, false, false, false, false, false, false
+                    false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -344,6 +349,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 return canEdit[columnIndex];
             }
         });
+        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setRowHeight(40);
         jScrollPane2.setViewportView(jTable1);
 
@@ -353,21 +359,29 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(tableContainerLayout.createSequentialGroup()
                                 .addGap(25, 25, 25)
-                                .addGroup(tableContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 811,
-                                                Short.MAX_VALUE)
-                                        .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(tableContainerLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane2,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                811, Short.MAX_VALUE)
+                                        .addComponent(tableLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
                                 .addGap(25, 25, 25)));
         tableContainerLayout.setVerticalGroup(
                 tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(tableContainerLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
+                                .addComponent(tableLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        60,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269,
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        269,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(21, Short.MAX_VALUE)));
 
@@ -377,49 +391,82 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(96, 96, 96)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                        false)
+                                        .addComponent(tableContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                .addComponent(addButton,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        120,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(63, 63, 63)
-                                                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                .addComponent(deleteButton,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        120,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                .addPreferredGap(
+                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        Short.MAX_VALUE)
+                                                .addComponent(editButton,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        120,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(69, 69, 69)
-                                                .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                .addComponent(importExcel,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        120,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(62, 62, 62)
-                                                .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                .addComponent(exportExcel,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        120,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(jPanel1,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
                                 .addGap(96, 96, 96)));
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(43, 43, 43)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                .addGroup(layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(addButton,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        .addComponent(editButton,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        .addComponent(deleteButton,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        .addComponent(importExcel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        .addComponent(exportExcel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jPanel1,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(52, 52, 52)
-                                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(tableContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(43, 43, 43)));
     }// </editor-fold>//GEN-END:initComponents
 

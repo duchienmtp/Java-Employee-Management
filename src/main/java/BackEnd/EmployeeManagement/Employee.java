@@ -66,6 +66,11 @@ public class Employee {
         this.deleteStatus = deleteStatus;
     }
 
+    public Employee (String id, boolean deleteStatus) {
+        this.id = id;
+        this.deleteStatus = deleteStatus;
+    }
+
     public Employee() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

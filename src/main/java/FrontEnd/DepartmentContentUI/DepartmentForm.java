@@ -1,4 +1,5 @@
 package FrontEnd.DepartmentContentUI;
+
 import FrontEnd.Redux.Redux;
 
 import BackEnd.DepartmentManagement.Department;
@@ -19,10 +20,12 @@ import BackEnd.DepartmentManagement.DepartmentBUS;
 import BackEnd.EmployeeManagement.EmployeeBUS;
 import BackEnd.EmployeeManagement.Employee;
 import javax.swing.DefaultComboBoxModel;
-public class DepartmentForm extends javax.swing.JFrame 
+
+public class DepartmentForm extends javax.swing.JFrame
         implements ActionListener, WindowListener {
+
     DepartmentBUS departmentBUS;
-    
+
     public boolean btnconfirmClicked = false;
     ArrayList<Object> formData;
 
@@ -33,30 +36,48 @@ public class DepartmentForm extends javax.swing.JFrame
         formData = new ArrayList<>();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        for (Employee employee : Redux.employeeList) {
-            if (!employee.getDeleteStatus()) {
-                model.addElement(employee.getFullName());
+
+        formInit();
+
+        managerIDComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                for (Employee employee : Redux.employeeList) {
+                    if (employee.getId().equals(managerIDComboBox.getSelectedItem())) {
+                        managerNameTextField.setText(employee.getFullName());
+                    }
+                }
             }
-        }
-        managerIDComboBox.setModel(model);
+        });
+
         confirmButton.addActionListener(this);
         cancelButton.addActionListener(this);
 
         addWindowListener(this);
+
+    }
+
+    public void formInit() {
+        departmentIDTextField.setText(departmentBUS.getNextID());
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        for (Employee employee : new EmployeeBUS().getEmployeeIdList()) {
+            if (!employee.getDeleteStatus()) {
+                model.addElement(employee.getId());
+            }
+        }
+        managerIDComboBox.setModel(model);
     }
 
     public void showFormWithData(ArrayList<Object> data) {
         if (data != null) {
-            departmentIDTextField.setText((String) data.get(1));
-            departmentNameTextField.setText((String) data.get(2));
-            managerIDComboBox.setSelectedItem(data.get(3));
-            managerNameTextField.setText((String) data.get(4));
+            departmentIDTextField.setText((String) data.get(0));
+            departmentNameTextField.setText((String) data.get(1));
+            managerIDComboBox.setSelectedItem(data.get(2));
+            // managerNameTextField.setText((String) data.get(4));
         }
     }
 
     public void clearFormData() {
-        departmentIDTextField.setText("");
+        formInit();
         departmentNameTextField.setText("");
         managerIDComboBox.setSelectedItem("");
         managerNameTextField.setText("");
@@ -79,13 +100,23 @@ public class DepartmentForm extends javax.swing.JFrame
 
     public void handleSubmitForm() {
         formData = getDataFromForm();
-
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Xác nhận thao tác ?",
                 "XÁC NHẬN ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            if (this.getTitle().contains("THÊM MỚI")) {
+                departmentBUS.addDepartment(new Department((String) formData.get(0),
+                        (String) formData.get(1),
+                        new EmployeeBUS().getEmployeeById((String) formData.get(2)), false));
+
+            } else {
+                departmentBUS.updateDepartment(new Department((String) formData.get(0),
+                        (String) formData.get(1),
+                        new EmployeeBUS().getEmployeeById((String) formData.get(2)), false));
+            }
+            DepartmentManagementContentPanel.tableInit(departmentBUS.getDepartmentList());
             clearFormData();
             dispose();
         }
@@ -101,6 +132,7 @@ public class DepartmentForm extends javax.swing.JFrame
 
         if (confirmation == JOptionPane.YES_OPTION) {
             clearFormData();
+            dispose();
         }
     }
 
@@ -110,7 +142,8 @@ public class DepartmentForm extends javax.swing.JFrame
             if (isFormFilled()) {
                 handleSubmitForm();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == cancelButton) {
             if (isFormFilled()) {
@@ -123,7 +156,10 @@ public class DepartmentForm extends javax.swing.JFrame
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -144,48 +180,47 @@ public class DepartmentForm extends javax.swing.JFrame
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(600, 600));
 
-        departmentIDLabel.setLabelFor(departmentIDTextField);
-        departmentIDLabel.setText("Mã Phòng Ban :");
         departmentIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         departmentIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         departmentIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        departmentIDLabel.setLabelFor(departmentIDTextField);
+        departmentIDLabel.setText("Mã Phòng Ban :");
         departmentIDLabel.setName("departmentIDLabel"); // NOI18N
         departmentIDLabel.setOpaque(true);
 
-        departmentNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         departmentNameTextField.setBackground(new java.awt.Color(204, 204, 204));
-        departmentNameTextField.setEnabled(false);
+        departmentNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         departmentNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         departmentNameTextField.setName("departmentNameTextField"); // NOI18N
         departmentNameTextField.setOpaque(true);
 
-        managerIDLabel.setLabelFor(managerIDComboBox);
-        managerIDLabel.setText("Mã Người Quản Lý :");
         managerIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         managerIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         managerIDLabel.setForeground(new java.awt.Color(0, 0, 0));
+        managerIDLabel.setLabelFor(managerIDComboBox);
+        managerIDLabel.setText("Mã Người Quản Lý :");
         managerIDLabel.setName("managerIDLabel"); // NOI18N
         managerIDLabel.setOpaque(true);
 
-        departmentNameLabel.setLabelFor(departmentNameTextField);
-        departmentNameLabel.setText("Tên Phòng Ban :");
         departmentNameLabel.setBackground(new java.awt.Color(255, 255, 255));
         departmentNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         departmentNameLabel.setForeground(new java.awt.Color(0, 0, 0));
+        departmentNameLabel.setLabelFor(departmentNameTextField);
+        departmentNameLabel.setText("Tên Phòng Ban :");
         departmentNameLabel.setName("departmentNameLabel"); // NOI18N
         departmentNameLabel.setOpaque(true);
 
-        cancelButton.setText("Hủy Bỏ");
         cancelButton.setBackground(new java.awt.Color(108, 117, 125));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         cancelButton.setForeground(new java.awt.Color(255, 255, 255));
-        cancelButton.setOpaque(true);
+        cancelButton.setText("Hủy Bỏ");
         cancelButton.setToolTipText("cancelButton");
+        cancelButton.setOpaque(true);
 
-        confirmButton.setText("Xác Nhận");
         confirmButton.setBackground(new java.awt.Color(13, 110, 253));
         confirmButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         confirmButton.setForeground(new java.awt.Color(255, 255, 255));
+        confirmButton.setText("Xác Nhận");
         confirmButton.setName("confirmButton"); // NOI18N
         confirmButton.setOpaque(true);
 
@@ -212,74 +247,143 @@ public class DepartmentForm extends javax.swing.JFrame
         managerIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
         managerIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         managerIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        managerIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(managerNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(managerNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(managerIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(managerIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(departmentIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(departmentNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(departmentNameTextField)
-                            .addComponent(departmentIDTextField)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(30, 30, 30))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
+                                .addGroup(jPanel1Layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout
+                                                .createSequentialGroup()
+                                                .addComponent(managerNameLabel,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        Short.MAX_VALUE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(managerNameTextField,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        372,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel1Layout
+                                                .createSequentialGroup()
+                                                .addComponent(managerIDLabel,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        150,
+                                                        Short.MAX_VALUE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(managerIDComboBox,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        372,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel1Layout
+                                                .createSequentialGroup()
+                                                .addGroup(jPanel1Layout
+                                                        .createParallelGroup(
+                                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                false)
+                                                        .addComponent(departmentIDLabel,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                Short.MAX_VALUE)
+                                                        .addComponent(departmentNameLabel,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                150,
+                                                                Short.MAX_VALUE))
+                                                .addGap(18, 18, 18)
+                                                .addGroup(jPanel1Layout
+                                                        .createParallelGroup(
+                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(departmentNameTextField)
+                                                        .addComponent(departmentIDTextField)))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                jPanel1Layout
+                                                        .createSequentialGroup()
+                                                        .addGap(0, 0, Short.MAX_VALUE)
+                                                        .addComponent(confirmButton,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                130,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(18, 18, 18)
+                                                        .addComponent(cancelButton,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                130,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(30, 30, 30)));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(departmentIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(departmentIDTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(departmentNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(departmentNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(managerIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(managerIDComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(managerNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(managerNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(72, 72, 72)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(35, 35, 35)
+                                .addGroup(jPanel1Layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(departmentIDLabel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(departmentIDTextField,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                41,
+                                                Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(departmentNameLabel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(departmentNameTextField,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(managerIDLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(managerIDComboBox,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40,
+                                                Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(managerNameLabel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(managerNameTextField,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(72, 72, 72)
+                                .addGroup(jPanel1Layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(confirmButton,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cancelButton,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(26, 26, 26)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 400,
+                                Short.MAX_VALUE));
 
         pack();
         setLocationRelativeTo(null);
@@ -326,9 +430,5 @@ public class DepartmentForm extends javax.swing.JFrame
 
     @Override
     public void windowDeactivated(WindowEvent e) {
-    }
-
-    void showFormWithData(Department selectedDepartment) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

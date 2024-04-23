@@ -66,5 +66,16 @@ public class Assignment {
     public void setDeleteStatus(boolean deleteStatus) {
         this.deleteStatus = deleteStatus;
     }
-    
+
+    @Override
+    public String toString() {
+        return "{" +
+                ", employeeId='" + getEmployee().getId() + "'" +
+                ", employeeName='" + getEmployee().getFullName() + "'" +
+                ", projectId='" + getProject().getProjectId() + "'" +
+                ", projectName='" + getProject().getProjectName() + "'" +
+                ", projectPlace='" + getProject().getPlace() + "'" +
+                "}";
+    }
+
 }

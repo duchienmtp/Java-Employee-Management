@@ -1,4 +1,5 @@
 package BackEnd.EmployeeManagement;
+
 import BackEnd.ConnectDB.ConnectDB;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,9 +8,9 @@ import javax.swing.JOptionPane;
 
 import BackEnd.DegreeManagement.DegreeDAO;
 import BackEnd.DepartmentManagement.Department;
+import BackEnd.DepartmentManagement.DepartmentDAO;
 import BackEnd.PositionManagement.PositionDAO;
 import BackEnd.SpecialtyManagement.SpecialtyDAO;
-
 
 public class EmployeeDAO {
 
@@ -17,7 +18,6 @@ public class EmployeeDAO {
 
     public EmployeeDAO() {
     }
-    
 
     public ArrayList<Employee> getAllEmployee() {
         ArrayList<Employee> employeeList = new ArrayList<>();
@@ -39,6 +39,7 @@ public class EmployeeDAO {
                             degreeId = rs.getString("degreeId"),
                             nation = rs.getString("nation"),
                             positionId = rs.getString("positionId"),
+                            departmentId = rs.getString("departmentId"),
                             specialtyId = rs.getString("specialtyId");
                     boolean employStatus = rs.getBoolean("employStatus"),
                             deleteStatus = rs.getBoolean("deleteStatus");
@@ -46,7 +47,8 @@ public class EmployeeDAO {
                     employeeList.add(
                             new Employee(id, fullName, gender, birthDate, phoneNumber, ethnicGroup, type, religion,
                                     new DegreeDAO().getDegreeById(degreeId), nation,
-                                    new PositionDAO().getPositionById(positionId), new Department(),
+                                    new PositionDAO().getPositionById(positionId),
+                                    new DepartmentDAO().getDepartmentById(departmentId),
                                     new SpecialtyDAO().getSpecialtyById(specialtyId), employStatus, deleteStatus));
                 }
             }
@@ -99,6 +101,7 @@ public class EmployeeDAO {
                     + "', degreeId = '" + employee.getDegree().getDegreeId()
                     + "', nation = '" + employee.getNation()
                     + "', positionId = '" + employee.getPosition().getPositionId()
+                    + "', departmentId = '" + employee.getDepartment().getDepartmentId()
                     + "', specialtyId = '" + employee.getSpecialty().getPositionId()
                     + "', employStatus = '" + employee.getEmployStatus()
                     + "', deleteStatus = '" + employee.getDeleteStatus()
@@ -157,5 +160,33 @@ public class EmployeeDAO {
             dbConnection.closeConnect();
         }
         return employee;
+    }
+
+    public ArrayList<Employee> getNotDepartmentLeaderEmployees() {
+        ArrayList<Employee> employeeList = new ArrayList<>();
+        dbConnection = new ConnectDB();
+        try {
+            String query = "SELECT E.id, E.deleteStatus" +
+                    " FROM Employees E" +
+                    " LEFT JOIN Departments D ON E.departmentId = D.departmentId" +
+                    " WHERE (E.id NOT LIKE 'ADM%')" +
+                    " AND E.id NOT IN (SELECT departmentLeader FROM Departments WHERE departmentLeader IS NOT NULL);";
+            ResultSet rs = dbConnection.sqlQuery(query);
+
+            if (rs != null) {
+                while (rs.next()) {
+                    String id = rs.getString("id");
+                    boolean deleteStatus = rs.getBoolean("deleteStatus");
+                    employeeList.add(
+                            new Employee(id, deleteStatus));
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error reading data from Employees and Departments table: " + ex.getMessage());
+        } finally {
+            dbConnection.closeConnect();
+        }
+        return employeeList;
+
     }
 }

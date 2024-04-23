@@ -46,6 +46,8 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
         DatePickerSettings startDatePickerSettings = new DatePickerSettings();
         startDatePickerSettings.setFormatForDatesCommonEra(dtf);
         startDatePicker.setSettings(startDatePickerSettings);
+        LocalDate today = LocalDate.now();
+        startDatePickerSettings.setDateRangeLimits(today.minusDays(0), null);
 
         DatePickerSettings endDatePickerSettings = new DatePickerSettings();
         endDatePickerSettings.setFormatForDatesCommonEra(dtf);
@@ -89,8 +91,10 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
             if (!list.get(i).isDeleteStatus()) {
                 model.addRow(new Object[] { i + 1, list.get(i).getProjectId(),
                         list.get(i).getProjectName(), list.get(i).getPlace(),
-                        Employee.formatBirthDateToStandardTypeToStandardType(list.get(i).getBeginAt()),
-                        Employee.formatBirthDateToStandardTypeToStandardType(list.get(i).getCompleteAt()),
+                        Employee.formatBirthDateToStandardTypeToStandardType(
+                                list.get(i).getBeginAt()),
+                        Employee.formatBirthDateToStandardTypeToStandardType(
+                                list.get(i).getCompleteAt()),
                         list.get(i).getDepartmentId()
                 });
             }
@@ -105,7 +109,8 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                 endDate = Employee.formatBirthDateToDatabaseType(endDatePicker.getText()),
                 projectPlace = projectPlaceTextField.getText();
 
-        return new ArrayList<>(Arrays.asList(projectID, projectName, departmentId, startDate, endDate, projectPlace));
+        return new ArrayList<>(
+                Arrays.asList(projectID, projectName, departmentId, startDate, endDate, projectPlace));
     }
 
     public void insertTableRow() {
@@ -122,7 +127,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                     (String) formData.get(3), (String) formData.get(4),
                     (String) formData.get(5), false);
             pjB.addProject(tmp);
-            System.out.println("Check next ID: " + pjB.getNextID());
             clearFormContent();
             jTable1.revalidate();
             tableInit(pjB.getProjectList());
@@ -426,131 +430,211 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
         javax.swing.GroupLayout projectFormContainerLayout = new javax.swing.GroupLayout(projectFormContainer);
         projectFormContainer.setLayout(projectFormContainerLayout);
         projectFormContainerLayout.setHorizontalGroup(
-                projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                projectFormContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(projectFormContainerLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(projectLabel, javax.swing.GroupLayout.Alignment.TRAILING,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(projectLabel,
+                                                javax.swing.GroupLayout.Alignment.TRAILING,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addGroup(projectFormContainerLayout
+                                                .createSequentialGroup()
                                                 .addComponent(addButton)
                                                 .addGap(18, 18, 18)
-                                                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105,
+                                                .addComponent(deleteButton,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        105,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(18, 18, 18)
-                                                .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 129,
+                                                .addComponent(updateButton,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        129,
                                                         Short.MAX_VALUE))
-                                        .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                        .addGroup(projectFormContainerLayout
+                                                .createSequentialGroup()
                                                 .addComponent(employeeNameLabel)
                                                 .addGap(2, 2, 2)
                                                 .addComponent(projectNameTextField))
-                                        .addGroup(projectFormContainerLayout.createSequentialGroup()
-                                                .addComponent(projectIDLabel)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(projectIDTextField))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectFormContainerLayout
+                                        .addGroup(projectFormContainerLayout
                                                 .createSequentialGroup()
-                                                .addGroup(projectFormContainerLayout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,
-                                                                false)
-                                                        .addComponent(startDatePicker,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, 171,
-                                                                Short.MAX_VALUE)
-                                                        .addComponent(monthPickerLabel,
+                                                .addComponent(projectIDLabel)
+                                                .addPreferredGap(
+                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(projectIDTextField))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                projectFormContainerLayout
+                                                        .createSequentialGroup()
+                                                        .addGroup(projectFormContainerLayout
+                                                                .createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                                                        false)
+                                                                .addComponent(startDatePicker,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        171,
+                                                                        Short.MAX_VALUE)
+                                                                .addComponent(monthPickerLabel,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        Short.MAX_VALUE))
+                                                        .addPreferredGap(
+                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGroup(projectFormContainerLayout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,
-                                                                false)
-                                                        .addComponent(endDatePicker,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, 171,
                                                                 Short.MAX_VALUE)
-                                                        .addComponent(salarySumLabel,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                        .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                                        .addGroup(projectFormContainerLayout
+                                                                .createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                                                        false)
+                                                                .addComponent(endDatePicker,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        171,
+                                                                        Short.MAX_VALUE)
+                                                                .addComponent(salarySumLabel,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        Short.MAX_VALUE)))
+                                        .addGroup(projectFormContainerLayout
+                                                .createSequentialGroup()
                                                 .addComponent(projectPlaceLabel)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(
+                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(projectPlaceTextField))
-                                        .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(projectFormContainerLayout.createSequentialGroup()
-                                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 155,
+                                        .addComponent(cancelButton,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addGroup(projectFormContainerLayout
+                                                .createSequentialGroup()
+                                                .addComponent(jLabel1,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        155,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(DepartmentIdCombo, 0,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                                .addPreferredGap(
+                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(DepartmentIdCombo,
+                                                        0,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        Short.MAX_VALUE)))
                                 .addContainerGap()));
         projectFormContainerLayout.setVerticalGroup(
-                projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                projectFormContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(projectFormContainerLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(projectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                .addComponent(projectLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(projectIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(projectIDLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40,
                                                 Short.MAX_VALUE)
                                         .addComponent(projectIDTextField))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(projectNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(employeeNameLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(projectNameTextField,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40,
                                                 Short.MAX_VALUE))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(monthPickerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(monthPickerLabel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                40,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(salarySumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        .addComponent(salarySumLabel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                40,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, 0)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(startDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 34,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(startDatePicker,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                34,
                                                 Short.MAX_VALUE)
-                                        .addComponent(endDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(endDatePicker,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(projectPlaceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(projectPlaceLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40,
                                                 Short.MAX_VALUE)
                                         .addComponent(projectPlaceTextField))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(DepartmentIdCombo, javax.swing.GroupLayout.DEFAULT_SIZE, 36,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(DepartmentIdCombo,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                36,
                                                 Short.MAX_VALUE)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(jLabel1,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
                                 .addGap(22, 22, 22)
-                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                .addComponent(cancelButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60,
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        60,
                                         Short.MAX_VALUE)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(updateButton, javax.swing.GroupLayout.Alignment.TRAILING,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(updateButton,
+                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectFormContainerLayout
-                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                projectFormContainerLayout
+                                                        .createParallelGroup(
+                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(deleteButton,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                50,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(addButton,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                50,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap()));
 
         projectTableContainer.setBackground(new java.awt.Color(255, 255, 255));
-        projectTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        projectTableContainer
+                .setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         projectTableContainer.setName("projectTableContainer"); // NOI18N
 
         projectTableLabel.setText("Bảng Dự Án");
@@ -565,10 +649,12 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
 
                 },
                 new String[] {
-                        "STT", "ID", "Tên Dự Án", "Nơi Làm Việc", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Phòng Quản Lý"
+                        "STT", "ID", "Tên Dự Án", "Nơi Làm Việc", "Ngày Bắt Đầu",
+                        "Ngày Kết Thúc", "Phòng Quản Lý"
                 }) {
             Class[] types = new Class[] {
-                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class,
                     java.lang.Object.class, java.lang.Object.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean[] {
@@ -591,27 +677,40 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
             jTable1.getColumnModel().getColumn(5).setResizable(false);
         }
 
-        javax.swing.GroupLayout projectTableContainerLayout = new javax.swing.GroupLayout(projectTableContainer);
+        javax.swing.GroupLayout projectTableContainerLayout = new javax.swing.GroupLayout(
+                projectTableContainer);
         projectTableContainer.setLayout(projectTableContainerLayout);
         projectTableContainerLayout.setHorizontalGroup(
-                projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                projectTableContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(projectTableContainerLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(projectTableContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(projectTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(projectTableLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(jScrollPane1,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                513,
                                                 Short.MAX_VALUE))
                                 .addContainerGap()));
         projectTableContainerLayout.setVerticalGroup(
-                projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                projectTableContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(projectTableContainerLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(projectTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54,
+                                .addComponent(projectTableLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        54,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 465,
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane1,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        465,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap()));
 
@@ -621,23 +720,35 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(50, 50, 50)
-                                .addComponent(projectFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32,
+                                .addComponent(projectFormContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        32,
                                         Short.MAX_VALUE)
-                                .addComponent(projectTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(projectTableContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(50, 50, 50)));
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(40, 40, 40)
                                 .addGroup(jPanel1Layout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(projectFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 560,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(projectFormContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                560,
                                                 Short.MAX_VALUE)
-                                        .addComponent(projectTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(projectTableContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
                                 .addContainerGap(40, Short.MAX_VALUE)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

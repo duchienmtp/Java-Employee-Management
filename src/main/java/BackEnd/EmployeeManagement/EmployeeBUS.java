@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 public class EmployeeBUS {
 
     private ArrayList<Employee> employeeList = new ArrayList<>();
+    private ArrayList<Employee> employeeIdList = new ArrayList<>();
     private EmployeeDAO employeeDAO = new EmployeeDAO();
 
     public EmployeeBUS() {
@@ -15,6 +16,11 @@ public class EmployeeBUS {
 
     public ArrayList<Employee> getEmployeeList() {
         return employeeList;
+    }
+
+    public ArrayList<Employee> getEmployeeIdList() {
+        getNotDepartmentLeaderEmployees();
+        return employeeIdList;
     }
 
     public void readDB() {
@@ -64,5 +70,9 @@ public class EmployeeBUS {
             this.readDB();
             JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
+    }
+
+    public void getNotDepartmentLeaderEmployees() {
+        employeeIdList = employeeDAO.getNotDepartmentLeaderEmployees();
     }
 }

@@ -7,7 +7,7 @@ CREATE TABLE [Employees] (
   [birthDate] DATE not null,
   [phoneNumber] nvarchar(255) not null,
   [ethnicGroup] nvarchar(255) not null,
-  [typeId] nvarchar(255) not null,
+  [type] nvarchar(255) not null,
   [religion] nvarchar(255) not null,
   [degreeId] nvarchar(255) not null,
   [nation] nvarchar(255) not null,
@@ -27,13 +27,8 @@ CREATE TABLE [Account] (
   [email] nvarchar(255) not null,
   [avatar] nvarchar(255),
   [authorization] nvarchar(255) not null,
+  [accountStatus] bit not null,
   [deleteStatus] bit not null
-)
-GO
-
-CREATE TABLE [EmployeeType] (
-  [typeId] nvarchar(255) PRIMARY KEY ,
-  [typeName] nvarchar(255) not null
 )
 GO
 
@@ -125,9 +120,6 @@ CREATE TABLE [Assignments] (
 GO
 
 ALTER TABLE [Account] ADD FOREIGN KEY ([userId]) REFERENCES [Employees] ([id])
-GO
-
-ALTER TABLE [Employees] ADD FOREIGN KEY ([typeId]) REFERENCES [EmployeeType] ([typeId])
 GO
 
 ALTER TABLE [Employees] ADD FOREIGN KEY ([degreeId]) REFERENCES [Degrees] ([degreeId])
