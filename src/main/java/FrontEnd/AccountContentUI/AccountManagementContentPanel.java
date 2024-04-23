@@ -18,21 +18,43 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class AccountManagementContentPanel extends javax.swing.JPanel implements MouseListener, ActionListener, ListSelectionListener {
+import BackEnd.AccountManagement.Account;
+import BackEnd.AccountManagement.AccountBUS;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+
+public class AccountManagementContentPanel extends javax.swing.JPanel
+        implements MouseListener, ActionListener, ListSelectionListener {
+
+    AccountBUS accountBUS = new AccountBUS();
 
     AccountForm accountForm;
     int selectedRow = -1;
     Object[] selectedRowData;
+    ArrayList<Object> formData;
     boolean selectionConfirmed;
 
     public AccountManagementContentPanel() {
         initComponents();
 
         accountForm = new AccountForm();
+        formData = new ArrayList<>();
 
+        // Đăng ký listener cho các nút
         addButton.addActionListener(this);
         editButton.addActionListener(this);
         deleteButton.addActionListener(this);
+
+        // Đặt callback cho AccountForm
+        accountForm.setSubmitCallback(this::onFormSubmit);
 
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1), // Line color and stroke size
@@ -53,18 +75,58 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
         jTable1.setDefaultRenderer(Object.class, centerRenderer);
 
-        tableInit();
+        tableInit(accountBUS.getAccountList());
+
         jTable1.getSelectionModel().addListSelectionListener(this);
         addMouseListener(this);
 
         setVisible(true);
     }
 
-    public void tableInit() {
-        Object[] newRowData = {1, "EM001", "Trần Đức Hiển", "duchien230904@gmail.com", "Admin", "05/04/2024", "Đang Hoạt Động"};
+    public void tableInit(ArrayList<Account> accountBUS) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
+        model.setRowCount(0);
+
+        for (int i = 0; i < accountBUS.size(); i++) {
+            model.addRow(new Object[] {
+                    i + 1,
+                    accountBUS.get(i).getEmployee().getId(),
+                    accountBUS.get(i).getUsername(),
+                    accountBUS.get(i).getEmail(),
+                    accountBUS.get(i).getAuthorization().equalsIgnoreCase("admin") ? "Quản Trị Viên" : "Nhân Viên", });
+        }
+    }
+
+    private void onFormSubmit(ArrayList<Object> data) {
+        Account newAccount = new Account(
+                (String) data.get(0), // ID
+                (String) data.get(1), // Tên nhân viên
+                (String) data.get(2), // Mật khẩu
+                (String) data.get(3), // Email
+                (String) data.get(4), // Tệp avatar
+                (String) data.get(6) // Vai trò
+        );
+        // JOptionPane.showMessageDialog(this,newAccount.getUsername() , "CẢNH BÁO 11",
+        // JOptionPane.INFORMATION_MESSAGE);
+        accountBUS.addAccount(newAccount); // Thêm vào dữ liệu\
+
+        updateTable(); // Cập nhật bảng sau khi thêm dữ liệu
+    }
+
+    // Phương pháp cập nhật bảng
+    private void updateTable() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        ArrayList<Account> accountList = accountBUS.getAccountList();
+        for (int i = 0; i < accountList.size(); i++) {
+            Account account = accountList.get(i);
+            model.addRow(new Object[] {
+                    i + 1,
+                    account.getEmployee().getId(),
+                    account.getUsername(),
+                    account.getEmail(),
+                    account.getAuthorization()
+            });
         }
     }
 
@@ -79,6 +141,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
     }
 
     public void deleteTableRow(int selectedRow, String employeeID) {
+
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Bạn có muốn xóa bỏ nhân viên với ID " + employeeID + " ?",
@@ -93,10 +156,10 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
 
     @Override
     public void valueChanged(ListSelectionEvent event) {
-        if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
+        if (!event.getValueIsAdjusting()) { // Ensure selection is stable
             selectionConfirmed = true;
             selectedRow = jTable1.getSelectedRow();
-            if (selectedRow >= 0) {  // Check if a row is selected
+            if (selectedRow >= 0) { // Check if a row is selected
                 selectedRowData = new Object[jTable1.getColumnCount()];
                 for (int i = 0; i < jTable1.getColumnCount(); i++) {
                     selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
@@ -112,20 +175,23 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
             employeeID = (String) selectedRowData[1];
         }
         if (e.getSource() == addButton) {
+            accountForm.clearFormData();
             accountForm.setTitle("THÊM MỚI TÀI KHOẢN NHÂN VIÊN");
             accountForm.setVisible(true);
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
                 deleteTableRow(selectedRow, employeeID);
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == editButton) {
             if (selectedRow >= 0) {
                 updateTableRow(selectedRowData, employeeID);
                 accountForm.setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == importExcel) {
 
@@ -135,7 +201,8 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         tableContainer = new javax.swing.JPanel();
@@ -168,26 +235,26 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
 
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Email", "Phân Quyền", "Ngày Tạo", "Trạng Thái"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class
+                },
+                new String[] {
+                        "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Email", "Phân Quyền", "Trạng Thái"
+                }) {
+            Class[] types = new Class[] {
+                    java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class,
+                    java.lang.String.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         jTable1.setRowHeight(40);
@@ -196,23 +263,26 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
         javax.swing.GroupLayout tableContainerLayout = new javax.swing.GroupLayout(tableContainer);
         tableContainer.setLayout(tableContainerLayout);
         tableContainerLayout.setHorizontalGroup(
-            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
-                    .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(25, 25, 25))
-        );
+                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(tableContainerLayout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addGroup(tableContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 811,
+                                                Short.MAX_VALUE)
+                                        .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(25, 25, 25)));
         tableContainerLayout.setVerticalGroup(
-            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
+                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(tableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(21, Short.MAX_VALUE)));
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -252,6 +322,11 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
         exportExcel.setText("Xuất");
         exportExcel.setIconTextGap(10);
         exportExcel.setName("exportExcel"); // NOI18N
+        exportExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportExcelActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -263,9 +338,13 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
 
         searchTextField.setBackground(new java.awt.Color(204, 204, 204));
         searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        searchTextField.setForeground(new java.awt.Color(0, 0, 0));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
+        searchTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchTextFieldActionPerformed(evt);
+            }
+        });
 
         searchButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchButton.setForeground(new java.awt.Color(255, 255, 255));
@@ -273,69 +352,187 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
         searchButton.setText("Tìm Kiếm");
         searchButton.setIconTextGap(10);
         searchButton.setName("searchButton"); // NOI18N
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap()));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(searchOptionComboBox)
-                    .addComponent(searchTextField)
-                    .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(searchOptionComboBox)
+                                        .addComponent(searchTextField)
+                                        .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49,
+                                                Short.MAX_VALUE))
+                                .addContainerGap()));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(96, 96, 96)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(63, 63, 63)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69)
-                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69)
-                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
-                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(96, 96, 96))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(96, 96, 96)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(63, 63, 63)
+                                                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(69, 69, 69)
+                                                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(69, 69, 69)
+                                                .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(62, 62, 62)
+                                                .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(96, 96, 96)));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
-                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(43, 43, 43)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(52, 52, 52)
+                                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(43, 43, 43)));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void exportExcelActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exportExcelActionPerformed
+        // TODO add your handling code here:
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx");
+            fileChooser.setFileFilter(filter);
+            fileChooser.setDialogTitle("Specify a file to save");
+
+            int userSelection = fileChooser.showSaveDialog(this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                String filePath = fileToSave.getAbsolutePath();
+                if (!filePath.endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+
+                XSSFWorkbook workbook = new XSSFWorkbook();
+                XSSFSheet sheet = workbook.createSheet("JTable Sheet");
+
+                // Write column names to the first row of the sheet
+                XSSFRow headerRow = sheet.createRow(0);
+                for (int j = 0; j < jTable1.getColumnCount(); j++) {
+                    XSSFCell cell = headerRow.createCell(j);
+                    cell.setCellValue(jTable1.getColumnName(j));
+                }
+                for (int i = 0; i < jTable1.getRowCount(); i++) {
+                    XSSFRow row = sheet.createRow(i + 1);
+                    for (int j = 0; j < jTable1.getColumnCount(); j++) {
+                        Object value = jTable1.getValueAt(i, j);
+                        String cellValue = (value != null) ? value.toString() : "";
+                        XSSFCell cell = row.createCell(j); // Tạo ô trong bảng tính
+                        cell.setCellValue(cellValue); // Ghi giá trị vào ô
+                    }
+                }
+
+                // Write the workbook to the file
+                FileOutputStream out = new FileOutputStream(new File(filePath));
+                workbook.write(out);
+                out.close();
+                workbook.close();
+
+                JOptionPane.showMessageDialog(null, "Data Exported Successfully");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }// GEN-LAST:event_exportExcelActionPerformed
+
+    private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_searchTextFieldActionPerformed
+        // TODO add your handling code here:
+    }// GEN-LAST:event_searchTextFieldActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_searchButtonActionPerformed
+        // TODO add your handling code here:
+        String searchText = searchTextField.getText().trim();
+        String searchOption = (String) searchOptionComboBox.getSelectedItem();
+
+        if (searchText.isEmpty()) {
+            tableInit(accountBUS.getAccountList());
+        } else {
+            ArrayList<Account> searchResults = new ArrayList<>();
+            for (Account account : accountBUS.getAccountList()) {
+                switch (searchOption) {
+                    case "Theo Tên":
+                        if (account.getUsername().toLowerCase().contains(searchText.toLowerCase())) {
+                            searchResults.add(account);
+                        }
+                        break;
+                    case "Theo Mã":
+                        if (account.getEmployee().getId().toLowerCase().contains(searchText.toLowerCase())) {
+                            searchResults.add(account);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            tableInit(searchResults);
+        }
+    }// GEN-LAST:event_searchButtonActionPerformed
+
+    public void tableInit(List<Account> accounts) {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+
+        for (int i = 0; i < accounts.size(); i++) {
+            Account account = accounts.get(i);
+            model.addRow(new Object[] {
+                    i + 1,
+                    account.getEmployee().getId(),
+                    account.getUsername(),
+                    account.getEmail(),
+                    account.getAuthorization()
+            });
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
@@ -351,6 +548,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel implements
     private javax.swing.JTextField searchTextField;
     private javax.swing.JPanel tableContainer;
     private javax.swing.JLabel tableLabel;
+
     // End of variables declaration//GEN-END:variables
     @Override
     public void mouseClicked(MouseEvent e) {

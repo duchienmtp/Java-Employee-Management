@@ -1,12 +1,10 @@
 package BackEnd.EmployeeManagement;
-
+import BackEnd.ConnectDB.ConnectDB;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
 
-import BackEnd.ConnectDB.ConnectDB;
 import BackEnd.DegreeManagement.DegreeDAO;
 import BackEnd.DepartmentManagement.Department;
 import BackEnd.PositionManagement.PositionDAO;
@@ -19,6 +17,7 @@ public class EmployeeDAO {
 
     public EmployeeDAO() {
     }
+    
 
     public ArrayList<Employee> getAllEmployee() {
         ArrayList<Employee> employeeList = new ArrayList<>();
