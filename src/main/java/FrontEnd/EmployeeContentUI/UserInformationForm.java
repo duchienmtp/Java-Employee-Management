@@ -283,6 +283,11 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         employeeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         employeeNameTextField.setHighlighter(null);
         employeeNameTextField.setName("employeeNameTextField"); // NOI18N
+        employeeNameTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                employeeNameTextFieldActionPerformed(evt);
+            }
+        });
 
         genderLabel.setLabelFor(genderComboBox);
         genderLabel.setText("Giới Tính :");
@@ -405,9 +410,9 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         employStatusLabel.setName("employStatusLabel"); // NOI18N
         employStatusLabel.setToolTipText("");
 
+        employStatusComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Đang làm việc", "Đã nghỉ việc" }));
         employStatusComboBox.setBackground(new java.awt.Color(204, 204, 204));
         employStatusComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        employStatusComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Đang làm việc", "Đã nghỉ việc" }));
         employStatusComboBox.setName("employStatusComboBox"); // NOI18N
         employStatusComboBox.setOpaque(true);
 
@@ -535,6 +540,10 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void employeeNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employeeNameTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_employeeNameTextFieldActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.github.lgooddatepicker.components.DatePicker birthdateDatePicker;

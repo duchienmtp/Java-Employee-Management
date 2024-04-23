@@ -1,23 +1,27 @@
 package BackEnd.AccountManagement;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+
+import javax.swing.JOptionPane;
 
 public class AccountBUS {
+    
     private ArrayList<Account> accountList = new ArrayList<>();
     private AccountDAO accountDAO = new AccountDAO();
 
     public AccountBUS() {
         accountList = accountDAO.getAllAccount();
     }
-
+    
+    public ArrayList<Account> getAccountList() {
+        return accountList;
+    }
+    
     public void readDB() {
         accountList = accountDAO.getAllAccount();
     }
 
-    public ArrayList<Account> getAccountList() {
-        return accountList;
-    }
+
 
     public String getNextID() {
         String lastID = accountList.get(accountList.size() - 1).getEmployee().getId();
@@ -29,12 +33,7 @@ public class AccountBUS {
     }
 
     public Account getAccountById(String userId) {
-        for (Account account : accountList) {
-            if (account.getUserId().equals(userId)) {
-                return account;
-            }
-        }
-        return null;
+        return accountDAO.getAccountById(userId);
     }
 
     public Boolean addAccount(Account account) {
@@ -42,6 +41,7 @@ public class AccountBUS {
 
         if (ok) {
             accountList.add(account);
+            JOptionPane.showMessageDialog(null, "Thêm mới thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
         return ok;
     }
@@ -51,47 +51,44 @@ public class AccountBUS {
 
         if (ok) {
             for (int i = 0; i < accountList.size(); i++) {
-                if (accountList.get(i).getUserId().equals(account.getUserId())) {
+                if (accountList.get(i).getEmployee().getId().equals(account.getEmployee().getId())) {
                     accountList.set(i, account);
                     break;
                 }
             }
+            JOptionPane.showMessageDialog(null, "Cập nhật thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
-    // public void deleteAccount(Account account) {
-    // Boolean ok = accountDAO.deleteAccount(account);
-    //
-    // if (ok) {
-    // for (int i = 0; i < accountList.size(); i++) {
-    // if (accountList.get(i).getUserId().equals(account.getUserId())) {
-    // accountList.remove(i);
-    // break;
-    // }
-    // }
-    // }
-    // }
-    public void deleteAccount(Account account) {
-        // Kiểm tra tính hợp lệ của tham số đầu vào
-        if (account == null) {
-            return;
-        }
-
-        // Xóa tài khoản từ cơ sở dữ liệu
+     public void deleteAccount(Account account) {
         Boolean ok = accountDAO.deleteAccount(account);
-
-        // Kiểm tra kết quả từ phương thức deleteAccount
-        if (ok != null && ok) {
-            // Sử dụng Iterator để duyệt qua danh sách và xóa tài khoản
-            Iterator<Account> iterator = accountList.iterator();
-            while (iterator.hasNext()) {
-                Account currentAccount = iterator.next();
-                if (currentAccount.getUserId().equals(account.getUserId())) {
-                    iterator.remove(); // Loại bỏ tài khoản một cách an toàn
-                    break;
-                }
-            }
+    
+        if (ok) {
+            this.readDB();
+            JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
-    }
+     }
+//    public void deleteAccount(Account account) {
+//        // Kiểm tra tính hợp lệ của tham số đầu vào
+//        if (account == null) {
+//            return;
+//        }
+//
+//        // Xóa tài khoản từ cơ sở dữ liệu
+//        Boolean ok = accountDAO.deleteAccount(account);
+//
+//        // Kiểm tra kết quả từ phương thức deleteAccount
+//        if (ok != null && ok) {
+//            // Sử dụng Iterator để duyệt qua danh sách và xóa tài khoản
+//            Iterator<Account> iterator = accountList.iterator();
+//            while (iterator.hasNext()) {
+//                Account currentAccount = iterator.next();
+//                if (currentAccount.getUserId().equals(account.getUserId())) {
+//                    iterator.remove(); // Loại bỏ tài khoản một cách an toàn
+//                    break;
+//                }
+//            }
+//        }
+//    }
 
 }

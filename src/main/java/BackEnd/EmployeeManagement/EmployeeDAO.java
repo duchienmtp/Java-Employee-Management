@@ -51,7 +51,7 @@ public class EmployeeDAO {
                 }
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees");
+            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees ");
         } finally {
             dbConnection.closeConnect();
         }
@@ -152,7 +152,7 @@ public class EmployeeDAO {
                         new SpecialtyDAO().getSpecialtyById(specialtyId));
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees");
+            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees ");
         } finally {
             dbConnection.closeConnect();
         }
