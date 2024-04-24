@@ -19,12 +19,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import BackEnd.AssignmentManagement.AssignmentBUS;
-import BackEnd.EmployeeManagement.EmployeeBUS;
-import BackEnd.ProjectsManagement.Project;
-import BackEnd.ProjectsManagement.ProjectBUS;
-import BackEnd.EmployeeManagement.Employee;
-
+import FrontEnd.Redux.Redux;
 import javax.swing.JTable;
 
 public class AssignmentManagementContentPanel extends javax.swing.JPanel
@@ -35,14 +30,11 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
     boolean selectionConfirmed;
     Object[] selectedRowData;
     ArrayList<Assignment> assignmentList;
-    AssignmentBUS asmB = new AssignmentBUS();
-    ProjectBUS pjB = new ProjectBUS();
-    EmployeeBUS emB = new EmployeeBUS();
 
     public AssignmentManagementContentPanel() {
         initComponents();
 
-        assignmentList = asmB.getAssignmentsList();
+        assignmentList = Redux.assignmentBUS.getAssignmentsList();
 
         tableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
@@ -54,8 +46,6 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 Color.BLACK // Text color
         );
         jPanel1.setBorder(titledBorder);
-
-        assignmentForm = new AssignmentForm();
 
         addButton.addActionListener(this);
         deleteButton.addActionListener(this);
@@ -81,12 +71,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == addButton) {
-            if (assignmentForm != null) {
-                assignmentForm.setTitle("THÊM MỚI CÔNG TÁC CỦA NHÂN VIÊN");
-                assignmentForm.setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(this, "Can not found form!");
-            }
+            insertTableRow();
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
 
@@ -161,12 +146,19 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         return jTable1;
     }
 
+    public void insertTableRow() {
+        assignmentForm = new AssignmentForm();
+        assignmentForm.setTitle("THÊM MỚI CÔNG TÁC CỦA NHÂN VIÊN");
+        assignmentForm.setVisible(true);
+    }
+
     public void updateTableRow(Object[] rowData) {
         // Create a new ArrayList
         ArrayList<Object> dataList = new ArrayList<>(rowData.length);
 
         // Add all elements from the array to the ArrayList
         dataList.addAll(Arrays.asList(rowData));
+        assignmentForm = new AssignmentForm();
         assignmentForm.setTitle("CẬP NHẬT THÔNG TIN CÔNG TÁC CỦA NHÂN VIÊN");
         assignmentForm.showFormWithData(dataList);
     }
@@ -177,10 +169,11 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            asmB.deleteAssignment(asmB.findAssignmentByEmployeeIdAndProjectId((String) selectedRowData[1],
+            Redux.assignmentBUS.deleteAssignment(Redux.assignmentBUS.findAssignmentByEmployeeIdAndProjectId(
+                    (String) selectedRowData[1],
                     (String) selectedRowData[3]));
             jTable1.revalidate();
-            tableInit(asmB.getAssignmentsList());
+            tableInit(Redux.assignmentBUS.getAssignmentsList());
         }
     }
 

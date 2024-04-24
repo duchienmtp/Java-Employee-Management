@@ -76,7 +76,7 @@ public class EmployeeSalary {
     @Override
     public String toString() {
         return "{" +
-                " employee='" + getEmployee() + "'" +
+                " employee='" + getEmployee().getId() + "'" +
                 ", insurance='" + getInsurance() + "'" +
                 ", netSalary='" + getNetSalary() + "'" +
                 ", createdAt='" + getCreatedAt() + "'" +

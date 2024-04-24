@@ -1,9 +1,7 @@
 package FrontEnd.ProjectContentUI;
 
 import BackEnd.AssignmentManagement.Assignment;
-import BackEnd.AssignmentManagement.AssignmentBUS;
-import BackEnd.EmployeeManagement.EmployeeBUS;
-import BackEnd.ProjectsManagement.ProjectBUS;
+import FrontEnd.Redux.Redux;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,9 +18,6 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
     public boolean btnconfirmClicked = false;
     ArrayList<Object> formData;
     ArrayList<Object> prevState;
-    EmployeeBUS emB = new EmployeeBUS();
-    AssignmentBUS asmB = new AssignmentBUS();
-    ProjectBUS pjB = new ProjectBUS();
 
     public AssignmentForm() {
         initComponents();
@@ -34,11 +29,11 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
 
         confirmButton.addActionListener(this);
         cancelButton.addActionListener(this);
-        for (int i = 0; i < emB.getEmployeeList().size(); i++) {
-            employeeIDComboBox.addItem(emB.getEmployeeList().get(i).getId());
+        for (int i = 0; i < Redux.employeeBUS.getEmployeeList().size(); i++) {
+            employeeIDComboBox.addItem(Redux.employeeBUS.getEmployeeList().get(i).getId());
         }
-        for (int i = 0; i < pjB.getProjectList().size(); i++) {
-            projectIDComboBox.addItem(pjB.getProjectList().get(i).getProjectId());
+        for (int i = 0; i < Redux.projectBUS.getProjectList().size(); i++) {
+            projectIDComboBox.addItem(Redux.projectBUS.getProjectList().get(i).getProjectId());
         }
         addWindowListener(this);
     }
@@ -58,7 +53,6 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
             employeeNameTextField.setText((String) data.get(2));
             projectIDComboBox.setSelectedItem(data.get(3));
             projectNameTextField.setText((String) data.get(4));
-
             prevState = data;
         }
     }
@@ -92,24 +86,24 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
 
         if (confirmation == JOptionPane.YES_OPTION) {
             if (this.getTitle().contains("THÊM MỚI")) {
-                if (asmB.checkInList(employeeIDComboBox.getSelectedItem().toString(),
+                if (Redux.assignmentBUS.checkInList(employeeIDComboBox.getSelectedItem().toString(),
                         projectIDComboBox.getSelectedItem().toString())) {
                     JOptionPane.showMessageDialog(null, "Nhân viên này đã được đăng kí công tác này.");
                 }
 
                 Assignment newasm = new Assignment(
-                        new EmployeeBUS().getEmployeeById(employeeIDComboBox.getSelectedItem().toString()),
-                        new ProjectBUS().getProjectById(projectIDComboBox.getSelectedItem().toString()), false);
+                        Redux.employeeBUS.getEmployeeById(employeeIDComboBox.getSelectedItem().toString()),
+                        Redux.projectBUS.getProjectById(projectIDComboBox.getSelectedItem().toString()), false);
 
-                asmB.addNewAssignment(newasm);
+                Redux.assignmentBUS.addNewAssignment(newasm);
             } else {
                 Assignment newasm = new Assignment(
-                        new EmployeeBUS().getEmployeeById(employeeIDComboBox.getSelectedItem().toString()),
-                        new ProjectBUS().getProjectById(projectIDComboBox.getSelectedItem().toString()), false);
+                        Redux.employeeBUS.getEmployeeById(employeeIDComboBox.getSelectedItem().toString()),
+                        Redux.projectBUS.getProjectById(projectIDComboBox.getSelectedItem().toString()), false);
 
-                asmB.updateAssignment(prevState, newasm);
+                Redux.assignmentBUS.updateAssignment(prevState, newasm);
             }
-            AssignmentManagementContentPanel.tableInit(asmB.getAssignmentsList());
+            AssignmentManagementContentPanel.tableInit(Redux.assignmentBUS.getAssignmentsList());
             dispose();
         }
     }
@@ -157,7 +151,7 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -205,7 +199,6 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         projectIDComboBox.setEditable(true);
         projectIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         projectIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        projectIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
         projectIDComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         projectIDComboBox.setName("projectIDComboBox"); // NOI18N
         projectIDComboBox.setOpaque(true);
@@ -278,96 +271,68 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(30, 30, 30)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(projectNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                        150, Short.MAX_VALUE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(projectNameTextField,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 372,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(jPanel1Layout
-                                                                .createParallelGroup(
-                                                                        javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                        false)
-                                                                .addComponent(employeeIDLabel,
-                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                        Short.MAX_VALUE)
-                                                                .addComponent(employeeNameLabel,
-                                                                        javax.swing.GroupLayout.DEFAULT_SIZE, 150,
-                                                                        Short.MAX_VALUE))
-                                                        .addComponent(projectIDLabel,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 150,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGap(18, 18, 18)
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(projectIDComboBox, 0,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(employeeNameTextField)
-                                                        .addComponent(employeeIDComboBox, 0,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout
-                                                .createSequentialGroup()
-                                                .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(30, 30, 30)));
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(projectNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(projectNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
+                            .addComponent(projectIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(projectIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(employeeNameTextField)
+                            .addComponent(employeeIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(30, 30, 30))
+        );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(36, 36, 36)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(employeeIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 41,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(employeeIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 41,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(projectIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(projectIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(projectNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(41, 41, 41)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(187, 187, 187)));
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(employeeIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(employeeIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(projectIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(projectIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(projectNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(41, 41, 41)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(187, 187, 187))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 380,
-                                javax.swing.GroupLayout.PREFERRED_SIZE));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         pack();
         setLocationRelativeTo(null);
@@ -384,9 +349,9 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
     private void employeeIDComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {// GEN-FIRST:event_employeeIDComboBoxItemStateChanged
         // TODO add your handling code here:
         String emId = employeeIDComboBox.getSelectedItem().toString();
-        for (int i = 0; i < emB.getEmployeeList().size(); i++) {
-            if (emId.equalsIgnoreCase(emB.getEmployeeList().get(i).getId())) {
-                employeeNameTextField.setText(emB.getEmployeeList().get(i).getFullName());
+        for (int i = 0; i < Redux.employeeBUS.getEmployeeList().size(); i++) {
+            if (emId.equalsIgnoreCase(Redux.employeeBUS.getEmployeeList().get(i).getId())) {
+                employeeNameTextField.setText(Redux.employeeBUS.getEmployeeList().get(i).getFullName());
             }
         }
     }// GEN-LAST:event_employeeIDComboBoxItemStateChanged
@@ -394,9 +359,9 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
     private void projectIDComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {// GEN-FIRST:event_projectIDComboBoxItemStateChanged
         // TODO add your handling code here:
         String pjId = projectIDComboBox.getSelectedItem().toString();
-        for (int i = 0; i < pjB.getProjectList().size(); i++) {
-            if (pjId.equalsIgnoreCase(pjB.getProjectList().get(i).getProjectId())) {
-                projectNameTextField.setText(pjB.getProjectList().get(i).getProjectName());
+        for (int i = 0; i < Redux.projectBUS.getProjectList().size(); i++) {
+            if (pjId.equalsIgnoreCase(Redux.projectBUS.getProjectList().get(i).getProjectId())) {
+                projectNameTextField.setText(Redux.projectBUS.getProjectList().get(i).getProjectName());
             }
         }
     }// GEN-LAST:event_projectIDComboBoxItemStateChanged

@@ -9,6 +9,7 @@ public class EmployeeBUS {
     private ArrayList<Employee> employeeList = new ArrayList<>();
     private ArrayList<Employee> employeeNotDepartmentLeaderIdList = new ArrayList<>();
     private ArrayList<Employee> employeeNotHaveAccountIdList = new ArrayList<>();
+    private ArrayList<Employee> employeeNotHaveSalaryList = new ArrayList<>();
     private EmployeeDAO employeeDAO = new EmployeeDAO();
 
     public EmployeeBUS() {
@@ -35,6 +36,15 @@ public class EmployeeBUS {
 
     public void getNotHaveAccount() {
         employeeNotHaveAccountIdList = employeeDAO.getNotHaveAccount();
+    }
+
+    public ArrayList<Employee> getEmployeeNotHaveSalaryList() {
+        getNotHaveSalary();
+        return employeeNotHaveSalaryList;
+    }
+
+    public void getNotHaveSalary() {
+        employeeNotHaveSalaryList = employeeDAO.getNotHaveSalary();
     }
 
     public void readDB() {

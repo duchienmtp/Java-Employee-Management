@@ -95,21 +95,26 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="searchOptionComboBox" min="-2" pref="133" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="searchTextField" min="-2" pref="538" max="-2" attributes="0"/>
+                      <Component id="searchTextField" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="searchButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="searchButton" max="32767" attributes="0"/>
+                      <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="searchOptionComboBox" alignment="0" max="32767" attributes="0"/>
-                          <Component id="searchTextField" alignment="0" max="32767" attributes="0"/>
-                          <Component id="searchButton" alignment="0" pref="49" max="32767" attributes="0"/>
+                          <Component id="refreshButton" alignment="0" pref="50" max="32767" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                              <Component id="searchTextField" alignment="3" min="-2" pref="49" max="-2" attributes="0"/>
+                              <Component id="searchButton" alignment="3" min="-2" pref="49" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -126,9 +131,10 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="2">
-                    <StringItem index="0" value="M&#xe3; Nh&#xe2;n Vi&#xea;n"/>
-                    <StringItem index="1" value="T&#xea;n Nh&#xe2;n Vi&#xea;n"/>
+                  <StringArray count="3">
+                    <StringItem index="0" value="T&#x1ea5;t c&#x1ea3;"/>
+                    <StringItem index="1" value="M&#xe3; Nh&#xe2;n Vi&#xea;n"/>
+                    <StringItem index="2" value="M&#xe3; Khen Th&#x1b0;&#x1edf;ng"/>
                   </StringArray>
                 </Property>
                 <Property name="name" type="java.lang.String" value="searchOptionComboBox" noResource="true"/>
@@ -144,10 +150,10 @@
                   <Color blue="cc" green="cc" red="cc" type="rgb"/>
                 </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="1"/>
+                  <Font name="Segoe UI" size="14" style="1"/>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="0" green="0" red="0" type="rgb"/>
+                  <Color blue="33" green="33" red="0" type="rgb"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="searchTextField" noResource="true"/>
                 <Property name="opaque" type="boolean" value="true"/>
@@ -168,6 +174,20 @@
                 <Property name="iconTextGap" type="int" value="10"/>
                 <Property name="name" type="java.lang.String" value="searchButton" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="refreshButton">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="L&#xe0;m M&#x1edb;i"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="refreshButtonActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -241,7 +261,7 @@
                   <Font name="Segoe UI" size="18" style="1"/>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="0" green="0" red="0" type="rgb"/>
+                  <Color blue="33" green="33" red="0" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Danh s&#xe1;ch khen th&#x1b0;&#x1edf;ng c&#x1ee7;a nh&#xe2;n vi&#xea;n"/>
                 <Property name="name" type="java.lang.String" value="tableLabel" noResource="true"/>
@@ -261,24 +281,18 @@
                       <Font name="Segoe UI" size="12" style="1"/>
                     </Property>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="8" rowCount="0">
+                      <Table columnCount="7" rowCount="0">
                         <Column editable="false" title="STT" type="java.lang.Integer"/>
                         <Column editable="false" title="M&#xe3; Nh&#xe2;n Vi&#xea;n" type="java.lang.String"/>
-                        <Column editable="false" title="H&#x1ecd; v&#xe0; T&#xea;n" type="java.lang.String"/>
-                        <Column editable="false" title="M&#xe3; Khen Th&#x1b0;&#x1edf;ng" type="java.lang.String"/>
+                        <Column editable="false" title="T&#xea;n Nh&#xe2;n Vi&#xea;n" type="java.lang.String"/>
                         <Column editable="false" title="T&#xea;n Khen Th&#x1b0;&#x1edf;ng" type="java.lang.String"/>
                         <Column editable="false" title="S&#x1ed1; L&#x1ea7;n" type="java.lang.Integer"/>
-                        <Column editable="true" title="Ti&#x1ec1;n Th&#x1b0;&#x1edf;ng" type="java.lang.Object"/>
-                        <Column editable="false" title="Ng&#xe0;y T&#x1ea1;o" type="java.lang.Object"/>
+                        <Column editable="false" title="Ti&#x1ec1;n Th&#x1b0;&#x1edf;ng" type="java.lang.String"/>
+                        <Column editable="false" title="Ng&#xe0;y T&#x1ea1;o" type="java.lang.String"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0">
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                          <Title/>
-                          <Editor/>
-                          <Renderer/>
-                        </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>

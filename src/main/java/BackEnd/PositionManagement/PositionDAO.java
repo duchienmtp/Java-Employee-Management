@@ -30,6 +30,7 @@ public class PositionDAO {
                     positionList.add(new Position(positionId, positionName, positionSalaryAllowance, deleteStatus));
                 }
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Positions");
         } finally {
@@ -92,6 +93,7 @@ public class PositionDAO {
                 boolean deleteStatus = rs.getBoolean("deleteStatus");
                 position = new Position(positionId, positionName, positionSalaryAllowance, deleteStatus);
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Positions");
         } finally {

@@ -18,13 +18,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import BackEnd.PositionManagement.Position;
-import BackEnd.PositionManagement.PositionBUS;
 import FrontEnd.Redux.Redux;
 
 public class PositionContentPanel extends javax.swing.JPanel
         implements ActionListener, ListSelectionListener, MouseListener {
-
-    PositionBUS positionBUS = new PositionBUS();
 
     int selectedRow = -1;
     boolean selectionConfirmed;
@@ -34,7 +31,6 @@ public class PositionContentPanel extends javax.swing.JPanel
     public PositionContentPanel() {
         initComponents();
 
-        Redux.getAllPositions();
         formData = new ArrayList<>();
 
         positionFormLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
@@ -53,14 +49,14 @@ public class PositionContentPanel extends javax.swing.JPanel
         jTable1.setDefaultRenderer(Object.class, centerRenderer);
 
         formInit();
-        tableInit(Redux.positionList);
+        tableInit(Redux.positionBUS.getPositionList());
         jTable1.getSelectionModel().addListSelectionListener(this);
         jPanel1.addMouseListener(this);
         setVisible(true);
     }
 
     public void formInit() {
-        positionIDTextField.setText(positionBUS.getNextID());
+        positionIDTextField.setText(Redux.positionBUS.getNextID());
     }
 
     public void tableInit(ArrayList<Position> positionList) {
@@ -69,11 +65,12 @@ public class PositionContentPanel extends javax.swing.JPanel
 
         for (int i = 0; i < positionList.size(); i++) {
             if (!positionList.get(i).getDeleteStatus()) {
-                model.addRow(new Object[]{
-                    i + 1,
-                    positionList.get(i).getPositionId(),
-                    positionList.get(i).getPositionName(),
-                    String.format("%.0f%%", positionList.get(i).getPositionSalaryAllowance() * 100)
+                model.addRow(new Object[] {
+                        i + 1,
+                        positionList.get(i).getPositionId(),
+                        positionList.get(i).getPositionName(),
+                        String.format("%.0f%%",
+                                positionList.get(i).getPositionSalaryAllowance() * 100)
                 });
             }
         }
@@ -125,13 +122,14 @@ public class PositionContentPanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            positionBUS.addPosition(
+            Redux.positionBUS.addPosition(
                     new Position((String) formData.get(0), (String) formData.get(1),
                             (double) formData.get(2)));
             clearFormContent();
             jTable1.revalidate();
-            Redux.getAllPositions();
-            tableInit(Redux.positionList);
+            // Redux.getAllPositions();
+            // tableInit(Redux.positionList);
+            tableInit(Redux.positionBUS.getPositionList());
         }
     }
 
@@ -144,13 +142,14 @@ public class PositionContentPanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            positionBUS.updatePosition(
+            Redux.positionBUS.updatePosition(
                     new Position((String) formData.get(0), (String) formData.get(1),
                             (double) formData.get(2)));
             clearFormContent();
             jTable1.revalidate();
-            Redux.getAllPositions();
-            tableInit(Redux.positionList);
+            // Redux.getAllPositions();
+            // tableInit(Redux.positionList);
+            tableInit(Redux.positionBUS.getPositionList());
         }
     }
 
@@ -163,11 +162,12 @@ public class PositionContentPanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            positionBUS.deletePosition(positionBUS.getPositionById((String) formData.get(0)));
+            Redux.positionBUS.deletePosition(Redux.positionBUS.getPositionById((String) formData.get(0)));
             clearFormContent();
             jTable1.revalidate();
-            Redux.getAllPositions();
-            tableInit(Redux.positionList);
+            // Redux.getAllPositions();
+            // tableInit(Redux.positionList);
+            tableInit(Redux.positionBUS.getPositionList());
         }
     }
 
@@ -177,7 +177,7 @@ public class PositionContentPanel extends javax.swing.JPanel
         positionSalaryAllowanceTextField
                 .setText(Double.toString(
                         Double.parseDouble(((String) selectedRowData[3]).replace("%", ""))
-                        / 100));
+                                / 100));
         positionIDTextField.setEnabled(false);
     }
 

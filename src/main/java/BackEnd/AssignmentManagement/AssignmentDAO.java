@@ -27,6 +27,7 @@ public class AssignmentDAO {
                             rs.getBoolean(3)));
                 }
             }
+            rs.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng phân công");
         } finally {
@@ -90,6 +91,7 @@ public class AssignmentDAO {
                         new ProjectDAO().searchInProject(rs.getString(2)),
                         rs.getBoolean(3));
             }
+            rs.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng phân công");
         } finally {

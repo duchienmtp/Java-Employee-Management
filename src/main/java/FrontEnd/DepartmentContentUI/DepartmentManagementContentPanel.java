@@ -20,15 +20,12 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.util.List;
 
 import BackEnd.DepartmentManagement.Department;
-import BackEnd.DepartmentManagement.DepartmentBUS;
 
 import FrontEnd.Redux.Redux;
 import javax.swing.table.DefaultTableModel;
 
 public class DepartmentManagementContentPanel extends javax.swing.JPanel
         implements ActionListener, ListSelectionListener, MouseListener {
-
-    DepartmentBUS departmentBUS = new DepartmentBUS();
 
     DepartmentForm departmentForm;
     int selectedRow = -1;
@@ -37,8 +34,6 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
 
     public DepartmentManagementContentPanel() {
         initComponents();
-
-        Redux.getAllDepartments();
 
         addButton.addActionListener(this);
         editButton.addActionListener(this);
@@ -62,7 +57,7 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
         tblDeparment.setDefaultRenderer(String.class, centerRenderer);
         tblDeparment.setDefaultRenderer(Integer.class, centerRenderer);
 
-        tableInit(Redux.departmentList);
+        tableInit(Redux.departmentBUS.getDepartmentList());
 
         tblDeparment.getSelectionModel().addListSelectionListener(this);
         tblDeparment.addMouseListener(this);
@@ -144,7 +139,7 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
     }
 
     public void updateTableRow() {
-        Department selectedDepartment = departmentBUS.getDepartmentById((String) selectedRowData[1]);
+        Department selectedDepartment = Redux.departmentBUS.getDepartmentById((String) selectedRowData[1]);
         List<Object> departmentPropertiesValue = selectedDepartment.toList();
         ArrayList<Object> dataList = new ArrayList<>();
         dataList.addAll(departmentPropertiesValue);
@@ -162,10 +157,11 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            departmentBUS.deleteDepartment(departmentBUS.getDepartmentById((String) selectedRowData[1]));
+            Redux.departmentBUS.deleteDepartment(Redux.departmentBUS.getDepartmentById((String) selectedRowData[1]));
             tblDeparment.revalidate();
-            Redux.getAllDepartments();
-            tableInit(Redux.departmentList);
+            // Redux.getAllDepartments();
+            // tableInit(Redux.departmentList);
+            tableInit(Redux.departmentBUS.getDepartmentList());
         }
     }
 

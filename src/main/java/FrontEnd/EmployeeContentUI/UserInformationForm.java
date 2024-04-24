@@ -7,14 +7,10 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 
 import BackEnd.AccountManagement.Account;
 import BackEnd.DegreeManagement.Degree;
-import BackEnd.DegreeManagement.DegreeBUS;
 import BackEnd.DepartmentManagement.Department;
 import BackEnd.EmployeeManagement.Employee;
-import BackEnd.EmployeeManagement.EmployeeBUS;
 import BackEnd.PositionManagement.Position;
-import BackEnd.PositionManagement.PositionBUS;
 import BackEnd.SpecialtyManagement.Specialty;
-import BackEnd.SpecialtyManagement.SpecialtyBUS;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,19 +25,11 @@ import javax.swing.WindowConstants;
 
 public class UserInformationForm extends javax.swing.JFrame implements ActionListener, WindowListener {
 
-    EmployeeBUS employeeBUS;
-
     ArrayList<Object> formData;
     String employeeID;
 
     public UserInformationForm() {
         initComponents();
-
-        Redux.getAllDegrees();
-        Redux.getAllPositions();
-        Redux.getAllSpecialties();
-
-        employeeBUS = new EmployeeBUS();
 
         formData = new ArrayList<>();
         formInit();
@@ -61,20 +49,20 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
     public void formInit() {
 
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        for (Degree degree : Redux.degreeList) {
+        for (Degree degree : Redux.degreeBUS.getDegreeList()) {
             if (!degree.getDeleteStatus()) {
                 model.addElement(degree.getDegreeName());
             }
         }
         degreeComboBox.setModel(model);
 
-        for (Position position : Redux.positionList) {
+        for (Position position : Redux.positionBUS.getPositionList()) {
             if (!position.getDeleteStatus()) {
                 positionComboBox.addItem(position.getPositionName());
             }
         }
 
-        for (Specialty specialty : Redux.specialtyList) {
+        for (Specialty specialty : Redux.specialtyBUS.getSpecialtyList()) {
             if (!specialty.getDeleteStatus()) {
                 specialtyComboBox.addItem(specialty.getSpecialtyName());
             }
@@ -91,9 +79,9 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
         if (confirmation == JOptionPane.YES_OPTION) {
             if (this.getTitle().contains("THÊM MỚI")) {
-                employeeBUS.addEmployee(
+                Redux.employeeBUS.addEmployee(
                         new Employee(
-                                (String) employeeBUS.getNextID(),
+                                (String) Redux.employeeBUS.getNextID(),
                                 (String) formData.get(0),
                                 (String) formData.get(1),
                                 (String) formData.get(2),
@@ -101,13 +89,13 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                                 (String) formData.get(4),
                                 (String) formData.get(5),
                                 (String) formData.get(6),
-                                new DegreeBUS().getDegreeByName(
+                                Redux.degreeBUS.getDegreeByName(
                                         (String) formData.get(7)),
                                 (String) formData.get(8),
-                                new PositionBUS().getPositionByName(
+                                Redux.positionBUS.getPositionByName(
                                         (String) formData.get(9)),
                                 new Department(),
-                                new SpecialtyBUS().getSpecialtyByName(
+                                Redux.specialtyBUS.getSpecialtyByName(
                                         (String) formData.get(10))));
             } else {
                 Employee employee = new Employee(
@@ -119,25 +107,26 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                         (String) formData.get(4),
                         (String) formData.get(5),
                         (String) formData.get(6),
-                        new DegreeBUS().getDegreeByName(
+                        Redux.degreeBUS.getDegreeByName(
                                 (String) formData.get(7)),
                         (String) formData.get(8),
-                        new PositionBUS().getPositionByName(
+                        Redux.positionBUS.getPositionByName(
                                 (String) formData.get(9)),
                         new Department(),
-                        new SpecialtyBUS().getSpecialtyByName(
+                        Redux.specialtyBUS.getSpecialtyByName(
                                 (String) formData.get(10)),
                         (boolean) formData.get(11),
                         (boolean) formData.get(12));
-                employeeBUS.updateEmployee(employee);
-                for (Account account : Redux.accountList) {
+                Redux.employeeBUS.updateEmployee(employee);
+                for (Account account : Redux.accountBUS.getAccountList()) {
                     if (account.getEmployee().getId().equals(employeeID)) {
                         account.setEmployee(employee);
                     }
                 }
             }
-            Redux.getAllEmployees();
-            EmployeeManagementContentPanel.tableInit(Redux.employeeList);
+            // Redux.getAllEmployees();
+            // EmployeeManagementContentPanel.tableInit(Redux.employeeList);
+            EmployeeManagementContentPanel.tableInit(Redux.employeeBUS.getEmployeeList());
             UserInfoContentPanel.formInit();
             UserInfoContentPanel.showFormWithData();
             dispose();

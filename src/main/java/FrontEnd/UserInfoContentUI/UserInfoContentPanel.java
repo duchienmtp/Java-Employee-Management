@@ -6,12 +6,8 @@ import FrontEnd.Redux.Redux;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.imageio.ImageIO;
 import java.net.URL;
 import javax.swing.ImageIcon;
 //import com.itextpdf.text.Document;
@@ -31,7 +27,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
 
     public UserInfoContentPanel() {
         initComponents();
-        Redux.getAllAccount();
 
         formInit();
         showFormWithData();
@@ -43,7 +38,7 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
     }
 
     public static void formInit() {
-        for (Account account : Redux.accountList) {
+        for (Account account : Redux.accountBUS.getAccountList()) {
             if (account.getEmployee().getId().equals(Redux.userId)) {
                 Employee employee = account.getEmployee();
                 userData = new Object[] { employee.getId(), employee.getFullName(), employee.getGender(),

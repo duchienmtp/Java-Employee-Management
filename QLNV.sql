@@ -1,4 +1,4 @@
-use QLNV
+﻿use QLNV
 
 CREATE TABLE [Employees] (
   [id] nvarchar(255) PRIMARY KEY,
@@ -137,7 +137,6 @@ GO
 
 ALTER TABLE [EmployeesRewardsCriticism] ADD FOREIGN KEY ([employeeId]) REFERENCES [Employees] ([id])
 GO
-
 
 ALTER TABLE [Employees] ADD FOREIGN KEY ([specialtyId]) REFERENCES [Specialties] ([specialtyId])
 GO

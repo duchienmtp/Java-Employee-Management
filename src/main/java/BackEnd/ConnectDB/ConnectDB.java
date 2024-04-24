@@ -9,6 +9,9 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 public class ConnectDB {
+    static int countConection = 0;
+    static int countQuery = 0;
+    static int countUpdate = 0;
 
     // Tự setting theo máy của mỗi người
     private static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
@@ -112,4 +115,6 @@ public class ConnectDB {
                     "-- ERROR! Không thể đóng kết nối tới " + DB_Name + "\n" + ex.getLocalizedMessage());
         }
     }
-}
+    
+ }
+

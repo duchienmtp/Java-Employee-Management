@@ -52,6 +52,7 @@ public class EmployeeDAO {
                                     new SpecialtyDAO().getSpecialtyById(specialtyId), employStatus, deleteStatus));
                 }
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees ");
         } finally {
@@ -154,6 +155,7 @@ public class EmployeeDAO {
                         new PositionDAO().getPositionById(positionId), new Department(),
                         new SpecialtyDAO().getSpecialtyById(specialtyId));
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees ");
         } finally {
@@ -181,6 +183,7 @@ public class EmployeeDAO {
                             new Employee(id, deleteStatus));
                 }
             }
+            rs.close();
         } catch (SQLException ex) {
             System.out.println("Error reading data from Employees and Departments table: " + ex.getMessage());
         } finally {
@@ -208,8 +211,37 @@ public class EmployeeDAO {
                             new Employee(id, deleteStatus));
                 }
             }
+            rs.close();
         } catch (SQLException ex) {
             System.out.println("Error reading data from Employees and Account table: " + ex.getMessage());
+        } finally {
+            dbConnection.closeConnect();
+        }
+        return employeeList;
+    }
+
+    public ArrayList<Employee> getNotHaveSalary() {
+        dbConnection = new ConnectDB();
+        ArrayList<Employee> employeeList = new ArrayList<>();
+        try {
+            String query = "SELECT E.id, E.deleteStatus " +
+                    "FROM Employees E " +
+                    "LEFT JOIN EmployeeSalaries ES ON E.id = ES.employeeId " +
+                    "WHERE E.id NOT LIKE 'ADM%' AND E.deleteStatus = 0 AND ES.employeeId IS NULL " +
+                    "OR (MONTH(ES.createdAt) != MONTH(GETDATE()) OR YEAR(ES.createdAt) != YEAR(GETDATE()));";
+            ResultSet rs = dbConnection.sqlQuery(query);
+
+            if (rs != null) {
+                while (rs.next()) {
+                    String id = rs.getString("id");
+                    boolean deleteStatus = rs.getBoolean("deleteStatus");
+                    employeeList.add(
+                            new Employee(id, deleteStatus));
+                }
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println("Error reading data from Employees and EmployeeSalaries table: " + ex.getMessage());
         } finally {
             dbConnection.closeConnect();
         }

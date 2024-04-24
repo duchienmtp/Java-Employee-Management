@@ -1,23 +1,44 @@
 package FrontEnd.RewardContentUI;
 
 import com.github.lgooddatepicker.components.DatePickerSettings;
+
+import BackEnd.CriticismManagement.Criticism;
+import BackEnd.EmployeeManagement.Employee;
+import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticism;
+import BackEnd.RewardManagement.Reward;
+import FrontEnd.Redux.Redux;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class RewardEmployeeForm extends javax.swing.JFrame implements ActionListener, WindowListener {
+
+    String rewardId;
+    ArrayList<Object> formData;
 
     public RewardEmployeeForm() {
         initComponents();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        formInit();
         DatePickerSettings pickerSettingsBegin = new DatePickerSettings();
         pickerSettingsBegin.setFormatForDatesCommonEra("dd/MM/yyyy");
         startDatePicker.setSettings(pickerSettingsBegin);
@@ -25,6 +46,7 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
 
         // Get the default editor associated with the spinner
         JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) countSpinner.getEditor();
+        countSpinner.setModel(new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1));
 
         // Access the text field component within the editor
         JTextField textField = editor.getTextField();
@@ -32,21 +54,125 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
         // Set the foreground color (text color) of the text field
         textField.setForeground(Color.WHITE); // Set your desired color
 
+        countSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int selectedValue = (int) countSpinner.getValue();
+                // Perform actions based on the selected value
+                if (selectedValue == 0) {
+                    // Handle case when selected value is 0
+                    JOptionPane.showMessageDialog(RewardEmployeeForm.this,
+                            "Số lần bằng 0 dữ liệu sẽ chuyển về dạng thích hợp!", "CẢNH BÁO",
+                            JOptionPane.WARNING_MESSAGE);
+                } else if (selectedValue > 0) {
+                    // Handle case when selected value is greater than 0
+                    int money = Redux.rewardBUS.getRewardById(rewardId).getReward() * selectedValue;
+                    moneyTextField.setText(NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+                            .setRegion("DE").build())
+                            .format(money)
+                            + " VNĐ");
+                }
+            }
+        });
+
         confirmButton.addActionListener(this);
         cancelButton.addActionListener(this);
 
         addWindowListener(this);
     }
 
+    public void formInit() {
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        for (Employee employee : Redux.employeeBUS.getEmployeeList()) {
+            if (!employee.getDeleteStatus()) {
+                model.addElement(employee.getId());
+            }
+        }
+        employeeIDComboBox.setModel(model);
+        employeeIDComboBox.setSelectedIndex(0);
+        employeeNameTextField.setText(Redux.employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem())
+                .getFullName());
+
+        if (model.getSize() == 1) {
+            String selectedEmployeeId = (String) model.getElementAt(0);
+            for (Employee employee : Redux.employeeBUS.getEmployeeList()) {
+                if (employee.getId().equalsIgnoreCase(selectedEmployeeId)) {
+                    employeeNameTextField.setText(employee.getFullName());
+                    break; // Break the loop once found
+                }
+            }
+        }
+
+        employeeIDComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                String selectedEmployeeId = (String) employeeIDComboBox.getSelectedItem();
+                for (Employee employee : Redux.employeeBUS.getEmployeeList()) {
+                    if (employee.getId().equalsIgnoreCase(selectedEmployeeId)) {
+                        employeeNameTextField.setText(employee.getFullName());
+                    }
+                }
+            }
+        });
+
+        DefaultComboBoxModel<String> rewardModel = new DefaultComboBoxModel<>();
+        for (Reward reward : Redux.rewardBUS.getListReward()) {
+            if (!reward.getDeleteStatus()) {
+                rewardModel.addElement(reward.getRewardId());
+            }
+        }
+        rewardIDComboBox.setModel(rewardModel);
+        rewardIDComboBox.setSelectedIndex(0);
+        rewardId = (String) rewardIDComboBox.getSelectedItem();
+        rewardNameTextField.setText(Redux.rewardBUS.getRewardById((String) rewardIDComboBox.getSelectedItem())
+                .getRewardName());
+
+        moneyTextField
+                .setText(NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+                        .setRegion("DE").build())
+                        .format(Redux.rewardBUS.getRewardById((String) rewardIDComboBox.getSelectedItem())
+                                .getReward())
+                        + " VNĐ");
+
+        if (rewardModel.getSize() == 1) {
+            String selectedRewardId = (String) rewardModel.getElementAt(0);
+            for (Reward reward : Redux.rewardBUS.getListReward()) {
+                if (reward.getRewardId().equalsIgnoreCase(selectedRewardId)) {
+                    rewardId = reward.getRewardId();
+                    rewardNameTextField.setText(reward.getRewardName());
+                    break; // Break the loop once found
+                }
+            }
+        }
+
+        rewardIDComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                String selectedEmployeeId = (String) rewardIDComboBox.getSelectedItem();
+                for (Reward reward : Redux.rewardBUS.getListReward()) {
+                    if (reward.getRewardId().equalsIgnoreCase(selectedEmployeeId)) {
+                        rewardId = reward.getRewardId();
+                        rewardNameTextField.setText(reward.getRewardName());
+                        moneyTextField.setText(NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+                                .setRegion("DE").build())
+                                .format(reward.getReward())
+                                + " VNĐ");
+                    }
+                }
+            }
+        });
+    }
+
     public void showFormWithData(ArrayList<Object> data) {
         if (data != null) {
             employeeIDComboBox.setSelectedItem(data.get(1));
             employeeNameTextField.setText((String) data.get(2));
-            rewardIDComboBox.setSelectedItem(data.get(3));
-            rewardNameTextField.setText((String) data.get(4));
-            countSpinner.setValue(data.get(5));
-            moneyTextField.setText(Integer.toString((int) data.get(6)));
-            startDatePicker.setText((String) data.get(7));
+            rewardIDComboBox.setSelectedItem(Redux.rewardBUS.getRewardByName((String) data.get(3)).getRewardId());
+            rewardNameTextField.setText((String) data.get(3));
+            countSpinner.setValue(data.get(4));
+            moneyTextField.setText(NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+                    .setRegion("DE").build())
+                    .format(Integer.parseInt((String) data.get(5)))
+                    + " VNĐ");
+            startDatePicker.setText((String) data.get(6));
         }
     }
 
@@ -55,25 +181,60 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
         employeeNameTextField.setText("");
         rewardIDComboBox.setSelectedItem("");
         rewardNameTextField.setText("");
-        countSpinner.setValue("");
+        countSpinner.setValue(1);
         moneyTextField.setText("");
         startDatePicker.setText("");
     }
 
+    public ArrayList<Object> getDataFormForm() {
+        String employeeID = (String) employeeIDComboBox.getSelectedItem(),
+                employeeName = employeeNameTextField.getText(),
+                rewardId = (String) rewardIDComboBox.getSelectedItem(),
+                rewardName = rewardNameTextField.getText(),
+                startDate = Employee.formatBirthDateToDatabaseType(startDatePicker.getText());
+        int money = Integer.parseInt(moneyTextField.getText().toString().replace(" VNĐ", "").replace(".", "")),
+                rewardCount = (int) countSpinner.getValue();
+        return new ArrayList<>(Arrays.asList(employeeID, employeeName, rewardId, rewardName, rewardCount,
+                startDate, money));
+    }
+
     public void handleSubmitForm() {
-        String employeeID = (String) employeeIDComboBox.getSelectedItem();
+        formData = getDataFormForm();
 
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn thêm mới dữ liệu nhân viên với ID " + employeeID + " ?",
+                "Bạn có muốn thêm mới dữ liệu khen thưởng nhân viên với ID " + formData.get(0) + " ?",
                 "XÁC NHẬN ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-//            // Create a new ArrayList
-//            ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-//
-//            // Add all elements from the array to the ArrayList
-//            dataList.addAll(Arrays.asList(rowData));
+            if (this.getTitle().contains("THÊM MỚI")) {
+                Redux.employeesRewardsCriticismBUS.addEmployeesRewardsCriticism(
+                        new EmployeesRewardsCriticism(Redux.employeeBUS.getEmployeeById((String) formData.get(0)),
+                                Redux.rewardBUS.getRewardById((String) formData.get(2)), (int) formData.get(4),
+                                new Criticism(),
+                                0, (String) formData.get(5)));
+            } else {
+                Redux.employeesRewardsCriticismBUS.updateEmployeesRewardsCriticism(
+                        new EmployeesRewardsCriticism(Redux.employeeBUS.getEmployeeById((String) formData.get(0)),
+                                Redux.rewardBUS.getRewardById((String) formData.get(2)), (int) formData.get(4),
+                                new Criticism(),
+                                0, (String) formData.get(5)));
+            }
+            RewardEmployeePanel.tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
+            dispose();
+        }
+    }
+
+    public void cancelSubmitForm() {
+
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Xác nhận thao tác ?",
+                "HỦY BỎ ?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            clearFormData();
+            dispose();
         }
     }
 
@@ -86,19 +247,17 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
     }
 
     @Override
-
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == confirmButton) {
             if (isFormFilled()) {
                 handleSubmitForm();
-                clearFormData();
-                dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == cancelButton) {
             if (isFormFilled()) {
-                JOptionPane.showMessageDialog(this, "Bạn có muốn hủy!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                cancelSubmitForm();
             } else {
                 clearFormData();
                 dispose();
@@ -107,7 +266,8 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -159,7 +319,6 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
         cancelButton.setToolTipText("cancelButton");
 
         rewardIDComboBox.setEditable(true);
-        rewardIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         rewardIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
         rewardIDComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         rewardIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -183,7 +342,6 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
         rewardNameLabel.setOpaque(true);
 
         employeeIDComboBox.setEditable(true);
-        employeeIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "C++", "Database", "Java", "Python", "TypeScripts" }));
         employeeIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
         employeeIDComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         employeeIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -247,94 +405,147 @@ public class RewardEmployeeForm extends javax.swing.JFrame implements ActionList
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(rewardNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(rewardNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(rewardIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                                    .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(employeeNameTextField, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(rewardIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(employeeIDComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(startDatePickerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(startDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(countLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                                    .addComponent(countSpinner)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(moneyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(moneyTextField)))))
-                .addGap(30, 30, 30))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout
+                                                .createSequentialGroup()
+                                                .addGap(30, 30, 30)
+                                                .addGroup(jPanel1Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addComponent(rewardNameLabel,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE, 150,
+                                                                        Short.MAX_VALUE)
+                                                                .addGap(18, 18, 18)
+                                                                .addComponent(rewardNameTextField,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 372,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addGroup(jPanel1Layout.createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                                                        false)
+                                                                        .addComponent(rewardIDLabel,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                150, Short.MAX_VALUE)
+                                                                        .addComponent(employeeIDLabel,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                Short.MAX_VALUE)
+                                                                        .addComponent(employeeNameLabel,
+                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                Short.MAX_VALUE))
+                                                                .addGap(18, 18, 18)
+                                                                .addGroup(jPanel1Layout.createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                                                        .addComponent(employeeNameTextField,
+                                                                                javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                        .addComponent(rewardIDComboBox, 0,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                Short.MAX_VALUE)
+                                                                        .addComponent(employeeIDComboBox, 0,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                Short.MAX_VALUE)))
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addComponent(startDatePickerLabel,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 221,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(0, 0, Short.MAX_VALUE))
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addComponent(startDatePicker,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 221,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(
+                                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        Short.MAX_VALUE)
+                                                                .addGroup(jPanel1Layout.createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                                                        false)
+                                                                        .addComponent(countLabel,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                250, Short.MAX_VALUE)
+                                                                        .addComponent(countSpinner)))
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addComponent(moneyLabel,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 150,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(18, 18, 18)
+                                                                .addComponent(moneyTextField)))))
+                                .addGap(30, 30, 30)));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(employeeIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rewardIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rewardIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rewardNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rewardNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startDatePickerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(countLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, 0)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(countSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(startDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(moneyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(moneyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40,
+                                                Short.MAX_VALUE)
+                                        .addComponent(employeeIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 41,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(rewardIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(rewardIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(rewardNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(rewardNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(startDatePickerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(countLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, 0)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(countSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(startDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(moneyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(moneyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75,
+                                        Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(30, 30, 30)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
 
         pack();
         setLocationRelativeTo(null);

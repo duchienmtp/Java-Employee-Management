@@ -40,8 +40,8 @@ INSERT INTO [dbo].[Specialties] ([specialtyId], [specialtyName], [baseSalary], [
 VALUES
 ('SP001', 'Kế Toán', 10000000, '0'),
 ('SP002', 'Full-stack Developer Intern', 8000000, '0'),
-('SP003', 'Full-stack Developer Fresher', 1000000, '0'),
-('SP004', 'Full-stack Developer Junior', 2500000, '0'),
+('SP003', 'Full-stack Developer Fresher', 10000000, '0'),
+('SP004', 'Full-stack Developer Junior', 25000000, '0'),
 ('SP005', 'Full-stack Developer Senior', 50000000, '0'),
 ('SP006', 'Marketing Intern', 5000000, '0'),
 ('SP007', 'Marketing Fresher', 7000000, '0'),
@@ -52,11 +52,11 @@ VALUES
 ('SP012', 'Designer Fresher', 10000000, '0'),
 ('SP013', 'Designer Junior', 20000000, '0'),
 ('SP014', 'Data Engineer Intern', 9000000, '0'),
-('SP015', 'Data Engineer Fresher', 1200000, '0'),
-('SP016', 'Data Engineer Junior', 2900000, '0'),
+('SP015', 'Data Engineer Fresher', 12000000, '0'),
+('SP016', 'Data Engineer Junior', 29000000, '0'),
 ('SP017', 'Data Engineer Senior', 60000000, '0'),
 ('SP018', 'Tester Fresher', 6000000, '0'),
-('SP019', 'Tester Junior', 1000000, '0'),
+('SP019', 'Tester Junior', 10000000, '0'),
 ('SP020', 'Tester Senior', 20000000, '0'),
 ('SP021', 'Project Manager', 40000000, '0'),
 ('SP022', 'Lao Công', 8000000, '0');
@@ -240,8 +240,8 @@ VALUES
 ('EM010', 'RE001', 'CR002', 1, 0, GETDATE());
 
 INSERT INTO EmployeeSalaries VALUES 
-('EM001', 10.5, 11366500, GETDATE(), 0),
-('EM002', 10.5, 9576500, GETDATE(), 0),
-('EM003', 10.5, 11366500, GETDATE(), 0),
-('EM004', 10.5, 7732800, GETDATE(), 0),
-('EM005', 10.5, 6533500, GETDATE(), 0);
+('EM001', 10.5, 32172565, GETDATE(), 0),
+('EM002', 10.5, 13735565, GETDATE(), 0),
+('EM003', 10.5, 32080380, GETDATE(), 0),
+('EM004', 10.5, 11891865, GETDATE(), 0),
+('EM005', 10.5, 11115900, GETDATE(), 0);

@@ -29,6 +29,7 @@ public class DegreeDAO {
                     degreeList.add(new Degree(degreeId, degreeName, deleteStatus));
                 }
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Degrees");
         } finally {
@@ -87,6 +88,7 @@ public class DegreeDAO {
                 boolean deleteStatus = rs.getBoolean("deleteStatus");
                 degree = new Degree(degreeId, degreeName, deleteStatus);
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Degrees");
         } finally {

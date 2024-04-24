@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import javax.swing.table.DefaultTableModel;
 
 import BackEnd.DepartmentManagement.Department;
 import BackEnd.EmployeeManagement.Employee;
-import BackEnd.EmployeeManagement.EmployeeBUS;
 import FrontEnd.Redux.Redux;
 
 public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
@@ -32,13 +30,9 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
     boolean selectionConfirmed;
     Object[] selectedRowData;
     ArrayList<Object> formData;
-    EmployeeBUS employeeBUS = new EmployeeBUS();
 
     public AddEmployeeToDepartmentContentPanel() {
         initComponents();
-
-        Redux.getAllEmployees();
-        Redux.getAllDepartments();
 
         formData = new ArrayList<>();
 
@@ -59,7 +53,7 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
 
         formInit();
 
-        tableInit(Redux.employeeList);
+        tableInit(Redux.employeeBUS.getEmployeeList());
 
         jTable1.getSelectionModel().addListSelectionListener(this);
         jPanel1.addMouseListener(this);
@@ -69,31 +63,33 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
     public void formInit() {
 
         DefaultComboBoxModel<String> departmentModel = new DefaultComboBoxModel<>();
-        for (Department department : Redux.departmentList) {
+        for (Department department : Redux.departmentBUS.getDepartmentList()) {
             if (!department.isDeleteStatus()) {
                 departmentModel.addElement(department.getDepartmentId());
             }
         }
         departmentIDComboBox.setModel(departmentModel);
         departmentIDComboBox.setSelectedIndex(0);
-        departmentNameTextField.setText(Redux.departmentList.get(0).getDepartmentName());
-        departmentManagerNameTextField.setText(Redux.departmentList.get(0).getDepartmentLeader().getFullName());
+        departmentNameTextField.setText(Redux.departmentBUS.getDepartmentList().get(0).getDepartmentName());
+        departmentManagerNameTextField
+                .setText(Redux.departmentBUS.getDepartmentList().get(0).getDepartmentLeader().getFullName());
 
         departmentIDComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 String selectedDepartmentId = (String) departmentIDComboBox.getSelectedItem();
-                for (Department department : Redux.departmentList) {
+                for (Department department : Redux.departmentBUS.getDepartmentList()) {
                     if (department.getDepartmentId().equalsIgnoreCase(selectedDepartmentId)) {
                         departmentNameTextField.setText(department.getDepartmentName());
-                        departmentManagerNameTextField.setText(department.getDepartmentLeader().getFullName());
+                        departmentManagerNameTextField.setText(
+                                department.getDepartmentLeader().getFullName());
                     }
                 }
-                tableInit(Redux.employeeList);
+                tableInit(Redux.employeeBUS.getEmployeeList());
             }
         });
 
         DefaultComboBoxModel<String> employeeModel = new DefaultComboBoxModel<>();
-        for (Employee employee : Redux.employeeList) {
+        for (Employee employee : Redux.employeeBUS.getEmployeeList()) {
             if (!employee.getDeleteStatus()) {
                 if (employee.getDepartment().getDepartmentId().equalsIgnoreCase("DP000")) {
                     employeeModel.addElement(employee.getId());
@@ -101,11 +97,24 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
             }
         }
         employeeIDComboBox.setModel(employeeModel);
+        employeeIDComboBox.setSelectedIndex(0);
+        employeeNameTextField.setText(Redux.employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem())
+                .getFullName());
+
+        if (employeeModel.getSize() == 1) {
+            String selectedEmployeeId = (String) employeeModel.getElementAt(0);
+            for (Employee employee : Redux.employeeBUS.getEmployeeList()) {
+                if (employee.getId().equalsIgnoreCase(selectedEmployeeId)) {
+                    employeeNameTextField.setText(employee.getFullName());
+                    break; // Break the loop once found
+                }
+            }
+        }
 
         employeeIDComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 String selectedEmployeeId = (String) employeeIDComboBox.getSelectedItem();
-                for (Employee employee : Redux.employeeList) {
+                for (Employee employee : Redux.employeeBUS.getEmployeeList()) {
                     if (employee.getId().equalsIgnoreCase(selectedEmployeeId)) {
                         employeeNameTextField.setText(employee.getFullName());
                     }
@@ -123,10 +132,12 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
                 if (employeeList.get(i).getDepartment().getDepartmentId().equalsIgnoreCase(
                         (String) departmentIDComboBox.getSelectedItem())) {
                     Object[] newRowData = {
-                            i + 1, employeeList.get(i).getId(), employeeList.get(i).getFullName(),
+                            i + 1, employeeList.get(i).getId(),
+                            employeeList.get(i).getFullName(),
                             employeeList.get(i).getDepartment().getDepartmentId(),
                             employeeList.get(i).getDepartment().getDepartmentName(),
-                            employeeList.get(i).getDepartment().getDepartmentLeader().getFullName()
+                            employeeList.get(i).getDepartment().getDepartmentLeader()
+                                    .getFullName()
                     };
                     model.addRow(newRowData);
                 }
@@ -156,20 +167,24 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
 
         if (confirmation == JOptionPane.YES_OPTION) {
 
-            if (employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem()).getDepartment()
+            if (Redux.employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem())
+                    .getDepartment()
                     .getDepartmentId()
                     .equalsIgnoreCase("DP000")) {
 
-                Department department = Redux.departmentList.get(departmentIDComboBox.getSelectedIndex());
-                Employee employee = employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem());
+                Department department = Redux.departmentBUS.getDepartmentList()
+                        .get(departmentIDComboBox.getSelectedIndex());
+                Employee employee = Redux.employeeBUS
+                        .getEmployeeById((String) employeeIDComboBox.getSelectedItem());
                 employee.setDepartment(department);
 
-                employeeBUS.updateEmployee(employee);
+                Redux.employeeBUS.updateEmployee(employee);
                 clearFormContent();
                 jTable1.revalidate();
-                Redux.getAllEmployees();
+                // Redux.getAllEmployees();
                 formInit();
-                tableInit(Redux.employeeList);
+                // tableInit(Redux.employeeList);
+                tableInit(Redux.employeeBUS.getEmployeeList());
             } else {
                 JOptionPane.showMessageDialog(this, "Nhân viên đã thuộc 1 phòng ban!", "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
@@ -187,19 +202,21 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
 
         if (confirmation == JOptionPane.YES_OPTION) {
             Department department = new Department();
-            Employee employee = new EmployeeBUS().getEmployeeById((String) formData.get(3));
+            Employee employee = Redux.employeeBUS.getEmployeeById((String) formData.get(3));
             employee.setDepartment(department);
-            employeeBUS.updateEmployee(employee);
+            Redux.employeeBUS.updateEmployee(employee);
             clearFormContent();
             jTable1.revalidate();
-            Redux.getAllEmployees();
+            // Redux.getAllEmployees();
             formInit();
-            tableInit(Redux.employeeList);
+            // tableInit(Redux.employeeList);
+            tableInit(Redux.employeeBUS.getEmployeeList());
         }
     }
 
     public void fillDataDepartmentForm(Object[] selectedRowData) {
-        DefaultComboBoxModel<String> employeeModel = (DefaultComboBoxModel<String>) employeeIDComboBox.getModel();
+        DefaultComboBoxModel<String> employeeModel = (DefaultComboBoxModel<String>) employeeIDComboBox
+                .getModel();
         employeeModel.removeAllElements();
         employeeModel.addElement((String) selectedRowData[1]);
         employeeIDComboBox.setSelectedItem(selectedRowData[1]);
@@ -213,7 +230,8 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
         departmentIDComboBox.setSelectedItem("");
         departmentNameTextField.setText("");
         departmentManagerNameTextField.setText("");
-        DefaultComboBoxModel<String> employeeModel = (DefaultComboBoxModel<String>) employeeIDComboBox.getModel();
+        DefaultComboBoxModel<String> employeeModel = (DefaultComboBoxModel<String>) employeeIDComboBox
+                .getModel();
         employeeModel.removeAllElements();
         formInit();
     }
@@ -434,32 +452,46 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
         javax.swing.GroupLayout projectFormContainerLayout = new javax.swing.GroupLayout(projectFormContainer);
         projectFormContainer.setLayout(projectFormContainerLayout);
         projectFormContainerLayout.setHorizontalGroup(
-                projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                projectFormContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(projectFormContainerLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(projectLabel, javax.swing.GroupLayout.Alignment.TRAILING,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(cancelButton,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(projectLabel,
+                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addGroup(projectFormContainerLayout
+                                                .createSequentialGroup()
                                                 .addComponent(departmentNameLabel)
                                                 .addGap(2, 2, 2)
                                                 .addComponent(departmentNameTextField))
                                         .addGroup(projectFormContainerLayout
-                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(projectFormContainerLayout.createSequentialGroup()
-                                                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .createParallelGroup(
+                                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(projectFormContainerLayout
+                                                        .createSequentialGroup()
+                                                        .addComponent(addButton,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                160,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addPreferredGap(
                                                                 javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                Short.MAX_VALUE)
                                                         .addComponent(deleteButton,
-                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 160,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                160,
                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                                .addGroup(projectFormContainerLayout
+                                                        .createSequentialGroup()
                                                         .addGroup(projectFormContainerLayout
                                                                 .createParallelGroup(
                                                                         javax.swing.GroupLayout.Alignment.LEADING)
@@ -468,7 +500,8 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
                                                                         .addComponent(departmentIDLabel)
                                                                         .addPreferredGap(
                                                                                 javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                        .addComponent(departmentIDComboBox, 0,
+                                                                        .addComponent(departmentIDComboBox,
+                                                                                0,
                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addGroup(projectFormContainerLayout
@@ -480,7 +513,8 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
                                                                                 .addComponent(
                                                                                         departmentManagerNameLabel,
                                                                                         javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                        82, Short.MAX_VALUE)
+                                                                                        82,
+                                                                                        Short.MAX_VALUE)
                                                                                 .addComponent(employeeIDLabel,
                                                                                         javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                         javax.swing.GroupLayout.DEFAULT_SIZE,
@@ -510,66 +544,105 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
                                                         .addGap(0, 0, Short.MAX_VALUE))))
                                 .addContainerGap()));
         projectFormContainerLayout.setVerticalGroup(
-                projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                projectFormContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(projectFormContainerLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(projectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                .addComponent(projectLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(departmentIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(departmentIDComboBox, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(departmentIDLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(departmentIDComboBox,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(departmentNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(departmentNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(departmentNameLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(departmentNameTextField,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40,
                                                 Short.MAX_VALUE))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(departmentManagerNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(departmentManagerNameLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
                                         .addComponent(departmentManagerNameTextField,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(employeeIDComboBox, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(employeeIDLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(employeeIDComboBox,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(employeeNameLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(employeeNameTextField,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                .addComponent(cancelButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88,
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        88,
                                         Short.MAX_VALUE)
                                 .addGroup(projectFormContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(deleteButton,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        .addComponent(addButton,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap()));
 
         projectTableContainer.setBackground(new java.awt.Color(255, 255, 255));
-        projectTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        projectTableContainer
+                .setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         projectTableContainer.setName("projectTableContainer"); // NOI18N
 
         projectTableLabel.setBackground(new java.awt.Color(255, 255, 255));
@@ -584,10 +657,12 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
 
                 },
                 new String[] {
-                        "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Mã Phòng Ban", "Tên Phòng Ban", "Quản Lý"
+                        "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Mã Phòng Ban", "Tên Phòng Ban",
+                        "Quản Lý"
                 }) {
             Class[] types = new Class[] {
-                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class,
                     java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean[] {
@@ -607,27 +682,40 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
         jTable1.setRowHeight(40);
         jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout projectTableContainerLayout = new javax.swing.GroupLayout(projectTableContainer);
+        javax.swing.GroupLayout projectTableContainerLayout = new javax.swing.GroupLayout(
+                projectTableContainer);
         projectTableContainer.setLayout(projectTableContainerLayout);
         projectTableContainerLayout.setHorizontalGroup(
-                projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                projectTableContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(projectTableContainerLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(projectTableContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(projectTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(projectTableLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(jScrollPane1,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                513,
                                                 Short.MAX_VALUE))
                                 .addContainerGap()));
         projectTableContainerLayout.setVerticalGroup(
-                projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                projectTableContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(projectTableContainerLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(projectTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54,
+                                .addComponent(projectTableLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        54,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 465,
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane1,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        465,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap()));
 
@@ -637,23 +725,35 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(50, 50, 50)
-                                .addComponent(projectFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32,
+                                .addComponent(projectFormContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        32,
                                         Short.MAX_VALUE)
-                                .addComponent(projectTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(projectTableContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(50, 50, 50)));
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(40, 40, 40)
                                 .addGroup(jPanel1Layout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(projectFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 554,
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(projectFormContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                554,
                                                 Short.MAX_VALUE)
-                                        .addComponent(projectTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(projectTableContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
                                 .addContainerGap(46, Short.MAX_VALUE)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

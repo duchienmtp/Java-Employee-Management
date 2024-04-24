@@ -18,13 +18,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import BackEnd.DegreeManagement.Degree;
-import BackEnd.DegreeManagement.DegreeBUS;
 import FrontEnd.Redux.Redux;
 
 public class DegreeContentPanel extends javax.swing.JPanel
         implements ActionListener, ListSelectionListener, MouseListener {
-
-    DegreeBUS degreeBUS = new DegreeBUS();
 
     int selectedRow = -1;
     boolean selectionConfirmed;
@@ -34,7 +31,6 @@ public class DegreeContentPanel extends javax.swing.JPanel
     public DegreeContentPanel() {
         initComponents();
 
-        Redux.getAllDegrees();
         formData = new ArrayList<>();
 
         degreeLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
@@ -53,7 +49,7 @@ public class DegreeContentPanel extends javax.swing.JPanel
         jTable1.setDefaultRenderer(Object.class, centerRenderer);
 
         formInit();
-        tableInit(Redux.degreeList);
+        tableInit(Redux.degreeBUS.getDegreeList());
 
         jTable1.getSelectionModel().addListSelectionListener(this);
         jPanel1.addMouseListener(this);
@@ -61,7 +57,7 @@ public class DegreeContentPanel extends javax.swing.JPanel
     }
 
     public void formInit() {
-        degreeIDTextField.setText(degreeBUS.getNextID());
+        degreeIDTextField.setText(Redux.degreeBUS.getNextID());
     }
 
     public void tableInit(ArrayList<Degree> degreeList) {
@@ -70,10 +66,10 @@ public class DegreeContentPanel extends javax.swing.JPanel
 
         for (int i = 0; i < degreeList.size(); i++) {
             if (!degreeList.get(i).getDeleteStatus()) {
-                model.addRow(new Object[]{
-                    i + 1,
-                    degreeList.get(i).getDegreeId(),
-                    degreeList.get(i).getDegreeName(),});
+                model.addRow(new Object[] {
+                        i + 1,
+                        degreeList.get(i).getDegreeId(),
+                        degreeList.get(i).getDegreeName(), });
             }
         }
     }
@@ -94,11 +90,12 @@ public class DegreeContentPanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            degreeBUS.addDegree(new Degree((String) formData.get(0), (String) formData.get(1)));
+            Redux.degreeBUS.addDegree(new Degree((String) formData.get(0), (String) formData.get(1)));
             clearFormContent();
             jTable1.revalidate();
-            Redux.getAllDegrees();
-            tableInit(Redux.degreeList);
+            // Redux.getAllDegrees();
+            // tableInit(Redux.degreeList);
+            tableInit(Redux.degreeBUS.getDegreeList());
         }
     }
 
@@ -111,12 +108,12 @@ public class DegreeContentPanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            degreeBUS.updateDegree(new Degree((String) formData.get(0), (String) formData.get(1)));
+            Redux.degreeBUS.updateDegree(new Degree((String) formData.get(0), (String) formData.get(1)));
             clearFormContent();
             jTable1.revalidate();
-            Redux.getAllDegrees();
-            tableInit(Redux.degreeList);
-
+            // Redux.getAllDegrees();
+            // tableInit(Redux.degreeList);
+            tableInit(Redux.degreeBUS.getDegreeList());
         }
     }
 
@@ -129,11 +126,12 @@ public class DegreeContentPanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            degreeBUS.deleteDegree(degreeBUS.getDegreeById((String) formData.get(0)));
+            Redux.degreeBUS.deleteDegree(Redux.degreeBUS.getDegreeById((String) formData.get(0)));
             clearFormContent();
             jTable1.revalidate();
-            Redux.getAllDegrees();
-            tableInit(Redux.degreeList);
+            // Redux.getAllDegrees();
+            // tableInit(Redux.degreeList);
+            tableInit(Redux.degreeBUS.getDegreeList());
         }
     }
 

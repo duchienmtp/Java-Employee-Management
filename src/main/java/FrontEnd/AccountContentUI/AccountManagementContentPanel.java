@@ -18,7 +18,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import BackEnd.AccountManagement.Account;
-import BackEnd.AccountManagement.AccountBUS;
 import FrontEnd.Redux.Redux;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,8 +31,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 
 public class AccountManagementContentPanel extends javax.swing.JPanel
         implements MouseListener, ActionListener, ListSelectionListener {
-
-    AccountBUS accountBUS = new AccountBUS();
 
     AccountForm accountForm;
     int selectedRow = -1;
@@ -71,7 +68,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
 
         // tableInit(Redux.accountList);
-        tableInit(accountBUS.getAccountList());
+        tableInit(Redux.accountBUS.getAccountList());
         jTable1.getSelectionModel().addListSelectionListener(this);
         jPanel1.addMouseListener(this);
         addMouseListener(this);
@@ -151,7 +148,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
     // }
 
     public void updateTableRow() {
-        Account selectedAccount = accountBUS.getAccountById((String) selectedRowData[1]);
+        Account selectedAccount = Redux.accountBUS.getAccountById((String) selectedRowData[1]);
         List<Object> accountPropertiesValue = selectedAccount.toList();
         // Create a new ArrayList
         ArrayList<Object> dataList = new ArrayList<>();
@@ -185,10 +182,9 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            accountBUS.deleteAccount(accountBUS.getAccountById((String) selectedRowData[1]));
+            Redux.accountBUS.deleteAccount(Redux.accountBUS.getAccountById((String) selectedRowData[1]));
             jTable1.revalidate();
-            Redux.getAllAccount();
-            tableInit(Redux.accountList);
+            tableInit(Redux.accountBUS.getAccountList());
         }
     }
 
@@ -558,10 +554,10 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         String searchOption = (String) searchOptionComboBox.getSelectedItem();
 
         if (searchText.isEmpty()) {
-            tableInit(accountBUS.getAccountList());
+            tableInit(Redux.accountBUS.getAccountList());
         } else {
             ArrayList<Account> searchResults = new ArrayList<>();
-            for (Account account : accountBUS.getAccountList()) {
+            for (Account account : Redux.accountBUS.getAccountList()) {
                 switch (searchOption) {
                     case "Theo Tên":
                         if (account.getUsername().toLowerCase().contains(searchText.toLowerCase())) {

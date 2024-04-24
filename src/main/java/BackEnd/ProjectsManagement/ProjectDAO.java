@@ -24,6 +24,7 @@ public class ProjectDAO {
                             rs.getString(5), rs.getString(6), rs.getBoolean(7)));
                 }
             }
+            rs.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "--ERROR! Lỗi đọc dữ liệu bảng Projects");
         } finally {
@@ -71,6 +72,7 @@ public class ProjectDAO {
                             rs.getString(5), rs.getString(6), rs.getBoolean(7));
                 }
             }
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

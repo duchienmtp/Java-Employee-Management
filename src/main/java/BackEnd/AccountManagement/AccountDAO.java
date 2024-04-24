@@ -37,6 +37,7 @@ public class AccountDAO {
                             avatar, authorization, accountStatus, deleteStatus));
                 }
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng tài khoản");
         } finally {
@@ -121,6 +122,7 @@ public class AccountDAO {
                 account = new Account(new EmployeeDAO().getEmployeeById(userId), username, password,
                         email, avatar, authorization);
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Account");
         } finally {

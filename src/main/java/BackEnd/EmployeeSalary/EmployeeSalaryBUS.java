@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticism;
+
 public class EmployeeSalaryBUS {
     ArrayList<EmployeeSalary> employeeSalaryList = new ArrayList<>();
     EmployeeSalaryDAO employeeSalaryDAO = new EmployeeSalaryDAO();
@@ -28,19 +30,6 @@ public class EmployeeSalaryBUS {
         }
     }
 
-    public void updateEmployeeSalary(EmployeeSalary employeeSalary) {
-        Boolean ok = employeeSalaryDAO.updateEmployeeSalary(employeeSalary);
-        if (ok) {
-            for (int i = 0; i < employeeSalaryList.size(); i++) {
-                if (employeeSalaryList.get(i).getEmployee().getId().equals(employeeSalary.getEmployee().getId())) {
-                    employeeSalaryList.set(i, employeeSalary);
-                    break;
-                }
-            }
-            JOptionPane.showMessageDialog(null, "Cập nhật thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-
     public void deleteEmployeeSalary(EmployeeSalary employeeSalary) {
         Boolean ok = employeeSalaryDAO.deleteEmployeeSalary(employeeSalary);
         if (ok) {
@@ -51,5 +40,33 @@ public class EmployeeSalaryBUS {
 
     public EmployeeSalary getEmployeeSalaryById(String id) {
         return employeeSalaryDAO.getEmployeeSalaryById(id);
+    }
+
+    public ArrayList<Object> calculateSalary(String employeeId) {
+        ArrayList<Object> salaryInfo = new ArrayList<>();
+        salaryInfo = employeeSalaryDAO.getSalaryDetail(employeeId);
+
+        int baseSalary = (int) salaryInfo.get(1);
+        double positionSalaryAllowance = (double) salaryInfo.get(2);
+        double insurance = 10.5;
+        int netSalary = baseSalary;
+
+        ArrayList<EmployeesRewardsCriticism> list = (ArrayList<EmployeesRewardsCriticism>) salaryInfo.get(3);
+
+        for (EmployeesRewardsCriticism object : list) {
+            if (!object.getReward().getRewardId().equals("RE001")) {
+                netSalary += object.getReward().getReward() * object.getRewardCount();
+            }
+
+            if (!object.getCriticism().getCriticismId().equals("CR001")) {
+                netSalary -= object.getCriticism().getJudgement() * object.getFaultCount();
+            }
+        }
+        netSalary += (int) (netSalary * positionSalaryAllowance);
+        salaryInfo.add(netSalary);
+        netSalary -= (int) (netSalary * insurance / 100);
+        salaryInfo.add(netSalary);
+
+        return salaryInfo;
     }
 }

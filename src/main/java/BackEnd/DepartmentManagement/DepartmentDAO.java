@@ -34,6 +34,7 @@ public class DepartmentDAO {
                     departmentList.add(department);
                 }
             }
+            rs.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Degrees");
         } finally {
@@ -53,6 +54,7 @@ public class DepartmentDAO {
                 numberOfMembers = rs.getInt(1);
 
             }
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -72,6 +74,7 @@ public class DepartmentDAO {
                 department.setDepartmentLeader(new EmployeeDAO().getEmployeeById(rs.getString("departmentLeader")));
                 department.setDeleteStatus(rs.getBoolean("deleteStatus"));
             }
+            rs.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Degrees");
         } finally {

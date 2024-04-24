@@ -4,6 +4,7 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 
 import BackEnd.EmployeeManagement.Employee;
 import BackEnd.ProjectsManagement.*;
+import FrontEnd.Redux.Redux;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -27,7 +28,6 @@ import javax.swing.table.DefaultTableModel;
 public class ProjectManagementContentPanel extends javax.swing.JPanel
         implements ActionListener, ListSelectionListener, MouseListener {
 
-    ProjectBUS pjB = new ProjectBUS();
     ArrayList<Project> projectList;
     int selectedRow = -1;
     boolean selectionConfirmed;
@@ -37,8 +37,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
     public ProjectManagementContentPanel() {
         initComponents();
 
-        projectList = pjB.getProjectList();
-
+        projectList = Redux.projectBUS.getProjectList();
         formData = new ArrayList<>();
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -80,7 +79,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
     }
 
     public void formInit() {
-        projectIDTextField.setText(pjB.getNextID());
+        projectIDTextField.setText(Redux.projectBUS.getNextID());
     }
 
     public void tableInit(ArrayList<Project> list) {
@@ -126,10 +125,10 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                     (String) formData.get(1), (String) formData.get(2),
                     (String) formData.get(3), (String) formData.get(4),
                     (String) formData.get(5), false);
-            pjB.addProject(tmp);
+            Redux.projectBUS.addProject(tmp);
             clearFormContent();
             jTable1.revalidate();
-            tableInit(pjB.getProjectList());
+            tableInit(Redux.projectBUS.getProjectList());
         }
     }
 
@@ -146,10 +145,10 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                     (String) formData.get(1), (String) formData.get(2),
                     (String) formData.get(3), (String) formData.get(4),
                     (String) formData.get(5), false);
-            pjB.updateProject(tmp);
+            Redux.projectBUS.updateProject(tmp);
             clearFormContent();
             jTable1.revalidate();
-            tableInit(pjB.getProjectList());
+            tableInit(Redux.projectBUS.getProjectList());
         }
     }
 
@@ -164,10 +163,10 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
 
         if (confirmation == JOptionPane.YES_OPTION) {
             String pjId = model.getValueAt(selectedRow, 1).toString();
-            pjB.deleteProject(pjId);
+            Redux.projectBUS.deleteProject(pjId);
             clearFormContent();
             jTable1.revalidate();
-            tableInit(pjB.getProjectList());
+            tableInit(Redux.projectBUS.getProjectList());
         }
     }
 

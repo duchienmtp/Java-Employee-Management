@@ -18,17 +18,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
-import BackEnd.DegreeManagement.DegreeBUS;
 import BackEnd.EmployeeManagement.Employee;
-import BackEnd.EmployeeManagement.EmployeeBUS;
-import BackEnd.PositionManagement.PositionBUS;
-import BackEnd.SpecialtyManagement.SpecialtyBUS;
 import FrontEnd.Redux.Redux;
 
 public class EmployeeManagementContentPanel extends javax.swing.JPanel
         implements MouseListener, ActionListener, ListSelectionListener {
-
-    EmployeeBUS employeeBUS = new EmployeeBUS();
 
     UserInformationForm userInfoForm;
     UserInformationFrame userInfoFrame;
@@ -38,8 +32,6 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
 
     public EmployeeManagementContentPanel() {
         initComponents();
-
-        Redux.getAllEmployees();
 
         addButton.addActionListener(this);
         editButton.addActionListener(this);
@@ -63,7 +55,8 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
         jTable1.setDefaultRenderer(String.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
 
-        tableInit(Redux.employeeList);
+        // tableInit(Redux.employeeList);
+        tableInit(Redux.employeeBUS.getEmployeeList());
         jTable1.getSelectionModel().addListSelectionListener(this);
         jTable1.addMouseListener(this);
         addMouseListener(this);
@@ -95,7 +88,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
     }
 
     public void updateTableRow() {
-        Employee selectedEmployee = employeeBUS.getEmployeeById((String) selectedRowData[1]);
+        Employee selectedEmployee = Redux.employeeBUS.getEmployeeById((String) selectedRowData[1]);
         List<Object> employeePropertiesValue = selectedEmployee.toList();
 
         for (int i = 0; i < employeePropertiesValue.size(); i++) {
@@ -112,21 +105,21 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
 
                     case 9:
                         selectedEmployee.setDegree(
-                                new DegreeBUS().getDegreeById((String) value));
+                                Redux.degreeBUS.getDegreeById((String) value));
                         employeePropertiesValue.set(i,
                                 selectedEmployee.getDegree().getDegreeName());
                         break;
 
                     case 10:
                         selectedEmployee.setPosition(
-                                new PositionBUS().getPositionById((String) value));
+                                Redux.positionBUS.getPositionById((String) value));
                         employeePropertiesValue.set(i,
                                 selectedEmployee.getPosition().getPositionName());
                         break;
 
                     case 12:
                         selectedEmployee.setSpecialty(
-                                new SpecialtyBUS().getSpecialtyById((String) value));
+                                Redux.specialtyBUS.getSpecialtyById((String) value));
                         employeePropertiesValue.set(i,
                                 selectedEmployee.getSpecialty().getSpecialtyName());
                         break;
@@ -167,10 +160,12 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            employeeBUS.deleteEmployee(employeeBUS.getEmployeeById((String) selectedRowData[1]));
+            Redux.employeeBUS
+                    .deleteEmployee(Redux.employeeBUS.getEmployeeById((String) selectedRowData[1]));
             jTable1.revalidate();
-            Redux.getAllEmployees();
-            tableInit(Redux.employeeList);
+            // Redux.getAllEmployees();
+            // tableInit(Redux.employeeList);
+            tableInit(Redux.employeeBUS.getEmployeeList());
         }
     }
 
@@ -525,7 +520,8 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
                 // Get the selected row index
                 selectedRow = jTable1.getSelectedRow();
                 if (selectedRow != -1) {
-                    Employee employee = employeeBUS.getEmployeeById((String) selectedRowData[1]);
+                    Employee employee = Redux.employeeBUS
+                            .getEmployeeById((String) selectedRowData[1]);
                     // Open a new frame with information from the selected row
                     userInfoFrame = new UserInformationFrame();
                     userInfoFrame.setVisible(true);

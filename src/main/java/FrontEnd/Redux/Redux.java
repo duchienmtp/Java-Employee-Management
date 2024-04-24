@@ -2,23 +2,23 @@ package FrontEnd.Redux;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
 import BackEnd.ConnectDB.ConnectDB;
-import BackEnd.DegreeManagement.Degree;
+import BackEnd.CriticismManagement.CriticismBUS;
 import BackEnd.DegreeManagement.DegreeBUS;
-import BackEnd.DepartmentManagement.Department;
 import BackEnd.DepartmentManagement.DepartmentBUS;
-import BackEnd.EmployeeManagement.Employee;
 import BackEnd.EmployeeManagement.EmployeeBUS;
-import BackEnd.PositionManagement.Position;
+import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticismBUS;
 import BackEnd.PositionManagement.PositionBUS;
-import BackEnd.SpecialtyManagement.Specialty;
+import BackEnd.ProjectsManagement.ProjectBUS;
+import BackEnd.RewardManagement.RewardBUS;
 import BackEnd.SpecialtyManagement.SpecialtyBUS;
 import BackEnd.AccountManagement.Account;
 import BackEnd.AccountManagement.AccountBUS;
+import BackEnd.AssignmentManagement.AssignmentBUS;
+
 public class Redux {
 
     public static ConnectDB dbConnection;
@@ -29,35 +29,30 @@ public class Redux {
     public static String username = "";
     public static Account currentAccount;
 
-    public static ArrayList<Degree> degreeList;
-    public static ArrayList<Position> positionList;
-    public static ArrayList<Specialty> specialtyList;
-    public static ArrayList<Employee> employeeList;
-    public static ArrayList<Department> departmentList;
-    public static ArrayList<Account> accountList;
+    public static EmployeeBUS employeeBUS;
+    public static DegreeBUS degreeBUS;
+    public static PositionBUS positionBUS;
+    public static SpecialtyBUS specialtyBUS;
+    public static DepartmentBUS departmentBUS;
+    public static ProjectBUS projectBUS;
+    public static AssignmentBUS assignmentBUS;
+    public static AccountBUS accountBUS;
+    public static RewardBUS rewardBUS;
+    public static CriticismBUS criticismBUS;
+    public static EmployeesRewardsCriticismBUS employeesRewardsCriticismBUS;
 
-    public static void getAllEmployees() {
-        employeeList = new EmployeeBUS().getEmployeeList();
-    }
-
-    public static void getAllDegrees() {
-        degreeList = new DegreeBUS().getDegreeList();
-    }
-
-    public static void getAllPositions() {
-        positionList = new PositionBUS().getPositionList();
-    }
-
-    public static void getAllSpecialties() {
-        specialtyList = new SpecialtyBUS().getSpecialtyList();
-    }
-
-    public static void getAllDepartments() {
-        departmentList = new DepartmentBUS().getDepartmentList();
-    }
-  
-    public static void getAllAccount() {
-        accountList = new AccountBUS().getAccountList();
+    public Redux() {
+        employeeBUS = new EmployeeBUS();
+        degreeBUS = new DegreeBUS();
+        positionBUS = new PositionBUS();
+        specialtyBUS = new SpecialtyBUS();
+        departmentBUS = new DepartmentBUS();
+        projectBUS = new ProjectBUS();
+        assignmentBUS = new AssignmentBUS();
+        accountBUS = new AccountBUS();
+        rewardBUS = new RewardBUS();
+        criticismBUS = new CriticismBUS();
+        employeesRewardsCriticismBUS = new EmployeesRewardsCriticismBUS();
     }
 
     public static void handleLogin(String username, String password) {
@@ -74,12 +69,12 @@ public class Redux {
                 isAdmin = userId.contains("ADM");
                 isLoggedIn = true;
 
-                
                 JOptionPane.showMessageDialog(null, "Đăng nhập thành công!");
             } else {
                 // Authentication failed
                 JOptionPane.showMessageDialog(null, "Đăng nhập thất bại!");
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Account");
         } finally {

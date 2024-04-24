@@ -26,6 +26,10 @@ public class Employee {
     private boolean employStatus,
             deleteStatus;
 
+    public Employee(String id) {
+        this.id = id;
+    }
+
     public Employee(String id, String fullName, String gender, String birthDate, String phoneNumber, String ethnicGroup,
             String type, String religion, Degree degree, String nation, Position position, Department department,
             Specialty specialty) {

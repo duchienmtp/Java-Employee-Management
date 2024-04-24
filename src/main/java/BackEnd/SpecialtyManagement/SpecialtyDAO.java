@@ -30,6 +30,7 @@ public class SpecialtyDAO {
                     specialtyList.add(new Specialty(specialtyId, specialtyName, specialtyBaseSalary, deleteStatus));
                 }
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Specialties");
         } finally {
@@ -93,6 +94,7 @@ public class SpecialtyDAO {
                 boolean deleteStatus = rs.getBoolean("deleteStatus");
                 specialty = new Specialty(specialtyId, specialtyName, specialtyBaseSalary, deleteStatus);
             }
+            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Specialties");
         } finally {
