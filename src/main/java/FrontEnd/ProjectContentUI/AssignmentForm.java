@@ -1,5 +1,11 @@
 package FrontEnd.ProjectContentUI;
 
+import BackEnd.AssignmentManagement.Assignment;
+import BackEnd.AssignmentManagement.AssignmentBUS;
+import BackEnd.EmployeeManagement.Employee;
+import BackEnd.EmployeeManagement.EmployeeBUS;
+import BackEnd.ProjectsManagement.ProjectBUS;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
@@ -9,14 +15,16 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
-import javax.swing.AbstractButton;
-import javax.swing.JRadioButton;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JButton;
 
 public class AssignmentForm extends javax.swing.JFrame implements ActionListener, WindowListener {
 
     public boolean btnconfirmClicked = false;
     ArrayList<Object> formData;
+    EmployeeBUS emB = new EmployeeBUS();
+    AssignmentBUS asmB = new AssignmentBUS();
+    ProjectBUS pjB = new ProjectBUS();
 
     public AssignmentForm() {
         initComponents();
@@ -36,7 +44,12 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
 
         confirmButton.addActionListener(this);
         cancelButton.addActionListener(this);
-
+        for (int i = 0; i < emB.getEmployeeList().size(); i++) {
+            employeeIDComboBox.addItem(emB.getEmployeeList().get(i).getId());
+        }
+        for (int i = 0; i < pjB.getProjectList().size(); i++) {
+            projectIDComboBox.addItem(pjB.getProjectList().get(i).getProjectId());
+        }
         addWindowListener(this);
     }
 
@@ -45,8 +58,8 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
                 employeeName = employeeNameTextField.getText(),
                 projectID = (String) projectIDComboBox.getSelectedItem(),
                 projectName = employeeNameTextField.getText(),
-                startDate = startDatePicker.getText(),
-                endDate = endDatePicker.getText(),
+                startDate = Employee.formatBirthDateToDatabaseType(startDatePicker.getText()),
+                endDate = Employee.formatBirthDateToDatabaseType(endDatePicker.getText()),
                 projectPlace = (String) projectPlaceComboBox.getSelectedItem();
 
         return new ArrayList<>(Arrays.asList(employeeID, employeeName, projectID, projectName, startDate, endDate,
@@ -75,6 +88,18 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         projectPlaceComboBox.setSelectedItem("");
     }
 
+    public static String getEmployeeIdFromAssignmentForm() {
+        return employeeIDComboBox.getSelectedItem().toString();
+    }
+
+    public static String getProjectIdFromAssignmentForm() {
+        return projectIDComboBox.getSelectedItem().toString();
+    }
+
+    public static JButton getConfirmButton() {
+        return confirmButton;
+    }
+
     public void handleSubmitForm() {
         formData = getDataFromForm();
 
@@ -84,6 +109,22 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            if (asmB.checkInList(employeeIDComboBox.getSelectedItem().toString(),
+                    projectIDComboBox.getSelectedItem().toString())) {
+                JOptionPane.showMessageDialog(null, "Nhân viên này đã được đăng kí công tác này.");
+            }
+            DefaultTableModel model = (DefaultTableModel) AssignmentManagementContentPanel
+                    .getAssignmentManagementContentTable().getModel();
+            Object tmp = new Object[]{
+                AssignmentManagementContentPanel.getAssignmentManagementContentTable().getRowCount() + 1,
+                employeeIDComboBox.getSelectedItem(), employeeNameTextField.getText(),
+                projectIDComboBox.getSelectedItem(), projectNameTextField.getText(),
+                projectPlaceComboBox.getSelectedItem(), startDatePicker.getDate(), endDatePicker.getDate()};
+            model.addColumn(tmp);
+            AssignmentManagementContentPanel.getAssignmentManagementContentTable().setModel(model);
+            Assignment newasm = new Assignment(employeeIDComboBox.getSelectedItem().toString(),
+                    projectIDComboBox.getSelectedItem().toString(), false);
+            asmB.addNewAssignment(newasm);
             clearFormData();
             dispose();
         }
@@ -118,7 +159,8 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
                 handleSubmitForm();
                 dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == cancelButton) {
             if (isFormFilled()) {
@@ -131,6 +173,7 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
     }
 
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -185,10 +228,20 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         projectIDComboBox.setEditable(true);
         projectIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         projectIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        projectIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        projectIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
         projectIDComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         projectIDComboBox.setName("projectIDComboBox"); // NOI18N
         projectIDComboBox.setOpaque(true);
+        projectIDComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                projectIDComboBoxItemStateChanged(evt);
+            }
+        });
+        projectIDComboBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                projectIDComboBoxMouseClicked(evt);
+            }
+        });
 
         projectNameLabel.setLabelFor(employeeNameTextField);
         projectNameLabel.setText("Tên Dự Án :");
@@ -202,10 +255,19 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         employeeIDComboBox.setEditable(true);
         employeeIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         employeeIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        employeeIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "C++", "Database", "Java", "Python", "TypeScripts" }));
         employeeIDComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         employeeIDComboBox.setName("employeeIDComboBox"); // NOI18N
         employeeIDComboBox.setOpaque(true);
+        employeeIDComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                employeeIDComboBoxItemStateChanged(evt);
+            }
+        });
+        employeeIDComboBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                employeeIDComboBoxMouseClicked(evt);
+            }
+        });
 
         employeeNameLabel.setLabelFor(employeeNameTextField);
         employeeNameLabel.setText("Tên Nhân Viên :");
@@ -231,7 +293,6 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         startDatePickerLabel.setToolTipText("startDatePickerLabel");
 
         endDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        endDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         endDatePicker.setName("endDatePicker"); // NOI18N
 
         endDatePickerLabel.setLabelFor(endDatePicker);
@@ -243,7 +304,6 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         endDatePickerLabel.setOpaque(true);
 
         startDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        startDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         startDatePicker.setName("startDatePicker"); // NOI18N
 
         projectPlaceLabel.setText("Dự Án Tại :");
@@ -370,17 +430,48 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void employeeIDComboBoxMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_employeeIDComboBoxMouseClicked
+
+    }// GEN-LAST:event_employeeIDComboBoxMouseClicked
+
+    private void projectIDComboBoxMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_projectIDComboBoxMouseClicked
+
+    }// GEN-LAST:event_projectIDComboBoxMouseClicked
+
+    private void employeeIDComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {// GEN-FIRST:event_employeeIDComboBoxItemStateChanged
+        // TODO add your handling code here:
+        String emId = employeeIDComboBox.getSelectedItem().toString();
+        for (int i = 0; i < emB.getEmployeeList().size(); i++) {
+            if (emId.equalsIgnoreCase(emB.getEmployeeList().get(i).getId())) {
+                employeeNameTextField.setText(emB.getEmployeeList().get(i).getFullName());
+            }
+        }
+    }// GEN-LAST:event_employeeIDComboBoxItemStateChanged
+
+    private void projectIDComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {// GEN-FIRST:event_projectIDComboBoxItemStateChanged
+        // TODO add your handling code here:
+        String pjId = projectIDComboBox.getSelectedItem().toString();
+        for (int i = 0; i < pjB.getProjectList().size(); i++) {
+            if (pjId.equalsIgnoreCase(pjB.getProjectList().get(i).getProjectId())) {
+                projectNameTextField.setText(pjB.getProjectList().get(i).getProjectName());
+                startDatePicker.setText(pjB.getProjectList().get(i).getBeginAt());
+                endDatePicker.setText(pjB.getProjectList().get(i).getCompleteAt());
+                projectPlaceComboBox.setSelectedItem(pjB.getProjectList().get(i).getPlace());
+            }
+        }
+    }// GEN-LAST:event_projectIDComboBoxItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
-    private javax.swing.JButton confirmButton;
-    private javax.swing.JComboBox<String> employeeIDComboBox;
+    public static javax.swing.JButton confirmButton;
+    public static javax.swing.JComboBox<String> employeeIDComboBox;
     private javax.swing.JLabel employeeIDLabel;
     private javax.swing.JLabel employeeNameLabel;
     private javax.swing.JTextField employeeNameTextField;
     private com.github.lgooddatepicker.components.DatePicker endDatePicker;
     private javax.swing.JLabel endDatePickerLabel;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JComboBox<String> projectIDComboBox;
+    public static javax.swing.JComboBox<String> projectIDComboBox;
     private javax.swing.JLabel projectIDLabel;
     private javax.swing.JLabel projectNameLabel;
     private javax.swing.JTextField projectNameTextField;

@@ -286,9 +286,9 @@ VALUES
 ('SP022', 'Lao Công', 8000000, '0');
 CREATE TABLE [EmployeeSalaries] (
   [employeeId] nvarchar(255),
-  [insurance] decimal not null,
+  [insurance] decimal(18,1) not null,
   [netSalary] decimal not null,
-  [createdAt] DATETIME not null,
+  [createdAt] DATE not null,
   [deleteStatus] bit not null
   PRIMARY KEY ([employeeId], [createdAt])
 )
@@ -314,8 +314,8 @@ CREATE TABLE [Projects] (
   [projectId] nvarchar(255) PRIMARY KEY,
   [projectName] nvarchar(255) not null,
   [departmentId] nvarchar(255) not null,
-  [beginAt] DATETIME not null,
-  [completedAt] DATETIME not null,
+  [beginAt] DATE not null,
+  [completedAt] DATE not null,
   [place] nvarchar(255) not null,
   [deleteStatus] bit not null
 )

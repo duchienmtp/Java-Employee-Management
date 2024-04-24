@@ -1,6 +1,5 @@
 package FrontEnd.DepartmentContentUI;
 
-import FrontEnd.ProjectContentUI.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -18,9 +17,18 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+
+
+import BackEnd.DepartmentManagement.Department;
+import BackEnd.DepartmentManagement.DepartmentBUS;
+
+import FrontEnd.Redux.Redux;
 import javax.swing.table.DefaultTableModel;
 
-public class DepartmentManagementContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
+public class DepartmentManagementContentPanel extends javax.swing.JPanel 
+        implements ActionListener, ListSelectionListener, MouseListener {
+
+    DepartmentBUS departmentBUS = new DepartmentBUS();
 
     DepartmentForm departmentForm;
     int selectedRow = -1;
@@ -28,9 +36,15 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel impleme
     Object[] selectedRowData;
 
     public DepartmentManagementContentPanel() {
-        initComponents();
+   initComponents();
 
-        tableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+        Redux.getAllDepartments();
+
+        departmentForm = new DepartmentForm();
+
+        addButton.addActionListener(this);
+        editButton.addActionListener(this);
+        deleteButton.addActionListener(this);
 
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1), // Line color and stroke size
@@ -42,76 +56,54 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel impleme
         );
         jPanel1.setBorder(titledBorder);
 
-        departmentForm = new DepartmentForm();
+        tableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 
-        addButton.addActionListener(this);
-        deleteButton.addActionListener(this);
-        editButton.addActionListener(this);
-        searchButton.addActionListener(this);
-
+        tblDeparment.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        jTable1.setDefaultRenderer(Object.class, centerRenderer);
-        jTable1.setDefaultRenderer(String.class, centerRenderer);
-        jTable1.setDefaultRenderer(Integer.class, centerRenderer);
+        tblDeparment.setDefaultRenderer(String.class, centerRenderer);
+        tblDeparment.setDefaultRenderer(Integer.class, centerRenderer);
 
-        tableInit();
-
-        jTable1.getSelectionModel().addListSelectionListener(this);
-        jTable1.addMouseListener(this);
+        tableInit(Redux.departmentList);
+        tblDeparment.getSelectionModel().addListSelectionListener(this);
+        tblDeparment.addMouseListener(this);
         addMouseListener(this);
-        jTable1.addMouseListener(this);
-
         setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == addButton) {
-            if (departmentForm != null) {
-                departmentForm.setTitle("THÊM MỚI PHÒNG BAN");
-                departmentForm.setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(this, "Can not found form!");
-            }
+            insertTableRow();
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
-                deleteTableRow(selectedRow);
+                deleteTableRow();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn một dòng trước!", "Cảnh Báo",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == editButton) {
             if (selectedRow >= 0) {
-                updateTableRow(selectedRowData);
-                departmentForm.setVisible(true);
+                updateTableRow();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else if (e.getSource() == importExcel) {
-
-        } else if (e.getSource() == exportExcel) {
-
-        } else if (e.getSource() == searchButton) {
-            String tmp = searchTextField.getText().trim();
-            if (!tmp.isEmpty()) {
-                search(tmp);
-            } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập họ tên hoặc id hoặc mã công tác của nhân viên cần tìm kiếm!");
+                JOptionPane.showMessageDialog(this, "Hãy chọn một dòng trước!", "Cảnh Báo",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         }
+        addButton.setEnabled(true);
     }
 
     public void search(String searchText) {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) tblDeparment.getModel();
         int check = 0;
-        for (int i = 0; i < jTable1.getRowCount(); i++) {
+        for (int i = 0; i < tblDeparment.getRowCount(); i++) {
             String btid = model.getValueAt(i, 1).toString().trim().toLowerCase();
             String name = model.getValueAt(i, 3).toString().trim().toLowerCase(); // Lấy tên từ dòng hiện tại và chuyển thành chữ thường
             String id = model.getValueAt(i, 2).toString().trim().toLowerCase(); // Lấy ID từ dòng hiện tại và chuyển thành chữ thường
             if (name.contains(searchText.toLowerCase()) || id.contains(searchText.toLowerCase()) || btid.contains(searchText.toLowerCase())) { // So sánh tên hoặc ID với nội dung tìm kiếm
-                jTable1.getSelectionModel().setSelectionInterval(i, i); // Chọn dòng tìm thấy
-                Rectangle rect = jTable1.getCellRect(i, 0, true);
-                jTable1.scrollRectToVisible(rect); // Cuộn tới dòng tìm thấy
+                tblDeparment.getSelectionModel().setSelectionInterval(i, i); // Chọn dòng tìm thấy
+                Rectangle rect = tblDeparment.getCellRect(i, 0, true);
+                tblDeparment.scrollRectToVisible(rect); // Cuộn tới dòng tìm thấy
                 check = 1;
                 break; // Kết thúc vòng lặp khi tìm thấy dòng phù hợp
             }
@@ -121,44 +113,57 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel impleme
         }
     }
 
-    public void tableInit() {
-        Object[] newRowData = {1, "DP001", "Quản Lý", "Lalala", 10};
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
+public void tableInit(ArrayList<Department> departmentList) {
+    DefaultTableModel model = (DefaultTableModel) tblDeparment.getModel();
+        model.setRowCount(0);
+
+        for (int i = 0; i < departmentList.size(); i++) {
+            Department department = departmentList.get(i);
+            model.addRow(new Object[] {
+                    i + 1,
+                    department.getDepartmentId(),
+                    department.getDepartmentName(),
+                    department.getDepartmentLeaderName(),
+                    department.isDeleteStatus() ? "Đã Xóa" : "Hoạt Động"
+            });
         }
+ }
+public void insertTableRow() {
+        departmentForm.setTitle("Thêm Mới Phòng Ban");
+        departmentForm.setVisible(true);
+    }
+public void updateTableRow() {
+        Department selectedDepartment = departmentBUS.getDepartmentById((String) selectedRowData[1]);
+        departmentForm.setTitle("Cập Nhật Thông Tin Phòng Ban");
+        departmentForm.setVisible(true);
+        departmentForm.showFormWithData(selectedDepartment);
     }
 
-    public void updateTableRow(Object[] rowData) {
-        // Create a new ArrayList
-        ArrayList<Object> dataList = new ArrayList<>(rowData.length);
-
-        // Add all elements from the array to the ArrayList
-        dataList.addAll(Arrays.asList(rowData));
-        departmentForm.setTitle("CẬP NHẬT THÔNG TIN PHÒNG BAN");
-        departmentForm.showFormWithData(dataList);
-    }
-
-    public void deleteTableRow(int selectedRow) {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        int confirmation = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn là muốn xóa thông tin công tác của nhân viên này? ", "Thông báo", JOptionPane.YES_NO_OPTION);
+    public void deleteTableRow() {
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Bạn có muốn xóa bỏ phòng ban với ID " + selectedRowData[1] + " ?",
+                "Xóa Phòng Ban",
+                JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            model.removeRow(selectedRow);
-            jTable1.revalidate();
+            departmentBUS.deleteDepartment(departmentBUS.getDepartmentById((String) selectedRowData[1]));
+            tblDeparment.revalidate();
+            Redux.getAllDepartments();
+            tableInit(Redux.departmentList);
         }
     }
 
     @Override
     public void valueChanged(ListSelectionEvent event) {
-        if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
+        if (!event.getValueIsAdjusting()) { // Ensure selection is stable
             selectionConfirmed = true;
-            selectedRow = jTable1.getSelectedRow();
-            if (selectedRow >= 0) {  // Check if a row is selected
-                selectedRowData = new Object[jTable1.getColumnCount()];
-                for (int i = 0; i < jTable1.getColumnCount(); i++) {
-                    selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
+            selectedRow = tblDeparment.getSelectedRow();
+            if (selectedRow >= 0) { // Check if a row is selected
+                selectedRowData = new Object[tblDeparment.getColumnCount()];
+                for (int i = 0; i < tblDeparment.getColumnCount(); i++) {
+                    selectedRowData[i] = tblDeparment.getValueAt(selectedRow, i);
                 }
+                addButton.setEnabled(false);
             }
         }
     }
@@ -179,7 +184,7 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel impleme
         tableContainer = new javax.swing.JPanel();
         tableLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblDeparment = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -224,7 +229,6 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel impleme
 
         searchTextField.setBackground(new java.awt.Color(204, 204, 204));
         searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        searchTextField.setForeground(new java.awt.Color(0, 0, 0));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
 
@@ -273,13 +277,12 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel impleme
 
         tableLabel.setBackground(new java.awt.Color(255, 255, 255));
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
         tableLabel.setText("Danh sách công tác của nhân viên");
         tableLabel.setName("tableLabel"); // NOI18N
         tableLabel.setOpaque(true);
 
-        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblDeparment.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        tblDeparment.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -302,8 +305,8 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel impleme
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setRowHeight(40);
-        jScrollPane2.setViewportView(jTable1);
+        tblDeparment.setRowHeight(40);
+        jScrollPane2.setViewportView(tblDeparment);
 
         javax.swing.GroupLayout tableContainerLayout = new javax.swing.GroupLayout(tableContainer);
         tableContainer.setLayout(tableContainerLayout);
@@ -373,20 +376,20 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel impleme
     private javax.swing.JButton importExcel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton searchButton;
     private javax.swing.JComboBox<String> searchOptionComboBox;
     private javax.swing.JTextField searchTextField;
     private javax.swing.JPanel tableContainer;
     private javax.swing.JLabel tableLabel;
+    private javax.swing.JTable tblDeparment;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getSource() == jTable1) {
+        if (e.getSource() == tblDeparment) {
             if (e.getClickCount() == 2) {
                 // Get the selected row index
-                selectedRow = jTable1.getSelectedRow();
+                selectedRow = tblDeparment.getSelectedRow();
                 if (selectedRow != -1) {
                     // Open a new frame with information from the selected row
                     ArrayList<Object> dataList = new ArrayList<>(selectedRowData.length);
@@ -395,8 +398,8 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel impleme
             }
         } else {
             Component clickedComponent = this.getComponentAt(this.getMousePosition());
-            if (clickedComponent != jTable1 && selectionConfirmed) {
-                jTable1.getSelectionModel().clearSelection();
+            if (clickedComponent != tblDeparment && selectionConfirmed) {
+                tblDeparment.getSelectionModel().clearSelection();
                 selectionConfirmed = false;
             }
         }

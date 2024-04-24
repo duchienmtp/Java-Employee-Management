@@ -1,31 +1,44 @@
 package FrontEnd.EmployeeContentUI;
 
+import FrontEnd.Redux.Redux;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+
+import BackEnd.DegreeManagement.Degree;
+import BackEnd.DegreeManagement.DegreeBUS;
+import BackEnd.DepartmentManagement.Department;
+import BackEnd.EmployeeManagement.Employee;
+import BackEnd.EmployeeManagement.EmployeeBUS;
+import BackEnd.PositionManagement.Position;
+import BackEnd.PositionManagement.PositionBUS;
+import BackEnd.SpecialtyManagement.Specialty;
+import BackEnd.SpecialtyManagement.SpecialtyBUS;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.File;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
-import javax.swing.AbstractButton;
-import javax.swing.JFileChooser;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
 import javax.swing.WindowConstants;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class UserInformationForm extends javax.swing.JFrame implements ActionListener, WindowListener {
 
-    JFileChooser fileChooser;
+    EmployeeBUS employeeBUS;
+
     ArrayList<Object> formData;
-    File selectedFile = null;
-    String fileName = "";
+    String employeeID;
 
     public UserInformationForm() {
         initComponents();
+
+        employeeBUS = new EmployeeBUS();
+
+        Redux.getAllDegrees();
+        Redux.getAllPositions();
+        Redux.getAllSpecialties();
 
         formData = new ArrayList<>();
 
@@ -36,28 +49,32 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         birthdateDatePicker.setSettings(pickerSettings);
         birthdateDatePicker.setDateToToday();
 
-        fileChooser = new JFileChooser();
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        for (Degree degree : Redux.degreeList) {
+            if (!degree.getDeleteStatus()) {
+                model.addElement(degree.getDegreeName());
+            }
+        }
+        degreeComboBox.setModel(model);
 
-        // Optional: Set a filter for specific file types
-        // Replace IMAGE_EXTENSIONS with a list of supported image formats (adjust as needed)
-        String[] IMAGE_EXTENSIONS = new String[]{"jpg", "jpeg", "png", "gif", "bmp"};
+        for (Position position : Redux.positionList) {
+            if (!position.getDeleteStatus()) {
+                positionComboBox.addItem(position.getPositionName());
+            }
+        }
 
-        // Filter for image files
-        FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Image Files", IMAGE_EXTENSIONS);
+        for (Specialty specialty : Redux.specialtyList) {
+            if (!specialty.getDeleteStatus()) {
+                specialtyComboBox.addItem(specialty.getSpecialtyName());
+            }
+        }
 
-        fileChooser.setFileFilter(imageFilter);
-
-        deleteFileButton.setVisible(false);
-
-        fileChooserButton.addActionListener(this);
-//        birthdateDatePicker.addDateChangeListener(this);
         confirmButton.addActionListener(this);
         declineButton.addActionListener(this);
         addWindowListener(this);
     }
 
     public void handleSubmitForm() {
-        String employeeID = "";
         formData = getDataFromForm();
 
         int confirmation = JOptionPane.showConfirmDialog(this,
@@ -66,16 +83,54 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            if (selectedFile != null) {
+            if (this.getTitle().contains("THÊM MỚI")) {
+                employeeBUS.addEmployee(
+                        new Employee(
+                                (String) employeeBUS.getNextID(),
+                                (String) formData.get(0),
+                                (String) formData.get(1),
+                                (String) formData.get(2),
+                                (String) formData.get(3),
+                                (String) formData.get(4),
+                                (String) formData.get(5),
+                                (String) formData.get(6),
+                                new DegreeBUS().getDegreeByName(
+                                        (String) formData.get(7)),
+                                (String) formData.get(8),
+                                new PositionBUS().getPositionByName(
+                                        (String) formData.get(9)),
+                                new Department(),
+                                new SpecialtyBUS().getSpecialtyByName(
+                                        (String) formData.get(10))));
+            } else {
+                employeeBUS.updateEmployee(
+                        new Employee(
+                                (String) employeeID,
+                                (String) formData.get(0),
+                                (String) formData.get(1),
+                                (String) formData.get(2),
+                                (String) formData.get(3),
+                                (String) formData.get(4),
+                                (String) formData.get(5),
+                                (String) formData.get(6),
+                                new DegreeBUS().getDegreeByName(
+                                        (String) formData.get(7)),
+                                (String) formData.get(8),
+                                new PositionBUS().getPositionByName(
+                                        (String) formData.get(9)),
+                                new Department(),
+                                new SpecialtyBUS().getSpecialtyByName(
+                                        (String) formData.get(10)),
+                                (boolean) formData.get(11),
+                                (boolean) formData.get(12)));
             }
-            clearFormData();
+            Redux.getAllEmployees();
+            EmployeeManagementContentPanel.tableInit(Redux.employeeList);
             dispose();
         }
     }
 
     public void cancelSubmitForm() {
-        String employeeID = "";
-
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Xác nhận thao tác ?",
                 "HỦY BỎ ?",
@@ -83,6 +138,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
         if (confirmation == JOptionPane.YES_OPTION) {
             clearFormData();
+            dispose();
         }
     }
 
@@ -92,69 +148,54 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                 || phoneNumberTextField.getText().equals(""));
     }
 
+    public boolean isFormValid() {
+        return Employee.isValidName(employeeNameTextField.getText())
+                && Employee.isValidPhoneNumber(phoneNumberTextField.getText());
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == fileChooserButton) {
-            // Show the file chooser dialog
-            int returnVal = fileChooser.showOpenDialog(null);
-
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                // Get the selected file
-                selectedFile = fileChooser.getSelectedFile();
-
-                // Get the file name with extension
-                fileName = selectedFile.getName();
-
-                // Display the file name in a message box
-                jLabel1.setText(fileName);
-
-                deleteFileButton.setVisible(true);
-
-            }
-        } else if (e.getSource() == confirmButton) {
+        if (e.getSource() == confirmButton) {
             if (isFormFilled()) {
-                handleSubmitForm();
+                if (isFormValid()) {
+                    handleSubmitForm();
+                }
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == declineButton) {
             if (isFormFilled()) {
-                clearFormData();
+                cancelSubmitForm();
+
             } else {
                 clearFormData();
                 dispose();
             }
-        } else if (e.getSource() == deleteFileButton) {
-            selectedFile = null;
-            fileName = "Không có tệp nào được chọn";
-            deleteFileButton.setVisible(false);
         }
     }
 
     public void showFormWithData(ArrayList<Object> data) {
         if (data != null) {
-            if (!data.get(0).equals("")) {
-                jLabel1.setText((String) data.get(0));
-            }
+            employeeID = (String) data.get(0);
             employeeNameTextField.setText((String) data.get(1));
-            genderComboBox.setSelectedItem(data.get(3));
-            birthdateDatePicker.setText((String) data.get(4));
-            phoneNumberTextField.setText((String) data.get(5));
-            ethicGroupComboBox.setSelectedItem(data.get(6));
+            genderComboBox.setSelectedItem(data.get(2));
+            birthdateDatePicker.setText((String) data.get(3));
+            phoneNumberTextField.setText((String) data.get(4));
+            ethicGroupComboBox.setSelectedItem(data.get(5));
+            employeeTypeComboBox.setSelectedItem(data.get(6));
             religionComboBox.setSelectedItem(data.get(7));
             nationComboBox.setSelectedItem(data.get(8));
-            specialtyComboBox.setSelectedItem(data.get(9));
-            degreeComboBox.setSelectedItem(data.get(10));
-            positionComboBox.setSelectedItem(data.get(11));
-            employeeTypeComboBox.setSelectedItem(data.get(12));
+            degreeComboBox.setSelectedItem(data.get(9));
+            positionComboBox.setSelectedItem(data.get(10));
+            specialtyComboBox.setSelectedItem(data.get(12));
+            employStatusComboBox.setSelectedItem(data.get(13));
         }
     }
 
     public void clearFormData() {
         employeeNameTextField.setText("");
         genderComboBox.setSelectedItem("");
-        jLabel1.setText("Không có tệp được chọn");
-        deleteFileButton.setVisible(false);
         birthdateDatePicker.setText("");
         phoneNumberTextField.setText("");
         ethicGroupComboBox.setSelectedItem("");
@@ -164,12 +205,13 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         degreeComboBox.setSelectedItem("");
         positionComboBox.setSelectedItem("");
         employeeTypeComboBox.setSelectedItem("");
+        employStatusComboBox.setSelectedItem("");
     }
 
     public ArrayList<Object> getDataFromForm() {
         String employeeName = employeeNameTextField.getText(),
                 gender = (String) genderComboBox.getSelectedItem(),
-                birthdate = birthdateDatePicker.getText(),
+                birthdate = Employee.formatBirthDateToDatabaseType(birthdateDatePicker.getText()),
                 phoneNumber = phoneNumberTextField.getText(),
                 ethicGroup = (String) ethicGroupComboBox.getSelectedItem(),
                 religion = (String) religionComboBox.getSelectedItem(),
@@ -177,23 +219,28 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                 specialty = (String) specialtyComboBox.getSelectedItem(),
                 degree = (String) degreeComboBox.getSelectedItem(),
                 position = (String) positionComboBox.getSelectedItem(),
-                employeeType = (String) employeeTypeComboBox.getSelectedItem();
+                employeeType = (String) employeeTypeComboBox.getSelectedItem(),
+                employStatus = (String) employStatusComboBox.getSelectedItem();
 
-        return new ArrayList<>(Arrays.asList(employeeName, gender, fileName, birthdate, phoneNumber,
-                ethicGroup, religion, nation, specialty, degree, position, employeeType));
+        return new ArrayList<>(Arrays.asList(employeeName, gender, birthdate, phoneNumber,
+                ethicGroup, employeeType, religion, degree, nation, position, specialty,
+                employStatus == "Đang làm việc" ? true : false,
+                employStatus == "Đang làm việc" ? false : true));
     }
 
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField1 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         employeeNameLabel = new javax.swing.JLabel();
         employeeNameTextField = new javax.swing.JTextField();
-        avatarLabel = new javax.swing.JLabel();
-        fileChooserPanel = new javax.swing.JPanel();
-        fileChooserButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         genderLabel = new javax.swing.JLabel();
         genderComboBox = new javax.swing.JComboBox<>();
         birthdateLabel = new javax.swing.JLabel();
@@ -216,7 +263,10 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         confirmButton = new javax.swing.JButton();
         declineButton = new javax.swing.JButton();
         birthdateDatePicker = new com.github.lgooddatepicker.components.DatePicker();
-        deleteFileButton = new javax.swing.JButton();
+        employStatusLabel = new javax.swing.JLabel();
+        employStatusComboBox = new javax.swing.JComboBox<>();
+
+        jTextField1.setText("jTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("THÊM MỚI");
@@ -227,92 +277,51 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         employeeNameLabel.setLabelFor(employeeNameTextField);
         employeeNameLabel.setText("Họ và Tên :");
         employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameLabel.setName("employeeNameLabel"); // NOI18N
 
         employeeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         employeeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
-        employeeNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        employeeNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameTextField.setHighlighter(null);
         employeeNameTextField.setName("employeeNameTextField"); // NOI18N
-
-        avatarLabel.setLabelFor(fileChooserPanel);
-        avatarLabel.setText("Ảnh đại diện (Nếu có) :");
-        avatarLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        avatarLabel.setForeground(new java.awt.Color(0, 0, 0));
-        avatarLabel.setName("avatarLabel"); // NOI18N
-
-        fileChooserPanel.setBackground(new java.awt.Color(255, 255, 255));
-        fileChooserPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-        fileChooserPanel.setName("fileChooserPanel"); // NOI18N
-
-        fileChooserButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        fileChooserButton.setForeground(new java.awt.Color(255, 255, 255));
-        fileChooserButton.setText("Chọn tệp");
-        fileChooserButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        fileChooserButton.setName("fileChooserButton"); // NOI18N
-
-        jLabel1.setText("Không có tệp nào được chọn");
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-
-        javax.swing.GroupLayout fileChooserPanelLayout = new javax.swing.GroupLayout(fileChooserPanel);
-        fileChooserPanel.setLayout(fileChooserPanelLayout);
-        fileChooserPanelLayout.setHorizontalGroup(
-            fileChooserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(fileChooserPanelLayout.createSequentialGroup()
-                .addComponent(fileChooserButton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        fileChooserPanelLayout.setVerticalGroup(
-            fileChooserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(fileChooserButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        employeeNameTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                employeeNameTextFieldActionPerformed(evt);
+            }
+        });
 
         genderLabel.setLabelFor(genderComboBox);
         genderLabel.setText("Giới Tính :");
         genderLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        genderLabel.setForeground(new java.awt.Color(0, 0, 0));
         genderLabel.setName("genderLabel"); // NOI18N
 
         genderComboBox.setBackground(new java.awt.Color(204, 204, 204));
         genderComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        genderComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        genderComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nam ", "Nữ", " " }));
+        genderComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nam ", "Nữ" }));
         genderComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         genderComboBox.setName("genderComboBox"); // NOI18N
 
         birthdateLabel.setLabelFor(birthdateDatePicker);
         birthdateLabel.setText("Ngày Sinh :");
         birthdateLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        birthdateLabel.setForeground(new java.awt.Color(0, 0, 0));
         birthdateLabel.setName("birthdateLabel"); // NOI18N
 
         phoneNumberLabel.setLabelFor(phoneNumberTextField);
         phoneNumberLabel.setText("Số Điện Thoại :");
         phoneNumberLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        phoneNumberLabel.setForeground(new java.awt.Color(0, 0, 0));
         phoneNumberLabel.setName("phoneNumberLabel"); // NOI18N
 
         phoneNumberTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         phoneNumberTextField.setBackground(new java.awt.Color(204, 204, 204));
-        phoneNumberTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        phoneNumberTextField.setForeground(new java.awt.Color(0, 0, 0));
         phoneNumberTextField.setName("phoneNumberTextField"); // NOI18N
         phoneNumberTextField.setPreferredSize(new java.awt.Dimension(230, 26));
 
         ethicGroupLabel.setLabelFor(ethicGroupComboBox);
         ethicGroupLabel.setText("Dân Tộc :");
         ethicGroupLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        ethicGroupLabel.setForeground(new java.awt.Color(0, 0, 0));
         ethicGroupLabel.setName("ethicGroupLabel"); // NOI18N
 
         ethicGroupComboBox.setBackground(new java.awt.Color(204, 204, 204));
         ethicGroupComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        ethicGroupComboBox.setForeground(new java.awt.Color(0, 0, 0));
         ethicGroupComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kinh", "Tày", "Mường" }));
         ethicGroupComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         ethicGroupComboBox.setName("ethicGroupComboBox"); // NOI18N
@@ -321,12 +330,10 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         religionLabel.setLabelFor(religionComboBox);
         religionLabel.setText("Tôn giáo :");
         religionLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        religionLabel.setForeground(new java.awt.Color(0, 0, 0));
         religionLabel.setName("religionLabel"); // NOI18N
 
         religionComboBox.setBackground(new java.awt.Color(204, 204, 204));
         religionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        religionComboBox.setForeground(new java.awt.Color(0, 0, 0));
         religionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Phật Giáo", "Thiên Chúa Giáo", "Công Giáo" }));
         religionComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         religionComboBox.setName("religionComboBox"); // NOI18N
@@ -334,64 +341,52 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         nationLabel.setLabelFor(nationComboBox);
         nationLabel.setText("Quốc Tịch :");
         nationLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        nationLabel.setForeground(new java.awt.Color(0, 0, 0));
         nationLabel.setName("nationLabel"); // NOI18N
 
         nationComboBox.setBackground(new java.awt.Color(204, 204, 204));
         nationComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        nationComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        nationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Việt Nam", "Hoa Kỳ", "Canada", "Nhật Bản", "Hàn Quốc", " " }));
+        nationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Việt Nam", "Hoa Kỳ", "Canada", "Nhật Bản", "Hàn Quốc" }));
         nationComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         nationComboBox.setName("nationComboBox"); // NOI18N
 
         degreeLabel.setLabelFor(degreeComboBox);
         degreeLabel.setText("Bằng Cấp :");
         degreeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        degreeLabel.setForeground(new java.awt.Color(0, 0, 0));
         degreeLabel.setName("degreeLabel"); // NOI18N
 
         degreeComboBox.setBackground(new java.awt.Color(204, 204, 204));
         degreeComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        degreeComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        degreeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cử Nhân", "Kỹ Sư", "Thạc Sĩ", "Tiến Sĩ", " " }));
+        degreeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
         degreeComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         degreeComboBox.setName("degreeComboBox"); // NOI18N
 
         positionLabel.setLabelFor(positionComboBox);
         positionLabel.setText("Chức vụ :");
         positionLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        positionLabel.setForeground(new java.awt.Color(0, 0, 0));
         positionLabel.setName("positionLabel"); // NOI18N
 
         specialtyLabel.setLabelFor(specialtyComboBox);
         specialtyLabel.setText("Chuyên Môn :");
         specialtyLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        specialtyLabel.setForeground(new java.awt.Color(0, 0, 0));
         specialtyLabel.setName("specialtyLabel"); // NOI18N
 
         specialtyComboBox.setBackground(new java.awt.Color(204, 204, 204));
         specialtyComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        specialtyComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        specialtyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kế Toán", "Lập Trình Viên", "Quản Lý Dự Án", "Quản Lý Nhân Sự", "Phân Tích Dữ Liệu Doanh Nghiệp", "Designer" }));
         specialtyComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         specialtyComboBox.setName("specialtyComboBox"); // NOI18N
 
-        positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nhân Viên", "Phó Phòng", "Trưởng Phòng", "Thư Ký", "Phó Giám Đốc", "Tổng Giám Đốc" }));
         positionComboBox.setBackground(new java.awt.Color(204, 204, 204));
         positionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        positionComboBox.setForeground(new java.awt.Color(0, 0, 0));
         positionComboBox.setName("positionComboBox"); // NOI18N
 
         employeeTypeLabel.setLabelFor(employeeTypeComboBox);
         employeeTypeLabel.setText("Loại Nhân Viên :");
         employeeTypeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeTypeLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeTypeLabel.setName("employeeTypeLabel"); // NOI18N
 
         employeeTypeComboBox.setBackground(new java.awt.Color(204, 204, 204));
         employeeTypeComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        employeeTypeComboBox.setForeground(new java.awt.Color(0, 0, 0));
-        employeeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chính Thức", "Nhân Viên", "Thực Tập Sinh", " " }));
+        employeeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chính Thức", "Bán Thời Gian", "Thực Tập Sinh" }));
         employeeTypeComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         employeeTypeComboBox.setName("employeeTypeComboBox"); // NOI18N
 
@@ -408,12 +403,18 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         declineButton.setName("declineButton"); // NOI18N
 
         birthdateDatePicker.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        birthdateDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         birthdateDatePicker.setName("birthdateDatePicker"); // NOI18N
 
-        deleteFileButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        deleteFileButton.setForeground(new java.awt.Color(255, 255, 255));
-        deleteFileButton.setText("Xóa Ảnh");
+        employStatusLabel.setText("Trạng thái :");
+        employStatusLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        employStatusLabel.setName("employStatusLabel"); // NOI18N
+        employStatusLabel.setToolTipText("");
+
+        employStatusComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Đang làm việc", "Đã nghỉ việc" }));
+        employStatusComboBox.setBackground(new java.awt.Color(204, 204, 204));
+        employStatusComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        employStatusComboBox.setName("employStatusComboBox"); // NOI18N
+        employStatusComboBox.setOpaque(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -421,103 +422,104 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(religionComboBox, 0, 200, Short.MAX_VALUE)
-                            .addComponent(degreeComboBox, 0, 200, Short.MAX_VALUE)
-                            .addComponent(religionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(degreeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(30, 30, 30)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(positionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(nationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(positionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(phoneNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(phoneNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(birthdateDatePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(employeeNameLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(birthdateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(nationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(30, 30, 30)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(genderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(phoneNumberTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(genderComboBox, 0, 235, Short.MAX_VALUE)
-                                .addComponent(phoneNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(genderComboBox, 0, 235, Short.MAX_VALUE)
+                            .addComponent(genderLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ethicGroupLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ethicGroupComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(specialtyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(specialtyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(employeeTypeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(employeeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(positionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(positionComboBox, 0, 200, Short.MAX_VALUE)))
+                .addGap(36, 36, 36)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(degreeLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                         .addComponent(declineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(specialtyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ethicGroupComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(employeeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ethicGroupLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(specialtyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(employeeTypeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(fileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(avatarLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(deleteFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(birthdateDatePicker, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                        .addComponent(religionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(birthdateLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(religionLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(degreeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(employStatusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(employStatusComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(genderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(birthdateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, 0)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(genderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(avatarLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(deleteFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(birthdateDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(genderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(fileChooserPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(genderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(birthdateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ethicGroupLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(phoneNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(phoneNumberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                            .addComponent(ethicGroupLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(phoneNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ethicGroupComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(religionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(religionComboBox)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(specialtyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(specialtyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(degreeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(degreeComboBox)))
+                .addGap(33, 33, 33)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(positionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(employeeTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(employStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(birthdateDatePicker, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(employStatusComboBox)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(phoneNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(ethicGroupComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(nationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(specialtyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(religionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(religionComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(nationComboBox)
-                    .addComponent(specialtyComboBox))
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(positionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(employeeTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(degreeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(degreeComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(positionComboBox)
-                    .addComponent(employeeTypeComboBox))
-                .addGap(80, 80, 80)
+                        .addComponent(positionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(employeeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(56, 56, 56)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(declineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -532,34 +534,36 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void employeeNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employeeNameTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_employeeNameTextFieldActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel avatarLabel;
     private com.github.lgooddatepicker.components.DatePicker birthdateDatePicker;
     private javax.swing.JLabel birthdateLabel;
     private javax.swing.JButton confirmButton;
     private javax.swing.JButton declineButton;
     private javax.swing.JComboBox<String> degreeComboBox;
     private javax.swing.JLabel degreeLabel;
-    private javax.swing.JButton deleteFileButton;
+    private javax.swing.JComboBox<String> employStatusComboBox;
+    private javax.swing.JLabel employStatusLabel;
     private javax.swing.JLabel employeeNameLabel;
     private javax.swing.JTextField employeeNameTextField;
     private javax.swing.JComboBox<String> employeeTypeComboBox;
     private javax.swing.JLabel employeeTypeLabel;
     private javax.swing.JComboBox<String> ethicGroupComboBox;
     private javax.swing.JLabel ethicGroupLabel;
-    private javax.swing.JButton fileChooserButton;
-    private javax.swing.JPanel fileChooserPanel;
     private javax.swing.JComboBox<String> genderComboBox;
     private javax.swing.JLabel genderLabel;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JComboBox<String> nationComboBox;
     private javax.swing.JLabel nationLabel;
     private javax.swing.JLabel phoneNumberLabel;
