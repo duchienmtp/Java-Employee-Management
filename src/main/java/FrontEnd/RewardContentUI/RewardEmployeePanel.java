@@ -1,5 +1,6 @@
 package FrontEnd.RewardContentUI;
-
+import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticism;
+import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticismBUS;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -19,7 +20,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class RewardEmployeePanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
-
+    EmployeesRewardsCriticismBUS  employeeRCBUS = new  EmployeesRewardsCriticismBUS();
     RewardEmployeeForm rewardEmployeeForm;
     int selectedRow = -1;
     boolean selectionConfirmed;
@@ -52,17 +53,23 @@ public class RewardEmployeePanel extends javax.swing.JPanel implements ActionLis
         jTable1.setDefaultRenderer(String.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
 
-        tableInit();
+        tableInit(employeeRCBUS.getlistEmployeeRC());
         jTable1.getSelectionModel().addListSelectionListener(this);
         addMouseListener(this);
         setVisible(true);
     }
 
-    public void tableInit() {
-        Object[] newRowData = {1, "EM001", "Nguyễn Văn Thành", "RE002", "Thưởng dự án", 2, 100000, "02/01/2024"};
+    public void tableInit(ArrayList<EmployeesRewardsCriticism> employeeRCBUS) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
+        model.setRowCount(0);
+
+        for (int i = 0; i < employeeRCBUS.size(); i++) {
+            model.addRow(new Object[] {
+                   i + 1,
+                    employeeRCBUS.get(i).getEmployeeId(),
+                    employeeRCBUS.get(i).getCriticismId(),
+                    employeeRCBUS.get(i).getFaultCount(),
+                    employeeRCBUS.get(i).getCreatedAt(),});
         }
     }
 
@@ -100,6 +107,7 @@ public class RewardEmployeePanel extends javax.swing.JPanel implements ActionLis
         searchOptionComboBox = new javax.swing.JComboBox<>();
         searchTextField = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
+        refreshButton = new javax.swing.JButton();
         importExcel = new javax.swing.JButton();
         tableContainer = new javax.swing.JPanel();
         tableLabel = new javax.swing.JLabel();
@@ -117,13 +125,13 @@ public class RewardEmployeePanel extends javax.swing.JPanel implements ActionLis
 
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
-        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mã Nhân Viên", "Tên Nhân Viên" }));
+        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã Nhân Viên", "Mã Khen Thưởng" }));
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
         searchTextField.setBackground(new java.awt.Color(204, 204, 204));
-        searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        searchTextField.setForeground(new java.awt.Color(0, 0, 0));
+        searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        searchTextField.setForeground(new java.awt.Color(0, 51, 51));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
 
@@ -133,6 +141,20 @@ public class RewardEmployeePanel extends javax.swing.JPanel implements ActionLis
         searchButton.setText("Tìm Kiếm");
         searchButton.setIconTextGap(10);
         searchButton.setName("searchButton"); // NOI18N
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+
+        refreshButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        refreshButton.setIcon(new javax.swing.ImageIcon("C:\\Users\\admin\\OneDrive\\Documents\\NetBeansProjects\\SieuThiMiNi\\src\\main\\java\\img\\refresh.png")); // NOI18N
+        refreshButton.setText("Làm Mới");
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -142,19 +164,26 @@ public class RewardEmployeePanel extends javax.swing.JPanel implements ActionLis
                 .addContainerGap()
                 .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addComponent(searchButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(refreshButton)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(searchOptionComboBox)
-                    .addComponent(searchTextField)
-                    .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(searchOptionComboBox, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(refreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 1, Short.MAX_VALUE)
+                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(searchTextField, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
 
@@ -173,7 +202,7 @@ public class RewardEmployeePanel extends javax.swing.JPanel implements ActionLis
 
         tableLabel.setBackground(new java.awt.Color(255, 255, 255));
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
+        tableLabel.setForeground(new java.awt.Color(0, 51, 51));
         tableLabel.setText("Danh sách khen thưởng của nhân viên");
         tableLabel.setName("tableLabel"); // NOI18N
         tableLabel.setOpaque(true);
@@ -184,14 +213,14 @@ public class RewardEmployeePanel extends javax.swing.JPanel implements ActionLis
 
             },
             new String [] {
-                "STT", "Mã Nhân Viên", "Họ và Tên", "Mã Khen Thưởng", "Tên Khen Thưởng", "Số Lần", "Tiền Thưởng", "Ngày Tạo"
+                "STT", "Mã Nhân Viên", "Mã Khen Thưởng", "Số Lần", "Tiền Thưởng", "Ngày Tạo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true, false
+                false, false, false, false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -307,6 +336,25 @@ public class RewardEmployeePanel extends javax.swing.JPanel implements ActionLis
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        refreshButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                employeeRCBUS.readDB();
+                tableInit(employeeRCBUS.getlistEmployeeRC());
+                searchTextField.setText("");
+            }
+        });
+    }//GEN-LAST:event_refreshButtonActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        // TODO add your handling code here:
+        String searchType = searchOptionComboBox.getSelectedItem().toString();
+        String searchText = searchTextField.getText();
+        ArrayList<EmployeesRewardsCriticism> searchResult = employeeRCBUS.search(searchType, searchText);
+        tableInit(searchResult);
+    }//GEN-LAST:event_searchButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JButton deleteButton;
@@ -316,6 +364,7 @@ public class RewardEmployeePanel extends javax.swing.JPanel implements ActionLis
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton refreshButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JComboBox<String> searchOptionComboBox;
     private javax.swing.JTextField searchTextField;

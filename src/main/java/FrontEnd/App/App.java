@@ -240,7 +240,7 @@ public class App extends javax.swing.JFrame implements MouseListener {
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         bodyPanel = new javax.swing.JPanel();

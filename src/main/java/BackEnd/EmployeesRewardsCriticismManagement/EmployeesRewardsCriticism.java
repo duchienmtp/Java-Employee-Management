@@ -1,16 +1,21 @@
 package BackEnd.EmployeesRewardsCriticismManagement;
 
+import java.time.LocalDate;
+
 public class EmployeesRewardsCriticism {
 
-    private String employeeId, rewardId, criticismId, createdAt;
-    private int faultCount;
+    private String employeeId, rewardId, criticismId;
+    private LocalDate createdAt;
+    private int faultCount, rewardCount;
 
-    public EmployeesRewardsCriticism(String employeeId, String rewardId, String criticismId, String createdAt, int faultCount) {
+    public EmployeesRewardsCriticism(String employeeId, String rewardId, String criticismId,int faultCount,int rewardCount, LocalDate createdAt ) {
         this.employeeId = employeeId;
         this.rewardId = rewardId;
         this.criticismId = criticismId;
         this.createdAt = createdAt;
         this.faultCount = faultCount;
+        this.rewardCount = rewardCount;
+
     }
 
     public String getEmployeeId() {
@@ -37,11 +42,11 @@ public class EmployeesRewardsCriticism {
         this.criticismId = criticismId;
     }
 
-    public String getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -51,5 +56,12 @@ public class EmployeesRewardsCriticism {
 
     public void setFaultCount(int faultCount) {
         this.faultCount = faultCount;
+    }
+     public int getRewardCount() {
+        return rewardCount;
+    }
+
+    public void setRewardCount(int rewardCount) {
+        this.rewardCount = rewardCount;
     }
 }

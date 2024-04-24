@@ -9,10 +9,13 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 public class ConnectDB {
+    static int countConection = 0;
+    static int countQuery = 0;
+    static int countUpdate = 0;
 
     // Tự setting theo máy của mỗi người
     private static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private static final String DB_URL = "jdbc:sqlserver://DESKTOP-41LFA40\\SQLEXPRESS:1433;databaseName=QLNV;encrypt=true;trustServerCertificate=true";
+    private static final String DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=QLNV;encrypt=true;trustServerCertificate=true";
     private static final String USER = "sa";
     private static final String PASSWORD = "123456789";
     private static final String DB_Name = "QLNV";
@@ -112,4 +115,6 @@ public class ConnectDB {
                     "-- ERROR! Không thể đóng kết nối tới " + DB_Name + "\n" + ex.getLocalizedMessage());
         }
     }
-}
+    
+ }
+
