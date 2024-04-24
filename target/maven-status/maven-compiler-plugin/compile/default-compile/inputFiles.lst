@@ -1,71 +1,71 @@
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\CriticismManagement\CriticismDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\RewardManagement\RewardBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\DepartmentContentUI\AddEmployeeToDepartmentContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\EmployeeManagement\EmployeeBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\SpecialtyManagement\SpecialtyDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\EmployeeContentUI\UserInformationFrame.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\ProjectContentUI\AssignmentContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\DegreeManagement\DegreeDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\PositionManagement\Position.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\Redux\Redux.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\AccountManagement\Account.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\CriticismContentUI\CriticismEmployeeForm.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\App\App.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\DepartmentContentUI\DepartmentManagementContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\EmployeeSalary\EmployeeSalary.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\ProjectContentUI\ProjectManagementContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\RewardContentUI\RewardEmployeeForm.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\RewardContentUI\TypeRewardPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\DegreeManagement\Degree.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\UserInfoContentUI\UserInfoContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\EmployeeContentUI\PositionContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\AssignmentManagement\AssignmentBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\AssignmentManagement\Assignment.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\PositionManagement\PositionBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\ConnectDB\ConnectDB.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\EmployeeContentUI\UserInformationForm.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\SpecialtyManagement\Specialty.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\CriticismManagement\CriticismBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\CriticismContentUI\CriticismEmployeePanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\RewardContentUI\RewardEmployeePanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\EmployeeSalary\EmployeeSalaryBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\ProjectsManagemennt\ProjectBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\RewardManagement\Reward.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\DepartmentContentUI\DepartmentForm.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\RewardContentUI\RewardContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\EmployeeManagement\EmployeeDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\SpecialtyManagement\SpecialtyBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\LoginUI\LoginUI.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\DepartmentManagement\Department.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\EmployeeManagement\Employee.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\RewardManagement\RewardDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\CriticismContentUI\CriticismContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\DegreeManagement\DegreeBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\StatisticsContentUI\StatisticsContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\AccountManagement\AccountDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\EmployeeSalary\EmployeeSalaryDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\ProjectContentUI\UserAssignmentInformation.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\SalaryContentUI\DetailSalaryInfo.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\DepartmentManagement\DepartmentDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\ProjectsManagemennt\ProjectDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\SalaryContentUI\SalaryContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\EmployeeContentUI\DegreeContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\AccountContentUI\AccountContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\CriticismContentUI\TypeCriticismPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\ProjectContentUI\AssignmentForm.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\ProjectContentUI\AssignmentManagementContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\PositionManagement\PositionDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\AccountContentUI\AccountManagementContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\AssignmentManagement\AssignmentDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\EmployeesRewardsCriticismManagement\EmployeesRewardsCriticismBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\EmployeesRewardsCriticismManagement\EmployeesRewardsCriticismDAO.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\DepartmentContentUI\DepartmentContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\DepartmentManagement\DepartmentBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\CriticismManagement\Criticism.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\EmployeesRewardsCriticismManagement\EmployeesRewardsCriticism.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\EmployeeContentUI\SpecialtyContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\AccountManagement\AccountBUS.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\EmployeeContentUI\EmployeeManagementContentPanel.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\BackEnd\ProjectsManagemennt\Project.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\AccountContentUI\AccountForm.java
-C:\Users\huyph\Downloads\Java-Employee-Management-main (2)\Java-Employee-Management-main\src\main\java\FrontEnd\EmployeeContentUI\EmployeeContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\StatisticsContentUI\StatisticsContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\PositionManagement\PositionBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\DepartmentManagement\DepartmentBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\EmployeeSalary\EmployeeSalaryBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\AccountManagement\AccountBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\DegreeManagement\DegreeBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\CriticismContentUI\CriticismContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\ProjectContentUI\AssignmentManagementContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\EmployeesRewardsCriticismManagement\EmployeesRewardsCriticismBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\CriticismManagement\Criticism.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\LoginUI\LoginUI.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\EmployeeContentUI\UserInformationFrame.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\ProjectsManagement\Project.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\ConnectDB\ConnectDB.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\DegreeManagement\Degree.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\EmployeeManagement\EmployeeBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\DepartmentContentUI\DepartmentForm.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\AssignmentManagement\AssignmentDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\CriticismContentUI\CriticismEmployeePanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\CriticismContentUI\CriticismEmployeeForm.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\CriticismManagement\CriticismDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\AssignmentManagement\AssignmentBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\ProjectContentUI\ProjectManagementContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\PositionManagement\PositionDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\AccountManagement\AccountDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\CriticismContentUI\TypeCriticismPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\SalaryContentUI\DetailSalaryInfo.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\DepartmentContentUI\AddEmployeeToDepartmentContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\EmployeeSalary\EmployeeSalaryDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\EmployeeContentUI\UserInformationForm.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\RewardManagement\RewardBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\AccountContentUI\AccountForm.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\SalaryContentUI\SalaryContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\EmployeesRewardsCriticismManagement\EmployeesRewardsCriticismDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\AccountContentUI\AccountManagementContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\EmployeeContentUI\DegreeContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\EmployeeContentUI\EmployeeContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\EmployeeContentUI\EmployeeManagementContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\DepartmentManagement\Department.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\SpecialtyManagement\SpecialtyBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\DepartmentContentUI\DepartmentContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\CriticismManagement\CriticismBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\DepartmentContentUI\DepartmentManagementContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\EmployeeManagement\EmployeeDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\Redux\Redux.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\RewardContentUI\RewardContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\EmployeeContentUI\SpecialtyContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\RewardManagement\Reward.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\ProjectsManagement\ProjectBUS.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\ProjectsManagement\ProjectDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\EmployeeContentUI\PositionContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\PositionManagement\Position.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\UserInfoContentUI\UserInfoContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\EmployeeManagement\Employee.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\EmployeeSalary\EmployeeSalary.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\ProjectContentUI\UserAssignmentInformation.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\DegreeManagement\DegreeDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\App\App.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\ProjectContentUI\AssignmentForm.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\RewardContentUI\RewardEmployeePanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\AccountManagement\Account.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\RewardContentUI\RewardEmployeeForm.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\DepartmentManagement\DepartmentDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\RewardManagement\RewardDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\SpecialtyManagement\SpecialtyDAO.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\RewardContentUI\TypeRewardPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\AccountContentUI\AccountContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\FrontEnd\ProjectContentUI\AssignmentContentPanel.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\SpecialtyManagement\Specialty.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\AssignmentManagement\Assignment.java
+C:\Kagami\Coding\Learning\Java\Java-Employee-Management\src\main\java\BackEnd\EmployeesRewardsCriticismManagement\EmployeesRewardsCriticism.java

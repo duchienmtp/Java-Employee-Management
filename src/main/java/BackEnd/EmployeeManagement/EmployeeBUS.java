@@ -7,7 +7,8 @@ import javax.swing.JOptionPane;
 public class EmployeeBUS {
 
     private ArrayList<Employee> employeeList = new ArrayList<>();
-    private ArrayList<Employee> employeeIdList = new ArrayList<>();
+    private ArrayList<Employee> employeeNotDepartmentLeaderIdList = new ArrayList<>();
+    private ArrayList<Employee> employeeNotHaveAccountIdList = new ArrayList<>();
     private EmployeeDAO employeeDAO = new EmployeeDAO();
 
     public EmployeeBUS() {
@@ -20,7 +21,20 @@ public class EmployeeBUS {
 
     public ArrayList<Employee> getEmployeeIdList() {
         getNotDepartmentLeaderEmployees();
-        return employeeIdList;
+        return employeeNotDepartmentLeaderIdList;
+    }
+
+    public void getNotDepartmentLeaderEmployees() {
+        employeeNotDepartmentLeaderIdList = employeeDAO.getNotDepartmentLeaderEmployees();
+    }
+
+    public ArrayList<Employee> getEmployeeNotHaveAccountIdList() {
+        getNotHaveAccount();
+        return employeeNotHaveAccountIdList;
+    }
+
+    public void getNotHaveAccount() {
+        employeeNotHaveAccountIdList = employeeDAO.getNotHaveAccount();
     }
 
     public void readDB() {
@@ -70,9 +84,5 @@ public class EmployeeBUS {
             this.readDB();
             JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
-    }
-
-    public void getNotDepartmentLeaderEmployees() {
-        employeeIdList = employeeDAO.getNotDepartmentLeaderEmployees();
     }
 }

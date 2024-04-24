@@ -53,7 +53,7 @@ public class EmployeeDAO {
                 }
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees");
+            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees ");
         } finally {
             dbConnection.closeConnect();
         }
@@ -155,7 +155,7 @@ public class EmployeeDAO {
                         new SpecialtyDAO().getSpecialtyById(specialtyId));
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees");
+            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees ");
         } finally {
             dbConnection.closeConnect();
         }
@@ -188,5 +188,31 @@ public class EmployeeDAO {
         }
         return employeeList;
 
+    }
+
+    public ArrayList<Employee> getNotHaveAccount() {
+        dbConnection = new ConnectDB();
+        ArrayList<Employee> employeeList = new ArrayList<>();
+        try {
+            String query = "SELECT E.id, E.deleteStatus " +
+                    "FROM Employees E " +
+                    "LEFT JOIN Account A ON A.userId = E.id " +
+                    "WHERE A.userId IS NULL;";
+            ResultSet rs = dbConnection.sqlQuery(query);
+
+            if (rs != null) {
+                while (rs.next()) {
+                    String id = rs.getString("id");
+                    boolean deleteStatus = rs.getBoolean("deleteStatus");
+                    employeeList.add(
+                            new Employee(id, deleteStatus));
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error reading data from Employees and Account table: " + ex.getMessage());
+        } finally {
+            dbConnection.closeConnect();
+        }
+        return employeeList;
     }
 }

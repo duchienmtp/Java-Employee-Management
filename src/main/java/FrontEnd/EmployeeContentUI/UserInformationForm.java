@@ -1,8 +1,11 @@
 package FrontEnd.EmployeeContentUI;
 
 import FrontEnd.Redux.Redux;
+import FrontEnd.UserInfoContentUI.UserInfoContentPanel;
+
 import com.github.lgooddatepicker.components.DatePickerSettings;
 
+import BackEnd.AccountManagement.Account;
 import BackEnd.DegreeManagement.Degree;
 import BackEnd.DegreeManagement.DegreeBUS;
 import BackEnd.DepartmentManagement.Department;
@@ -107,29 +110,36 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                                 new SpecialtyBUS().getSpecialtyByName(
                                         (String) formData.get(10))));
             } else {
-                employeeBUS.updateEmployee(
-                        new Employee(
-                                (String) employeeID,
-                                (String) formData.get(0),
-                                (String) formData.get(1),
-                                (String) formData.get(2),
-                                (String) formData.get(3),
-                                (String) formData.get(4),
-                                (String) formData.get(5),
-                                (String) formData.get(6),
-                                new DegreeBUS().getDegreeByName(
-                                        (String) formData.get(7)),
-                                (String) formData.get(8),
-                                new PositionBUS().getPositionByName(
-                                        (String) formData.get(9)),
-                                new Department(),
-                                new SpecialtyBUS().getSpecialtyByName(
-                                        (String) formData.get(10)),
-                                (boolean) formData.get(11),
-                                (boolean) formData.get(12)));
+                Employee employee = new Employee(
+                        (String) employeeID,
+                        (String) formData.get(0),
+                        (String) formData.get(1),
+                        (String) formData.get(2),
+                        (String) formData.get(3),
+                        (String) formData.get(4),
+                        (String) formData.get(5),
+                        (String) formData.get(6),
+                        new DegreeBUS().getDegreeByName(
+                                (String) formData.get(7)),
+                        (String) formData.get(8),
+                        new PositionBUS().getPositionByName(
+                                (String) formData.get(9)),
+                        new Department(),
+                        new SpecialtyBUS().getSpecialtyByName(
+                                (String) formData.get(10)),
+                        (boolean) formData.get(11),
+                        (boolean) formData.get(12));
+                employeeBUS.updateEmployee(employee);
+                for (Account account : Redux.accountList) {
+                    if (account.getEmployee().getId().equals(employeeID)) {
+                        account.setEmployee(employee);
+                    }
+                }
             }
             Redux.getAllEmployees();
             EmployeeManagementContentPanel.tableInit(Redux.employeeList);
+            UserInfoContentPanel.formInit();
+            UserInfoContentPanel.showFormWithData();
             dispose();
         }
     }

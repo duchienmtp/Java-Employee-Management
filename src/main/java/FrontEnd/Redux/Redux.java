@@ -17,7 +17,8 @@ import BackEnd.PositionManagement.Position;
 import BackEnd.PositionManagement.PositionBUS;
 import BackEnd.SpecialtyManagement.Specialty;
 import BackEnd.SpecialtyManagement.SpecialtyBUS;
-
+import BackEnd.AccountManagement.Account;
+import BackEnd.AccountManagement.AccountBUS;
 public class Redux {
 
     public static ConnectDB dbConnection;
@@ -26,12 +27,14 @@ public class Redux {
     public static boolean isAdmin = false;
     public static String userId = "";
     public static String username = "";
+    public static Account currentAccount;
 
     public static ArrayList<Degree> degreeList;
     public static ArrayList<Position> positionList;
     public static ArrayList<Specialty> specialtyList;
     public static ArrayList<Employee> employeeList;
     public static ArrayList<Department> departmentList;
+    public static ArrayList<Account> accountList;
 
     public static void getAllEmployees() {
         employeeList = new EmployeeBUS().getEmployeeList();
@@ -52,6 +55,10 @@ public class Redux {
     public static void getAllDepartments() {
         departmentList = new DepartmentBUS().getDepartmentList();
     }
+  
+    public static void getAllAccount() {
+        accountList = new AccountBUS().getAccountList();
+    }
 
     public static void handleLogin(String username, String password) {
         dbConnection = new ConnectDB();
@@ -66,13 +73,15 @@ public class Redux {
                 Redux.username = rs.getString("username");
                 isAdmin = userId.contains("ADM");
                 isLoggedIn = true;
+
+                
                 JOptionPane.showMessageDialog(null, "Đăng nhập thành công!");
             } else {
                 // Authentication failed
                 JOptionPane.showMessageDialog(null, "Đăng nhập thất bại!");
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Accounts");
+            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Account");
         } finally {
             dbConnection.closeConnect();
         }

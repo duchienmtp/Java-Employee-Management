@@ -2,11 +2,13 @@ package FrontEnd.AccountContentUI;
 
 import BackEnd.AccountManagement.Account;
 import BackEnd.AccountManagement.AccountBUS;
+import BackEnd.EmployeeManagement.Employee;
 import BackEnd.EmployeeManagement.EmployeeBUS;
 import FrontEnd.Redux.Redux;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
@@ -16,9 +18,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.function.Consumer;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -28,21 +30,24 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class AccountForm extends javax.swing.JFrame implements ActionListener, WindowListener {
 
-    AccountBUS accountBUS = new AccountBUS();
+    AccountBUS accountBUS;
     JFileChooser fileChooser;
     ArrayList<Object> formData;
     File selectedFile = null;
+    String userId;
     String fileName = "";
     ImageIcon imageIcon = null;
-    private Consumer<ArrayList<Object>> submitCallback;
+    // private Consumer<ArrayList<Object>> submitCallback;
 
-    public void setSubmitCallback(Consumer<ArrayList<Object>> callback) {
-        this.submitCallback = callback;
-    }
-
+    // public void setSubmitCallback(Consumer<ArrayList<Object>> callback) {
+    // this.submitCallback = callback;
+    // }
     public AccountForm() {
         initComponents();
 
+        accountBUS = new AccountBUS();
+
+        // Redux.getAllEmployees();
         formData = new ArrayList<>();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -62,7 +67,6 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         deleteFileButton.setVisible(false);
 
         formInit();
-
         fileChooserButton.addActionListener(this);
         confirmButton.addActionListener(this);
         declineButton.addActionListener(this);
@@ -70,51 +74,55 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
     }
 
     public void formInit() {
-        employeeIDTextField.setText(accountBUS.getNextID());
-    }
-
-    public ArrayList<Object> getDataFromForm() {
-        String employeeID = employeeIDTextField.getText(),
-                employeeName = employeeNameTextField.getText(),
-                password = String.valueOf(passwordField.getPassword()),
-                email = emailTextField.getText(),
-                confirmPassword = String.valueOf(confirmPasswordField.getPassword()),
-                selectedValue = "";
-
-        Enumeration<AbstractButton> allRadioButton = buttonGroup1.getElements();
-        while (allRadioButton.hasMoreElements()) {
-            JRadioButton temp = (JRadioButton) allRadioButton.nextElement();
-            if (temp.isSelected()) {
-                selectedValue = temp.getName();
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        for (Employee employee : new EmployeeBUS().getEmployeeNotHaveAccountIdList()) {
+            if (!employee.getDeleteStatus()) {
+                model.addElement(employee.getId());
             }
         }
-        // String qlnv = employeeID + ' ' + employeeName +' '+ password+' ' + email +'
-        // '+confirmPassword+' '+selectedValue;
-        // JOptionPane.showMessageDialog(this,qlnv , "CẢNH BÁO",
-        // JOptionPane.INFORMATION_MESSAGE);
-        return new ArrayList<>(Arrays.asList(employeeID, employeeName, password, email, fileName, confirmPassword,
-                selectedValue));
-    }
+        employeeIDComboBox.setModel(model);
 
-    public void insertTableRow() {
-        formData = getDataFromForm();
-
-        int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn thêm mới dữ liệu với ID " + formData.get(1) + " ?",
-                "THÊM MỚI ?",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirmation == JOptionPane.YES_OPTION) {
-            accountBUS.addAccount(
-                    new Account(new EmployeeBUS().getEmployeeById((String) formData.get(0)), (String) formData.get(1),
-                            (String) formData.get(2), (String) formData.get(3), (String) formData.get(4),
-                            (String) formData.get(6)));
-            clearFormData();
-            // jTable1.revalidate();
-            // tableInit(accountBUS.getAccountList());
+        if (model.getSize() == 1) {
+            String selectedEmployeeId = (String) model.getElementAt(0);
+            for (Employee employee : Redux.employeeList) {
+                if (employee.getId().equalsIgnoreCase(selectedEmployeeId)) {
+                    employeeNameTextField.setText(employee.getFullName());
+                    break; // Break the loop once found
+                }
+            }
         }
+
+        employeeIDComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                String selectedEmployeeId = (String) employeeIDComboBox.getSelectedItem();
+                for (Employee employee : Redux.employeeList) {
+                    if (employee.getId().equalsIgnoreCase(selectedEmployeeId)) {
+                        employeeNameTextField.setText(employee.getFullName());
+                    }
+                }
+            }
+        });
     }
 
+    // public void insertTableRow() {
+    // formData = getDataFromForm();
+    //
+    // int confirmation = JOptionPane.showConfirmDialog(this,
+    // "Bạn có muốn thêm mới dữ liệu với ID " + formData.get(1) + " ?",
+    // "THÊM MỚI ?",
+    // JOptionPane.YES_NO_OPTION);
+    //
+    // if (confirmation == JOptionPane.YES_OPTION) {
+    // accountBUS.addAccount(
+    // new Account(new EmployeeBUS().getEmployeeById((String) formData.get(0)),
+    // (String) formData.get(1),
+    // (String) formData.get(2), (String) formData.get(3), (String) formData.get(4),
+    // (String) formData.get(6)));
+    // clearFormData();
+    // // jTable1.revalidate();
+    // // tableInit(accountBUS.getAccountList());
+    // }
+    // }
     public void handleSubmitForm() {
         formData = getDataFromForm();
 
@@ -125,6 +133,33 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
         if (confirmation == JOptionPane.YES_OPTION) {
             // Lấy dữ liệu từ form
+            if (this.getTitle().contains("THÊM MỚI")) {
+                accountBUS.addAccount(
+                        new Account(
+                                new EmployeeBUS().getEmployeeById(
+                                        (String) formData.get(0)),
+                                // (String) accountBUS.getNextID(),
+                                (String) formData.get(1),
+                                (String) formData.get(2),
+                                (String) formData.get(3),
+                                (String) formData.get(4),
+                                (String) formData.get(6)));
+            } else {
+                accountBUS.updateAccount(
+                        new Account(
+                                new EmployeeBUS().getEmployeeById(
+                                        (String) formData.get(0)),
+                                // (String) employeeID,
+                                (String) formData.get(1),
+                                (String) formData.get(2),
+                                (String) formData.get(3),
+                                (String) formData.get(4),
+                                // (String) formData.get(5),
+                                (String) formData.get(6),
+                                (boolean) formData.get(7),
+                                (boolean) formData.get(8)));
+            }
+
             if (selectedFile != null) {
                 // Save the selected file to the avatars folder
                 File destinationFile = new File("src/main/resources/avatars/" + fileName);
@@ -140,13 +175,30 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                     ex.printStackTrace();
                 }
             }
-            clearFormData();
+            Redux.getAllAccount();
+            AccountManagementContentPanel.tableInit(Redux.accountList);
             dispose();
+            // Save the selected file to the avatars folder
+            // File destinationFile = new File("src/main/resources/avatars/" + fileName);
+            //
+            // try {
+            //
+            // System.out.println("Check destination file: " +
+            // destinationFile.getAbsolutePath());
+            //
+            // Files.copy(selectedFile.toPath(), destinationFile.toPath(),
+            // StandardCopyOption.REPLACE_EXISTING);
+            //
+            // } catch (IOException ex) {
+            // ex.printStackTrace();
+            // }
+            // }
+            // clearFormData();
+            // dispose();
         }
     }
 
     public void cancelSubmitForm() {
-        formData = getDataFromForm();
 
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Xác nhận thao tác ?",
@@ -159,50 +211,6 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         }
     }
 
-    public void showFormWithData(ArrayList<Object> data) {
-        if (data != null) {
-            // formSetEnable(false);
-            // if (data.get(2) != null) {
-            //// avatarLabel.setIcon(icon);
-            // } else {
-            // avatarLabel.setText("Không có ảnh");
-            // }
-            employeeIDTextField.setText((String) data.get(1));
-            employeeNameTextField.setText((String) data.get(2));
-            emailTextField.setText((String) data.get(3));
-            if (data.get(4).equals("Admin")) {
-                ButtonModel adminRadioButtonModel = adminRadioButton.getModel();
-                buttonGroup1.setSelected(adminRadioButtonModel, true);
-            } else {
-                ButtonModel employeeRadioButtonModel = employeeRadioButton.getModel();
-                buttonGroup1.setSelected(employeeRadioButtonModel, true);
-            }
-
-        }
-    }
-
-    public void clearFormData() {
-        formInit();
-        // formSetEnable(true);
-        avatarLabel.setText("Không có tệp nào được chọn");
-        avatarContainer.setIcon(null);
-        emailTextField.setText("");
-        employeeIDTextField.setEnabled(false);
-        employeeNameTextField.setText("");
-        ButtonModel adminRadioButtonModel = adminRadioButton.getModel();
-        buttonGroup1.setSelected(adminRadioButtonModel, false);
-        ButtonModel employeeRadioButtonModel = employeeRadioButton.getModel();
-        buttonGroup1.setSelected(employeeRadioButtonModel, false);
-    }
-
-    // public void formSetEnable(boolean isEnable) {
-    // //fileChooserButton.setEnabled(isEnable);
-    // employeeIDComboBox.setEnabled(isEnable);
-    // //employeeNameTextField.setEnabled(isEnable);
-    // //emailTextField.setEnabled(isEnable);
-    // //passwordField.setEnabled(isEnable);
-    // //confirmPasswordField.setEnabled(isEnable);
-    // }
     public boolean isFormFilled() {
         return !(employeeNameTextField.getText().equals("")
                 || emailTextField.getText().equals("")
@@ -210,6 +218,16 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                 || confirmPasswordField.getPassword().equals("")
                 || (!adminRadioButton.isSelected()
                         && !employeeRadioButton.isSelected()));
+    }
+
+    public boolean isFormValid() {
+        return passwordField.getPassword().equals(confirmPasswordField.getPassword());
+    }
+
+    public void formSetEnable(boolean isEnable) {
+        employeeIDComboBox.setEnabled(isEnable);
+        employeeNameTextField.setEnabled(isEnable);
+        emailTextField.setEnabled(isEnable);
     }
 
     @Override
@@ -237,18 +255,26 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                 // Set the image as the icon of avatarContainer
                 avatarContainer.setIcon(imageIcon);
             }
+        } else if (e.getSource() == deleteFileButton) {
+            selectedFile = null;
+            fileName = "Không có tệp nào được chọn";
+            imageIcon = null;
+            avatarContainer.setIcon(null);
+            deleteFileButton.setVisible(false);
+            avatarLabel.setText("Không có ảnh");
         } else if (e.getSource() == confirmButton) {
             if (isFormFilled()) {
-                if (submitCallback != null) {
-                    ArrayList<Object> data = getDataFromForm();
-                    JOptionPane.showMessageDialog(this, data, "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
-                    submitCallback.accept(data);
-                    dispose();
+                if (isFormValid()) {
+                    handleSubmitForm();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Mật khẩu không khớp!", "CẢNH BÁO",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy nhập đủ thông tin!", "CẢNH BÁO",
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
                         JOptionPane.INFORMATION_MESSAGE);
             }
+
         } else if (e.getSource() == declineButton) {
             if (isFormFilled()) {
                 cancelSubmitForm();
@@ -256,16 +282,89 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                 clearFormData();
                 dispose();
             }
-        } else if (e.getSource() == deleteFileButton) {
-            selectedFile = null;
-            fileName = "Không có tệp nào được chọn";
-            imageIcon = null;
-            avatarContainer.setIcon(null);
-            deleteFileButton.setVisible(false);
+
         }
     }
 
+    public void showFormWithData(ArrayList<Object> data) {
+        if (data != null) {
+            formSetEnable(false);
+            DefaultComboBoxModel<String> employeeModel = (DefaultComboBoxModel<String>) employeeIDComboBox.getModel();
+            employeeModel.removeAllElements();
+            employeeModel.addElement((String) data.get(0));
+            employeeIDComboBox.setSelectedItem((String) data.get(0));
+            employeeNameTextField.setText((String) data.get(1));
+            passwordField.setText((String) data.get(2));
+            confirmPasswordField.setText((String) data.get(2));
+            emailTextField.setText((String) data.get(3));
+            avatarLabel.setText((String) data.get(4));
+            String fileName = (String) data.get(4);
+            if (fileName != null && !fileName.isEmpty()) {
+                String imagePath = "/avatars/" + fileName;
+                ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
+                avatarContainer.setIcon(icon);
+            } else {
+                avatarContainer.setIcon(null);
+            }
+            if (data.get(5).equals("Admin")) {
+                ButtonModel adminRadioButtonModel = adminRadioButton.getModel();
+                buttonGroup1.setSelected(adminRadioButtonModel, true);
+            } else {
+                ButtonModel employeeRadioButtonModel = employeeRadioButton.getModel();
+                buttonGroup1.setSelected(employeeRadioButtonModel, true);
+            }
+            accountStatusComboBox.setSelectedItem(data.get(6));
+
+        }
+    }
+
+    public void clearFormData() {
+        formSetEnable(true);
+        avatarLabel.setText("Không có tệp nào được chọn");
+        avatarContainer.setIcon(null);
+        emailTextField.setText("");
+        employeeIDComboBox.setSelectedItem("");
+        employeeNameTextField.setText("");
+        ButtonModel adminRadioButtonModel = adminRadioButton.getModel();
+        buttonGroup1.setSelected(adminRadioButtonModel, false);
+        ButtonModel employeeRadioButtonModel = employeeRadioButton.getModel();
+        buttonGroup1.setSelected(employeeRadioButtonModel, false);
+        accountStatusComboBox.setSelectedItem("");
+        DefaultComboBoxModel<String> employeeModel = (DefaultComboBoxModel<String>) employeeIDComboBox.getModel();
+        employeeModel.removeAllElements();
+        formInit();
+    }
+
+    public ArrayList<Object> getDataFromForm() {
+        String employeeID = (String) employeeIDComboBox.getSelectedItem(),
+                employeeName = employeeNameTextField.getText(),
+                email = emailTextField.getText(),
+                password = String.valueOf(passwordField.getPassword()),
+                confirmPassword = String.valueOf(confirmPasswordField.getPassword()),
+                selectedValue = "",
+                fileName = avatarLabel.getText(),
+                accountStatus = (String) accountStatusComboBox.getSelectedItem();
+
+        Enumeration<AbstractButton> allRadioButton = buttonGroup1.getElements();
+        while (allRadioButton.hasMoreElements()) {
+            JRadioButton temp = (JRadioButton) allRadioButton.nextElement();
+            if (temp.isSelected()) {
+                selectedValue = temp.getName();
+            }
+        }
+        // String qlnv = employeeID + ' ' + employeeName +' '+ password+' ' + email +'
+        // '+confirmPassword+' '+selectedValue;
+        // JOptionPane.showMessageDialog(this,qlnv , "CẢNH BÁO",
+        // JOptionPane.INFORMATION_MESSAGE);
+        return new ArrayList<>(Arrays.asList(employeeID, employeeName, password, email, fileName, confirmPassword,
+                selectedValue,
+                accountStatus == "Đang hoạt động" ? true : false,
+                accountStatus == "Ngừng hoạt động" ? false : true));
+    }
+
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
@@ -275,7 +374,6 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jProgressBar1 = new javax.swing.JProgressBar();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -299,9 +397,12 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         avatarPanel = new javax.swing.JPanel();
         avatarContainer = new javax.swing.JLabel();
         deleteFileButton = new javax.swing.JButton();
-        employeeIDTextField = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        accountStatusComboBox = new javax.swing.JComboBox<>();
+        employeeIDComboBox = new javax.swing.JComboBox<>();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setPreferredSize(new java.awt.Dimension(660, 700));
 
         jLabel6.setBackground(new java.awt.Color(255, 255, 255));
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -319,6 +420,11 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         fileChooserButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         fileChooserButton.setName("fileChooserButton"); // NOI18N
         fileChooserButton.setPreferredSize(new java.awt.Dimension(91, 36));
+        fileChooserButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fileChooserButtonActionPerformed(evt);
+            }
+        });
 
         avatarLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         avatarLabel.setForeground(new java.awt.Color(0, 0, 0));
@@ -360,6 +466,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
         employeeNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         employeeNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        employeeNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameTextField.setName("employeeNameTextField"); // NOI18N
         employeeNameTextField.setOpaque(true);
 
@@ -373,6 +480,8 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
         emailTextField.setBackground(new java.awt.Color(204, 204, 204));
         emailTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        emailTextField.setForeground(new java.awt.Color(0, 0, 0));
+        emailTextField.setCaretColor(new java.awt.Color(0, 0, 0));
         emailTextField.setName("emailTextField"); // NOI18N
         emailTextField.setOpaque(true);
 
@@ -394,11 +503,15 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
 
         passwordField.setBackground(new java.awt.Color(204, 204, 204));
         passwordField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        passwordField.setForeground(new java.awt.Color(0, 0, 0));
+        passwordField.setCaretColor(new java.awt.Color(0, 0, 0));
         passwordField.setName("passwordField"); // NOI18N
         passwordField.setOpaque(true);
 
         confirmPasswordField.setBackground(new java.awt.Color(204, 204, 204));
         confirmPasswordField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        confirmPasswordField.setForeground(new java.awt.Color(0, 0, 0));
+        confirmPasswordField.setCaretColor(new java.awt.Color(0, 0, 0));
         confirmPasswordField.setName("confirmPasswordField"); // NOI18N
         confirmPasswordField.setOpaque(true);
 
@@ -426,6 +539,11 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         employeeRadioButton.setIconTextGap(10);
         employeeRadioButton.setName("employee"); // NOI18N
         employeeRadioButton.setOpaque(true);
+        employeeRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                employeeRadioButtonActionPerformed(evt);
+            }
+        });
 
         confirmButton.setBackground(new java.awt.Color(13, 110, 253));
         confirmButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -478,110 +596,124 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
             }
         });
 
-        employeeIDTextField.setBackground(new java.awt.Color(204, 204, 204));
-        employeeIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        employeeIDTextField.setName("employeeNameTextField"); // NOI18N
-        employeeIDTextField.setOpaque(true);
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setText("Trạng thái");
+        jLabel1.setMaximumSize(new java.awt.Dimension(139, 20));
+        jLabel1.setMinimumSize(new java.awt.Dimension(139, 20));
+        jLabel1.setPreferredSize(new java.awt.Dimension(139, 20));
+
+        accountStatusComboBox.setBackground(new java.awt.Color(204, 204, 204));
+        accountStatusComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        accountStatusComboBox.setForeground(new java.awt.Color(0, 0, 0));
+        accountStatusComboBox
+                .setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Đang hoạt động", "Ngừng hoạt động" }));
+        accountStatusComboBox.setMinimumSize(new java.awt.Dimension(64, 22));
+        accountStatusComboBox.setPreferredSize(new java.awt.Dimension(64, 22));
+
+        employeeIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
+        employeeIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        employeeIDComboBox.setForeground(new java.awt.Color(0, 0, 0));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGap(30, 30, 30)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(emailTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout
+                                                .createSequentialGroup()
+                                                .addGroup(jPanel1Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,
+                                                                false)
+                                                        .addComponent(emailLabel,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 261,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addComponent(jLabel6,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 130,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(
+                                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(deleteFileButton,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 91,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addComponent(fileChooserPanel,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(employeeIDLabel,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(employeeIDComboBox, 0,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addGap(9, 9, 9)
+                                                .addGroup(jPanel1Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(employeeNameLabel,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                                .addComponent(avatarPanel,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addComponent(employeeNameTextField)))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGroup(jPanel1Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addComponent(passwordLabel,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 200,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(76, 76, 76)
+                                                                .addComponent(confirmPasswordLabel,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 200,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addComponent(jLabel1,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 200,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(76, 76, 76)
+                                                                .addComponent(authenticateLabel,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 200,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(0, 138, Short.MAX_VALUE))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGroup(jPanel1Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                false)
+                                                        .addComponent(accountStatusComboBox,
+                                                                javax.swing.GroupLayout.Alignment.LEADING, 0, 258,
+                                                                Short.MAX_VALUE)
+                                                        .addComponent(passwordField,
+                                                                javax.swing.GroupLayout.Alignment.LEADING))
+                                                .addGap(18, 18, 18)
+                                                .addGroup(jPanel1Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(confirmPasswordField)
+                                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addComponent(adminRadioButton,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 129,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(
+                                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        Short.MAX_VALUE)
+                                                                .addComponent(employeeRadioButton,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 118,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(32, 32, 32))))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout
+                                                .createSequentialGroup()
                                                 .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                         130, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(18, 18, 18)
                                                 .addComponent(declineButton, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGap(30, 30, 30)
-                                                .addGroup(jPanel1Layout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(emailTextField,
-                                                                javax.swing.GroupLayout.Alignment.TRAILING)
-                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                jPanel1Layout.createSequentialGroup()
-                                                                        .addGroup(jPanel1Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                .addGroup(jPanel1Layout
-                                                                                        .createParallelGroup(
-                                                                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                                                                false)
-                                                                                        .addComponent(emailLabel,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                Short.MAX_VALUE)
-                                                                                        .addComponent(employeeIDLabel,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                261, Short.MAX_VALUE)
-                                                                                        .addGroup(jPanel1Layout
-                                                                                                .createSequentialGroup()
-                                                                                                .addComponent(jLabel6,
-                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                        130,
-                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                .addPreferredGap(
-                                                                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                .addComponent(
-                                                                                                        deleteFileButton,
-                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                        91,
-                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                                        .addComponent(
-                                                                                                employeeIDTextField,
-                                                                                                javax.swing.GroupLayout.Alignment.TRAILING))
-                                                                                .addComponent(fileChooserPanel,
-                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                        .addGap(9, 9, 9)
-                                                                        .addGroup(jPanel1Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                .addComponent(employeeNameLabel,
-                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                        Short.MAX_VALUE)
-                                                                                .addGroup(jPanel1Layout
-                                                                                        .createSequentialGroup()
-                                                                                        .addGap(0, 0, Short.MAX_VALUE)
-                                                                                        .addComponent(avatarPanel,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                                .addComponent(employeeNameTextField)))
-                                                        .addComponent(passwordField)
-                                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                                .addGroup(jPanel1Layout.createParallelGroup(
-                                                                        javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addComponent(passwordLabel,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                200,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(confirmPasswordLabel,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                200,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addGap(0, 0, Short.MAX_VALUE))
-                                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                                .addComponent(authenticateLabel,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 200,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(
-                                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(adminRadioButton,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 150,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(
-                                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                                        34, Short.MAX_VALUE)
-                                                                .addComponent(employeeRadioButton,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 150,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                        .addComponent(confirmPasswordField,
-                                                                javax.swing.GroupLayout.Alignment.TRAILING))))
+                                                        130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(29, 29, 29)))
                                 .addGap(30, 30, 30)));
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -604,53 +736,57 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
                                                 .addComponent(fileChooserPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                         javax.swing.GroupLayout.DEFAULT_SIZE,
                                                         javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(40, 40, 40)
+                                .addGap(28, 28, 28)
                                 .addGroup(jPanel1Layout
                                         .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(employeeIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, 0)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(employeeNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(employeeIDTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        .addComponent(employeeIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, 0)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(confirmPasswordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, 0)
-                                .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(confirmPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addComponent(confirmPasswordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, 0)
-                                .addComponent(confirmPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(employeeRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(adminRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 35,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(authenticateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(50, 50, 50)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(accountStatusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(adminRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(employeeRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(31, 31, 31)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(declineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(48, Short.MAX_VALUE)));
+                                .addContainerGap(50, Short.MAX_VALUE)));
 
         jScrollPane1.setViewportView(jPanel1);
 
@@ -658,18 +794,33 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE));
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE));
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, 774, Short.MAX_VALUE));
+                                javax.swing.GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE));
 
-        setSize(new java.awt.Dimension(614, 781));
+        setSize(new java.awt.Dimension(694, 727));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void employeeRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_employeeRadioButtonActionPerformed
+        // TODO add your handling code here:
+    }// GEN-LAST:event_employeeRadioButtonActionPerformed
+
+    private void fileChooserButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_fileChooserButtonActionPerformed
+        // TODO add your handling code here:
+
+    }// GEN-LAST:event_fileChooserButtonActionPerformed
+
     private void deleteFileButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_deleteFileButtonActionPerformed
         // TODO add your handling code here:
+        selectedFile = null;
+        fileName = "Không có tệp nào được chọn";
+        imageIcon = null;
+        avatarContainer.setIcon(null);
+        deleteFileButton.setVisible(false);
+        avatarLabel.setText("Không có ảnh");
     }// GEN-LAST:event_deleteFileButtonActionPerformed
 
     private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_confirmButtonActionPerformed
@@ -677,6 +828,7 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
     }// GEN-LAST:event_confirmButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> accountStatusComboBox;
     private javax.swing.JRadioButton adminRadioButton;
     private javax.swing.JLabel authenticateLabel;
     private javax.swing.JLabel avatarContainer;
@@ -690,16 +842,16 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
     private javax.swing.JButton deleteFileButton;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JTextField emailTextField;
+    private javax.swing.JComboBox<String> employeeIDComboBox;
     private javax.swing.JLabel employeeIDLabel;
-    private javax.swing.JTextField employeeIDTextField;
     private javax.swing.JLabel employeeNameLabel;
     private javax.swing.JTextField employeeNameTextField;
     private javax.swing.JRadioButton employeeRadioButton;
     private javax.swing.JButton fileChooserButton;
     private javax.swing.JPanel fileChooserPanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel passwordLabel;
