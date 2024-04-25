@@ -9,12 +9,13 @@ public class Account {
 
     private Employee employee;
     private String username, password, email, avatar, authorization;
-    private boolean accountStatus,deleteStatus;
+    private boolean accountStatus, deleteStatus;
 
     public Account() {
     }
 
-    public Account(Employee employee, String username, String password, String email, String url, String authorization) {
+    public Account(Employee employee, String username, String password, String email, String url,
+            String authorization) {
         this.employee = employee;
         this.username = username;
         this.password = password;
@@ -26,7 +27,7 @@ public class Account {
     }
 
     public Account(Employee employee, String username, String password, String email, String avatar,
-            String authorization,boolean accountStatus,boolean deleteStatus ) {
+            String authorization, boolean accountStatus, boolean deleteStatus) {
         this.employee = employee;
         this.username = username;
         this.password = password;
@@ -84,7 +85,7 @@ public class Account {
     public void setAuthorization(String authorization) {
         this.authorization = authorization;
     }
-    
+
     public boolean getAccountStatus() {
         return accountStatus;
     }
@@ -92,7 +93,7 @@ public class Account {
     public void setAccountStatus(boolean accountStatus) {
         this.accountStatus = accountStatus;
     }
-    
+
     public boolean getDeleteStatus() {
         return deleteStatus;
     }
@@ -100,6 +101,7 @@ public class Account {
     public void setDeleteStatus(boolean deleteStatus) {
         this.deleteStatus = deleteStatus;
     }
+
     public static boolean isValidName(String name) {
         boolean flag = true;
         if (name.matches(
@@ -114,10 +116,20 @@ public class Account {
         }
         return flag;
     }
+
+    public static boolean isValidEmail(String email) {
+        boolean flag = true;
+        if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            flag = false;
+            JOptionPane.showMessageDialog(null, "Email không hợp lệ !", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+        return flag;
+    }
+
     public List<Object> toList() {
         try {
-            return Arrays.asList(employee.getId(),username,password,email, avatar,
-                    authorization,accountStatus,deleteStatus);
+            return Arrays.asList(employee.getId(), username, password, email, avatar,
+                    authorization, accountStatus, deleteStatus);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

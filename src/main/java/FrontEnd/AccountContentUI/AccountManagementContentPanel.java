@@ -512,7 +512,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
                 }
 
                 XSSFWorkbook workbook = new XSSFWorkbook();
-                XSSFSheet sheet = workbook.createSheet("JTable Sheet");
+                XSSFSheet sheet = workbook.createSheet("Account Sheet");
 
                 // Write column names to the first row of the sheet
                 XSSFRow headerRow = sheet.createRow(0);

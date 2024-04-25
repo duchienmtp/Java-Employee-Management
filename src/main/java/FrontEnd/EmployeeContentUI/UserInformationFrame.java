@@ -15,7 +15,7 @@ public class UserInformationFrame extends javax.swing.JFrame {
                 employeeName1.setText(employee.getFullName());
                 employeeID.setText(employee.getId());
                 employeeBirthdate
-                                .setText(Employee.formatBirthDateToStandardTypeToStandardType(employee.getBirthDate()));
+                                .setText(Employee.formatBirthDateToStandardType(employee.getBirthDate()));
                 employeeGender.setText(employee.getGender());
                 employeePhoneNumber.setText(employee.getPhoneNumber());
                 employeeReligion.setText(employee.getReligion());

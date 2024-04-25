@@ -10,6 +10,7 @@ public class EmployeeBUS {
     private ArrayList<Employee> employeeNotDepartmentLeaderIdList = new ArrayList<>();
     private ArrayList<Employee> employeeNotHaveAccountIdList = new ArrayList<>();
     private ArrayList<Employee> employeeNotHaveSalaryList = new ArrayList<>();
+    private ArrayList<Employee> employeeSearchResult = new ArrayList<>();
     private EmployeeDAO employeeDAO = new EmployeeDAO();
 
     public EmployeeBUS() {
@@ -73,6 +74,14 @@ public class EmployeeBUS {
         }
     }
 
+    public void addEmployeeExcel(Employee employee) {
+        Boolean ok = employeeDAO.addNewEmployee(employee);
+
+        if (ok) {
+            employeeList.add(employee);
+        }
+    }
+
     public void updateEmployee(Employee employee) {
         Boolean ok = employeeDAO.updateEmployee(employee);
 
@@ -94,5 +103,25 @@ public class EmployeeBUS {
             this.readDB();
             JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
+    }
+
+    public ArrayList<Employee> searchEmployeeByName(String searchValue) {
+        employeeSearchResult.clear();
+        for (Employee employee : employeeList) {
+            if (employee.getFullName().toLowerCase().contains(searchValue.toLowerCase())) {
+                employeeSearchResult.add(employee);
+            }
+        }
+        return employeeSearchResult;
+    }
+
+    public ArrayList<Employee> searchEmployeeById(String searchValue) {
+        employeeSearchResult.clear();
+        for (Employee employee : employeeList) {
+            if (employee.getId().toLowerCase().contains(searchValue.toLowerCase())) {
+                employeeSearchResult.add(employee);
+            }
+        }
+        return employeeSearchResult;
     }
 }

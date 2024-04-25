@@ -4,6 +4,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import FrontEnd.Redux.Redux;
+
 public class AssignmentContentPanel extends javax.swing.JPanel implements ActionListener {
 
     AssignmentManagementContentPanel assignmentManagementContentPanel;
@@ -11,6 +13,11 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
 
     public AssignmentContentPanel() {
         initComponents();
+
+        if (!Redux.isAdmin) {
+            assignmentButton.setVisible(false);
+            projectButton.setVisible(false);
+        }
 
         assignmentManagementContentPanel = new AssignmentManagementContentPanel();
         projectManagementContentPanel = new ProjectManagementContentPanel();
@@ -55,10 +62,11 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
     }
 
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        appSubMenu = new javax.swing.JPanel();
         assignmentButton = new javax.swing.JButton();
         projectButton = new javax.swing.JButton();
         assignmentContainer = new javax.swing.JPanel();
@@ -67,12 +75,15 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
         setName("travelContentPanel"); // NOI18N
         setPreferredSize(new java.awt.Dimension(1055, 740));
 
-        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+        appSubMenu.setBackground(new java.awt.Color(204, 204, 204));
+        appSubMenu.setAlignmentX(0.0F);
+        appSubMenu.setAlignmentY(0.0F);
 
         assignmentButton.setBackground(new java.awt.Color(45, 64, 80));
         assignmentButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         assignmentButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/assignment.png"))); // NOI18N
         assignmentButton.setText("Thêm Công Tác");
+        assignmentButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         assignmentButton.setIconTextGap(10);
         assignmentButton.setName("assignmentButton"); // NOI18N
 
@@ -80,31 +91,35 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
         projectButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         projectButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/project.png"))); // NOI18N
         projectButton.setText("Thêm Dự Án");
+        projectButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         projectButton.setIconTextGap(10);
         projectButton.setName("projectButton"); // NOI18N
+        projectButton.setOpaque(true);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout appSubMenuLayout = new javax.swing.GroupLayout(appSubMenu);
+        appSubMenu.setLayout(appSubMenuLayout);
+        appSubMenuLayout.setHorizontalGroup(
+            appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(appSubMenuLayout.createSequentialGroup()
                 .addGap(96, 96, 96)
-                .addComponent(assignmentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(assignmentButton)
                 .addGap(86, 86, 86)
-                .addComponent(projectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(projectButton)
+                .addGap(529, 529, 529))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        appSubMenuLayout.setVerticalGroup(
+            appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(appSubMenuLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(assignmentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(projectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
         assignmentContainer.setBackground(new java.awt.Color(255, 255, 255));
+        assignmentContainer.setAlignmentX(0.0F);
+        assignmentContainer.setAlignmentY(0.0F);
         assignmentContainer.setName("assignmentContainer"); // NOI18N
         assignmentContainer.setPreferredSize(new java.awt.Dimension(1055, 640));
 
@@ -123,22 +138,22 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(appSubMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(assignmentContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(appSubMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addComponent(assignmentContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel appSubMenu;
     private javax.swing.JButton assignmentButton;
     private javax.swing.JPanel assignmentContainer;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton projectButton;
     // End of variables declaration//GEN-END:variables
 

@@ -2,7 +2,6 @@ package FrontEnd.CriticismContentUI;
 
 import BackEnd.EmployeeManagement.Employee;
 import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticism;
-import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticismBUS;
 import BackEnd.RewardManagement.Reward;
 import FrontEnd.Redux.Redux;
 
@@ -38,6 +37,15 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
     public CriticismEmployeePanel() {
         initComponents();
 
+        if (!Redux.isAdmin) {
+            Redux.employeesRewardsCriticismBUS.getEmployeesCriticismByEmployeeId(Redux.userId);
+            addButton.setVisible(false);
+            updateButton.setVisible(false);
+            deleteButton.setVisible(false);
+            importExcel.setVisible(false);
+            exportExcel.setVisible(false);
+        }
+
         addButton.addActionListener(this);
         updateButton.addActionListener(this);
         deleteButton.addActionListener(this);
@@ -60,7 +68,12 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
         jTable1.setDefaultRenderer(String.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
 
-        tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
+        if (!Redux.isAdmin) {
+            tableInit(Redux.employeesRewardsCriticismBUS.getListEmployeeCriticism());
+        } else {
+            tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
+        }
+
         jTable1.getSelectionModel().addListSelectionListener(this);
         addMouseListener(this);
         setVisible(true);
@@ -73,20 +86,21 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
         for (int i = 0; i < employeeRCBUS.size(); i++) {
             if (!employeeRCBUS.get(i).getCriticism().getCriticismId().equalsIgnoreCase("CR001")) {
                 if (employeeRCBUS.get(i).getFaultCount() != 0) {
-                    model.addRow(new Object[] {
-                            i + 1,
-                            employeeRCBUS.get(i).getEmployee().getId(),
-                            employeeRCBUS.get(i).getEmployee().getFullName(),
-                            employeeRCBUS.get(i).getCriticism().getCriticismName(),
-                            employeeRCBUS.get(i).getFaultCount(),
-                            NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
-                                    .setRegion("DE").build())
-                                    .format(employeeRCBUS.get(i).getFaultCount() * employeeRCBUS.get(i).getCriticism()
-                                            .getJudgement())
-                                    + " VNĐ",
-                            Employee.formatBirthDateToStandardTypeToStandardType(
-                                    employeeRCBUS.get(i).getCreatedAt()),
-                    });
+                    model.addRow(new Object[]{
+                        i + 1,
+                        employeeRCBUS.get(i).getEmployee().getId(),
+                        employeeRCBUS.get(i).getEmployee().getFullName(),
+                        employeeRCBUS.get(i).getCriticism().getCriticismName(),
+                        employeeRCBUS.get(i).getFaultCount(),
+                        NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+                        .setRegion("DE").build())
+                        .format(employeeRCBUS.get(i).getFaultCount()
+                        * employeeRCBUS.get(i)
+                        .getCriticism()
+                        .getJudgement())
+                        + " VNĐ",
+                        Employee.formatBirthDateToStandardType(
+                        employeeRCBUS.get(i).getCreatedAt()),});
                 }
             }
         }
@@ -113,16 +127,21 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
 
     public void deleteTableRow() {
         int confirmation = JOptionPane.showConfirmDialog(this,
-                "Bạn có muốn xóa bỏ dữ liệu kỷ luật này của nhân viên với ID " + selectedRowData[1] + " ?",
+                "Bạn có muốn xóa bỏ dữ liệu kỷ luật này của nhân viên với ID " + selectedRowData[1]
+                + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            Redux.employeesRewardsCriticismBUS.deleteEmployeesRewardsCriticism(Redux.employeesRewardsCriticismBUS
-                    .getEmployeesRewardsCriticism((String) selectedRowData[1],
-                            new Reward().getRewardId(),
-                            Redux.criticismBUS.getCriticismByName((String) selectedRowData[3]).getCriticismId(),
-                            Employee.formatBirthDateToDatabaseType((String) selectedRowData[6])));
+            Redux.employeesRewardsCriticismBUS
+                    .deleteEmployeesRewardsCriticism(Redux.employeesRewardsCriticismBUS
+                            .getEmployeesRewardsCriticism((String) selectedRowData[1],
+                                    new Reward().getRewardId(),
+                                    Redux.criticismBUS.getCriticismByName(
+                                            (String) selectedRowData[3])
+                                            .getCriticismId(),
+                                    Employee.formatBirthDateToDatabaseType(
+                                            (String) selectedRowData[6])));
             jTable1.revalidate();
             tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
         }
@@ -137,7 +156,7 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -179,9 +198,7 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
 
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
-        searchOptionComboBox.setModel(
-                new javax.swing.DefaultComboBoxModel<>(
-                        new String[] { "Tất cả", "Mã Nhân Viên", "Mã Kỷ Luật" }));
+        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã Nhân Viên", "Mã Kỷ Luật" }));
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
@@ -219,43 +236,29 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(searchOptionComboBox,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        133,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(searchTextField)
-                                .addPreferredGap(
-                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(searchButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(refreshButton)
-                                .addContainerGap()));
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(searchTextField)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(searchButton)
+                .addGap(18, 18, 18)
+                .addComponent(refreshButton)
+                .addContainerGap())
+        );
         jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout
-                                .createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addGroup(jPanel2Layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(searchTextField)
-                                        .addComponent(searchOptionComboBox,
-                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel2Layout
-                                                .createParallelGroup(
-                                                        javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(searchButton,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        49,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(refreshButton,
-                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                        49,
-                                                        Short.MAX_VALUE)))
-                                .addContainerGap()));
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(searchOptionComboBox)
+                    .addComponent(refreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(searchTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(searchButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
 
         exportExcel.setBackground(new java.awt.Color(13, 202, 240));
         exportExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -293,28 +296,26 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
 
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][] {
+            new Object [][] {
 
-                },
-                new String[] {
-                        "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Tên Kỷ Luật", "Số Lần",
-                        "Tiền Phạt", "Ngày Tạo"
-                }) {
-            Class[] types = new Class[] {
-                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
-                    java.lang.String.class,
-                    java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
+            },
+            new String [] {
+                "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Tên Kỷ Luật", "Số Lần", "Tiền Phạt", "Ngày Tạo"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean[] {
-                    false, false, false, false, false, false, false
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
+                return types [columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+                return canEdit [columnIndex];
             }
         });
         jTable1.setRowHeight(40);
@@ -323,138 +324,80 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
         javax.swing.GroupLayout tableContainerLayout = new javax.swing.GroupLayout(tableContainer);
         tableContainer.setLayout(tableContainerLayout);
         tableContainerLayout.setHorizontalGroup(
-                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(tableContainerLayout.createSequentialGroup()
-                                .addGap(25, 25, 25)
-                                .addGroup(tableContainerLayout
-                                        .createParallelGroup(
-                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane2,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                811,
-                                                Short.MAX_VALUE)
-                                        .addComponent(tableLabel,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                Short.MAX_VALUE))
-                                .addGap(25, 25, 25)));
+            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tableContainerLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
+                    .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(25, 25, 25))
+        );
         tableContainerLayout.setVerticalGroup(
-                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(tableContainerLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(tableLabel,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        60,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(
-                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane2,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        269,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(21, Short.MAX_VALUE)));
+            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tableContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(96, 96, 96)
-                                .addGroup(jPanel1Layout
-                                        .createParallelGroup(
-                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                false)
-                                        .addComponent(tableContainer,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(jPanel1Layout
-                                                .createSequentialGroup()
-                                                .addComponent(addButton,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        120,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(63, 63, 63)
-                                                .addComponent(deleteButton,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        120,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(69, 69, 69)
-                                                .addComponent(updateButton,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        120,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(69, 69, 69)
-                                                .addComponent(importExcel,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        120,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(62, 62, 62)
-                                                .addComponent(exportExcel,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        120,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(jPanel2,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                Short.MAX_VALUE))
-                                .addGap(96, 96, 96)));
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(96, 96, 96)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(63, 63, 63)
+                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(69, 69, 69)
+                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(69, 69, 69)
+                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(62, 62, 62)
+                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(96, 96, 96))
+        );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(43, 43, 43)
-                                .addGroup(jPanel1Layout.createParallelGroup(
-                                        javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(addButton,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(updateButton,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(deleteButton,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(importExcel,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(exportExcel,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel2,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(52, 52, 52)
-                                .addComponent(tableContainer,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(43, 43, 43)));
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(52, 52, 52)
+                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.PREFERRED_SIZE));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, 641, 641,
-                                javax.swing.GroupLayout.PREFERRED_SIZE));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_searchButtonActionPerformed
         // TODO add your handling code here:
         String searchType = searchOptionComboBox.getSelectedItem().toString();
         String searchText = searchTextField.getText();
-        ArrayList<EmployeesRewardsCriticism> searchResult = Redux.employeesRewardsCriticismBUS.search(searchType, searchText);
+        ArrayList<EmployeesRewardsCriticism> searchResult = Redux.employeesRewardsCriticismBUS
+                .search(searchType, searchText);
         tableInit(searchResult);
     }// GEN-LAST:event_searchButtonActionPerformed
 
@@ -462,10 +405,12 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
         refreshButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Redux.employeesRewardsCriticismBUS.readDB();
+                if (!Redux.isAdmin) {
+                    tableInit(Redux.employeesRewardsCriticismBUS.getListEmployeeCriticism());
+                } else {
+                    tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
+                }
 
-                // Cập nhật dữ liệu lên bảng
-                tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
                 searchTextField.setText("");
             }
         });
@@ -519,7 +464,8 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
         } else if (e.getSource() == searchButton) {
             String searchType = searchOptionComboBox.getSelectedItem().toString();
             String searchText = searchTextField.getText();
-            ArrayList<EmployeesRewardsCriticism> searchResult = Redux.employeesRewardsCriticismBUS.search(searchType,
+            ArrayList<EmployeesRewardsCriticism> searchResult = Redux.employeesRewardsCriticismBUS.search(
+                    searchType,
                     searchText);
             tableInit(searchResult);
         }

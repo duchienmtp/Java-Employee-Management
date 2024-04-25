@@ -99,4 +99,26 @@ public class AssignmentDAO {
         }
         return assignment;
     }
+
+    public ArrayList<Assignment> getEmployeeAssignmentsByEmployeeId(String employeeId) {
+        con = new ConnectDB();
+        ArrayList<Assignment> list = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM Assignments WHERE employeeId = '" + employeeId + "' AND deleteStatus = 0";
+            ResultSet rs = con.sqlQuery(sql);
+            if (rs != null) {
+                while (rs.next()) {
+                    list.add(new Assignment(new EmployeeDAO().getEmployeeById(employeeId),
+                            new ProjectDAO().searchInProject(rs.getString(2)),
+                            rs.getBoolean(3)));
+                }
+            }
+            rs.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng phân công");
+        } finally {
+            con.closeConnect();
+        }
+        return list;
+    }
 }

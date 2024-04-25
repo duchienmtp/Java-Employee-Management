@@ -5,23 +5,21 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class AccountBUS {
-    
+
     private ArrayList<Account> accountList = new ArrayList<>();
     private AccountDAO accountDAO = new AccountDAO();
 
     public AccountBUS() {
         accountList = accountDAO.getAllAccount();
     }
-    
+
     public ArrayList<Account> getAccountList() {
         return accountList;
     }
-    
+
     public void readDB() {
         accountList = accountDAO.getAllAccount();
     }
-
-
 
     public String getNextID() {
         String lastID = accountList.get(accountList.size() - 1).getEmployee().getId();
@@ -60,35 +58,38 @@ public class AccountBUS {
         }
     }
 
-     public void deleteAccount(Account account) {
+    public void deleteAccount(Account account) {
         Boolean ok = accountDAO.deleteAccount(account);
-    
+
         if (ok) {
             this.readDB();
             JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
-     }
-//    public void deleteAccount(Account account) {
-//        // Kiểm tra tính hợp lệ của tham số đầu vào
-//        if (account == null) {
-//            return;
-//        }
-//
-//        // Xóa tài khoản từ cơ sở dữ liệu
-//        Boolean ok = accountDAO.deleteAccount(account);
-//
-//        // Kiểm tra kết quả từ phương thức deleteAccount
-//        if (ok != null && ok) {
-//            // Sử dụng Iterator để duyệt qua danh sách và xóa tài khoản
-//            Iterator<Account> iterator = accountList.iterator();
-//            while (iterator.hasNext()) {
-//                Account currentAccount = iterator.next();
-//                if (currentAccount.getUserId().equals(account.getUserId())) {
-//                    iterator.remove(); // Loại bỏ tài khoản một cách an toàn
-//                    break;
-//                }
-//            }
-//        }
-//    }
+    }
+    // public void deleteAccount(Account account) {
+    // // Kiểm tra tính hợp lệ của tham số đầu vào
+    // if (account == null) {
+    // return;
+    // }
+    //
+    // // Xóa tài khoản từ cơ sở dữ liệu
+    // Boolean ok = accountDAO.deleteAccount(account);
+    //
+    // // Kiểm tra kết quả từ phương thức deleteAccount
+    // if (ok != null && ok) {
+    // // Sử dụng Iterator để duyệt qua danh sách và xóa tài khoản
+    // Iterator<Account> iterator = accountList.iterator();
+    // while (iterator.hasNext()) {
+    // Account currentAccount = iterator.next();
+    // if (currentAccount.getUserId().equals(account.getUserId())) {
+    // iterator.remove(); // Loại bỏ tài khoản một cách an toàn
+    // break;
+    // }
+    // }
+    // }
+    // }
 
+    public Boolean getAccountByEmail(String email) {
+        return accountDAO.getAccountByEmail(email) != null;
+    }
 }

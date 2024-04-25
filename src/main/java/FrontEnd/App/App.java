@@ -72,6 +72,11 @@ public class App extends javax.swing.JFrame implements MouseListener {
         menuAccountItem.setBorder(new CompoundBorder(menuAccountBorder, margin));
         menuStatisticItem.setBorder(new CompoundBorder(menuStatisticBorder, margin));
 
+        if (!Redux.isAdmin) {
+            jSeparator8.setVisible(false);
+            menuAccountItem.setVisible(false);
+        }
+
         employeeContentPanel = new EmployeeContentPanel();
         userInfoContentPanel = new UserInfoContentPanel();
         departmentContentPanel = new DepartmentContentPanel();
@@ -290,7 +295,8 @@ public class App extends javax.swing.JFrame implements MouseListener {
 
         menuEmployeeItem.setBackground(new java.awt.Color(51, 51, 51));
         menuEmployeeItem.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        menuEmployeeItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/user-group-icon.png"))); // NOI18N
+        menuEmployeeItem.setIcon(
+                new javax.swing.ImageIcon(getClass().getResource("/images/user-group-icon.png"))); // NOI18N
         menuEmployeeItem.setLabelFor(menuEmployeeItem);
         menuEmployeeItem.setText("Quản Lý Nhân Viên");
         menuEmployeeItem.setToolTipText("");
@@ -305,7 +311,8 @@ public class App extends javax.swing.JFrame implements MouseListener {
 
         menuDepartmentItem.setBackground(new java.awt.Color(51, 51, 51));
         menuDepartmentItem.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        menuDepartmentItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/tree-structure.png"))); // NOI18N
+        menuDepartmentItem.setIcon(
+                new javax.swing.ImageIcon(getClass().getResource("/images/tree-structure.png"))); // NOI18N
         menuDepartmentItem.setLabelFor(menuDepartmentItem);
         menuDepartmentItem.setText("Quản Lý Phòng Ban");
         menuDepartmentItem.setAlignmentY(0.0F);
@@ -425,20 +432,31 @@ public class App extends javax.swing.JFrame implements MouseListener {
         menuPanelLayout.setHorizontalGroup(
                 menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jSeparator2)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, menuPanelLayout.createSequentialGroup()
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, menuPanelLayout
+                                .createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 227,
+                                .addComponent(jSeparator3,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        227,
                                         javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jSeparator1)
-                        .addComponent(menuRewardItem, javax.swing.GroupLayout.Alignment.TRAILING,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                        .addComponent(menuRewardItem,
+                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
                                 Short.MAX_VALUE)
-                        .addComponent(menuSalaryItem, javax.swing.GroupLayout.Alignment.TRAILING,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                        .addComponent(menuSalaryItem,
+                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
                                 Short.MAX_VALUE)
-                        .addComponent(menuDepartmentItem, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addComponent(menuEmployeeItem, javax.swing.GroupLayout.Alignment.TRAILING,
-                                javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(menuDepartmentItem,
+                                javax.swing.GroupLayout.PREFERRED_SIZE, 0,
+                                Short.MAX_VALUE)
+                        .addComponent(menuEmployeeItem,
+                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                javax.swing.GroupLayout.PREFERRED_SIZE, 0,
+                                Short.MAX_VALUE)
                         .addComponent(menuTravelItem, javax.swing.GroupLayout.DEFAULT_SIZE,
                                 javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(menuLogoutItem, javax.swing.GroupLayout.DEFAULT_SIZE,
@@ -450,8 +468,10 @@ public class App extends javax.swing.JFrame implements MouseListener {
                         .addComponent(jSeparator6)
                         .addComponent(jSeparator7)
                         .addComponent(jSeparator8)
-                        .addComponent(userAvatarLabel, javax.swing.GroupLayout.Alignment.TRAILING,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                        .addComponent(userAvatarLabel,
+                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
                                 Short.MAX_VALUE)
                         .addComponent(menuAccountItem, javax.swing.GroupLayout.DEFAULT_SIZE,
                                 javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -463,65 +483,107 @@ public class App extends javax.swing.JFrame implements MouseListener {
                 menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(menuPanelLayout.createSequentialGroup()
                                 .addGap(0, 0, 0)
-                                .addComponent(userAvatarLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 57,
+                                .addComponent(userAvatarLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        57,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 3,
+                                .addComponent(jSeparator1,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        3,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(menuEmployeeItem, javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+                                .addComponent(menuEmployeeItem,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        65,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, 0)
-                                .addComponent(menuDepartmentItem, javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+                                .addComponent(jSeparator3,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, 0)
-                                .addComponent(menuSalaryItem, javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+                                .addComponent(menuDepartmentItem,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        65,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, 0)
-                                .addComponent(menuTravelItem, javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+                                .addComponent(jSeparator4,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, 0)
-                                .addComponent(menuRewardItem, javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+                                .addComponent(menuSalaryItem,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        65,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, 0)
-                                .addComponent(menuCriticItem, javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+                                .addComponent(jSeparator5,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(jSeparator8, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, 0)
-                                .addComponent(menuAccountItem, javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+                                .addComponent(menuTravelItem,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        65,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(jSeparator9, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, 0)
-                                .addComponent(menuStatisticItem, javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+                                .addComponent(jSeparator6,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(jSeparator10, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68,
+                                .addComponent(menuRewardItem,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        65,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jSeparator7,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(menuCriticItem,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        65,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jSeparator8,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(menuAccountItem,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        65,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jSeparator9,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(menuStatisticItem,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        65,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jSeparator10,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        68,
                                         Short.MAX_VALUE)
-                                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 3,
+                                .addComponent(jSeparator2,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        3,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(menuLogoutItem, javax.swing.GroupLayout.PREFERRED_SIZE, 65,
+                                .addComponent(menuLogoutItem,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        65,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)));
 
@@ -546,14 +608,18 @@ public class App extends javax.swing.JFrame implements MouseListener {
                 appContentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(appContentPanelLayout.createSequentialGroup()
                                 .addGap(158, 158, 158)
-                                .addComponent(welcomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 743,
+                                .addComponent(welcomeLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        743,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(154, Short.MAX_VALUE)));
         appContentPanelLayout.setVerticalGroup(
                 appContentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(appContentPanelLayout.createSequentialGroup()
                                 .addGap(158, 158, 158)
-                                .addComponent(welcomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 204,
+                                .addComponent(welcomeLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        204,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(378, Short.MAX_VALUE)));
 
@@ -562,20 +628,27 @@ public class App extends javax.swing.JFrame implements MouseListener {
         bodyPanelLayout.setHorizontalGroup(
                 bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(bodyPanelLayout.createSequentialGroup()
-                                .addComponent(menuPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(menuPanel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(appContentPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(appContentPanel,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)));
         bodyPanelLayout.setVerticalGroup(
                 bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(bodyPanelLayout.createSequentialGroup()
-                                .addGroup(bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(menuPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                .addGroup(bodyPanelLayout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(menuPanel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(appContentPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        .addComponent(appContentPanel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, Short.MAX_VALUE)));
@@ -585,12 +658,15 @@ public class App extends javax.swing.JFrame implements MouseListener {
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(bodyPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE));
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE));
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(bodyPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(bodyPanel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)));
 
         pack();

@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import FrontEnd.Redux.Redux;
+
 public class RewardContentPanel extends javax.swing.JPanel implements ActionListener {
 
     TypeRewardPanel typeRewardPanel;
@@ -11,6 +13,11 @@ public class RewardContentPanel extends javax.swing.JPanel implements ActionList
 
     public RewardContentPanel() {
         initComponents();
+
+        if (!Redux.isAdmin) {
+            rewardEmployeeBtn.setVisible(false);
+            typeRewardBtn.setVisible(false);
+        }
 
         typeRewardPanel = new TypeRewardPanel();
         rewardEmployeePanel = new RewardEmployeePanel();
@@ -55,7 +62,8 @@ public class RewardContentPanel extends javax.swing.JPanel implements ActionList
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         appSubMenu = new javax.swing.JPanel();
@@ -90,23 +98,24 @@ public class RewardContentPanel extends javax.swing.JPanel implements ActionList
         javax.swing.GroupLayout appSubMenuLayout = new javax.swing.GroupLayout(appSubMenu);
         appSubMenu.setLayout(appSubMenuLayout);
         appSubMenuLayout.setHorizontalGroup(
-            appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(appSubMenuLayout.createSequentialGroup()
-                .addGap(96, 96, 96)
-                .addComponent(rewardEmployeeBtn)
-                .addGap(86, 86, 86)
-                .addComponent(typeRewardBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(appSubMenuLayout.createSequentialGroup()
+                                .addGap(96, 96, 96)
+                                .addComponent(rewardEmployeeBtn)
+                                .addGap(86, 86, 86)
+                                .addComponent(typeRewardBtn)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
         appSubMenuLayout.setVerticalGroup(
-            appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(appSubMenuLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(typeRewardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rewardEmployeeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24))
-        );
+                appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(appSubMenuLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(
+                                        appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .addComponent(typeRewardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(rewardEmployeeBtn, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(24, 24, 24)));
 
         rewardContainer.setBackground(new java.awt.Color(255, 255, 255));
         rewardContainer.setName("rewardContainer"); // NOI18N
@@ -115,17 +124,19 @@ public class RewardContentPanel extends javax.swing.JPanel implements ActionList
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(appSubMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(rewardContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(appSubMenu, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(rewardContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(appSubMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(rewardContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(appSubMenu, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(rewardContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

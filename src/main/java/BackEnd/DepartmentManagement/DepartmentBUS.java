@@ -64,4 +64,13 @@ public class DepartmentBUS {
             JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
+
+    public Department getDepartmentByName(String departmentName) {
+        for (Department department : departmentList) {
+            if (department.getDepartmentName().equalsIgnoreCase(departmentName)) {
+                return department;
+            }
+        }
+        return null;
+    }
 }

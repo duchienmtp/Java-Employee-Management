@@ -2,6 +2,7 @@ package BackEnd.EmployeeManagement;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -70,13 +71,9 @@ public class Employee {
         this.deleteStatus = deleteStatus;
     }
 
-    public Employee (String id, boolean deleteStatus) {
+    public Employee(String id, boolean deleteStatus) {
         this.id = id;
         this.deleteStatus = deleteStatus;
-    }
-
-    public Employee() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public String getId() {
@@ -199,7 +196,7 @@ public class Employee {
         this.deleteStatus = deleteStatus;
     }
 
-    public static String formatBirthDateToStandardTypeToStandardType(String birthDateString) {
+    public static String formatBirthDateToStandardType(String birthDateString) {
         SimpleDateFormat oldFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat newFormat = new SimpleDateFormat("dd/MM/yyyy");
         String newBirthDateString = "";
@@ -227,11 +224,8 @@ public class Employee {
 
     public static boolean isValidName(String name) {
         boolean flag = true;
-        if (name.matches(
+        if (!name.matches(
                 "(^[A-Z][a-zÃ€ÃÃ‚ÃƒÃˆÃ‰ÃŠÃŒÃÃ’Ã“Ã”Ã•Ã™ÃšÄ‚ÄÄ¨Å¨Æ Ã Ã¡Ã¢Ã£Ã¨Ã©ÃªÃ¬Ã­Ã²Ã³Ã´ÃµÃ¹ÃºÄƒÄ‘Ä©Å©Æ¡Æ¯Ä‚áº áº¢áº¤áº¦áº¨áºªáº¬áº®áº°áº²áº´áº¶áº¸áººáº¼á»€á»€á»‚áº¾Æ°Äƒáº¡áº£áº¥áº§áº©áº«áº­áº¯áº±áº³áºµáº·áº¹áº»áº½á»á»á»ƒáº¿á»„á»†á»ˆá»Šá»Œá»Žá»á»’á»”á»–á»˜á»šá»œá»žá» á»¢á»¤á»¦á»¨á»ªá»…á»‡á»‰á»‹á»á»á»‘á»“á»•á»—á»™á»›á»á»Ÿá»¡á»£á»¥á»§á»©á»«á»¬á»®á»°á»²á»´Ãá»¶á»¸á»­á»¯á»±á»³á»µá»·á»¹\\s\\W]+)([A-Z][a-zÃ€ÃÃ‚ÃƒÃˆÃ‰ÃŠÃŒÃÃ’Ã“Ã”Ã•Ã™ÃšÄ‚ÄÄ¨Å¨Æ Ã Ã¡Ã¢Ã£Ã¨Ã©ÃªÃ¬Ã­Ã²Ã³Ã´ÃµÃ¹ÃºÄƒÄ‘Ä©Å©Æ¡Æ¯Ä‚áº áº¢áº¤áº¦áº¨áºªáº¬áº®áº°áº²áº´áº¶áº¸áººáº¼á»€á»€á»‚áº¾Æ°Äƒáº¡áº£áº¥áº§áº©áº«áº­áº¯áº±áº³áºµáº·áº¹áº»áº½á»á»á»ƒáº¿á»„á»†á»ˆá»Šá»Œá»Žá»á»’á»”á»–á»˜á»šá»œá»žá» á»¢á»¤á»¦á»¨á»ªá»…á»‡á»‰á»‹á»á»á»‘á»“á»•á»—á»™á»›á»á»Ÿá»¡á»£á»¥á»§á»©á»«á»¬á»®á»°á»²á»´Ãá»¶á»¸á»­á»¯á»±á»³á»µá»·á»¹\\W]+){0,3}$")) {
-        } else
-
-        {
             flag = false;
             JOptionPane.showMessageDialog(null,
                     "Tên không hợp lệ ! (Tên phải bắt đầu bằng chữ hoa, không được chứa ký số)", "Lỗi",
@@ -242,9 +236,7 @@ public class Employee {
 
     public static boolean isValidPhoneNumber(String phoneNumber) {
         boolean flag = true;
-        if (phoneNumber.matches("^0\\d{9,10}$")) {
-
-        } else {
+        if (!phoneNumber.matches("^0\\d{9,10}$")) {
             JOptionPane.showMessageDialog(null,
                     "Số điện thoại không hợp lệ ! (SĐT phải bắt đầu bằng số 0, chiều dài từ 10 - 11 số, không được chứa ký tự)",
                     "Lỗi",
@@ -266,6 +258,12 @@ public class Employee {
 
     }
 
+    public static ArrayList<String> getHeader() {
+        return new ArrayList<>(Arrays.asList("Mã Nhân Viên", "Họ và Tên", "Giới Tính", "Ngày Sinh", "Số Điện Thoại",
+                "Dân Tộc", "Loại Nhân Viên", "Tôn Giáo", "Quốc Tịch", "Trình Độ", "Chức Vụ", "Phòng Ban", "Chuyên Môn",
+                "Tình Trạng Làm Việc"));
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -285,5 +283,70 @@ public class Employee {
                 ", employStatus='" + getEmployStatus() + "'" +
                 ", deleteStatus='" + getDeleteStatus() + "'" +
                 "}";
+    }
+
+    public Object getPropertyByIndex(int option) {
+        String result = "";
+        switch (option) {
+            case 0:
+                result = getId();
+                break;
+
+            case 1:
+                result = getFullName();
+                break;
+
+            case 2:
+                result = getGender();
+                break;
+
+            case 3:
+                result = Employee.formatBirthDateToStandardType(getBirthDate());
+                break;
+
+            case 4:
+                result = getPhoneNumber();
+                break;
+
+            case 5:
+                result = getEthnicGroup();
+                break;
+
+            case 6:
+                result = getType();
+                break;
+
+            case 7:
+                result = getReligion();
+                break;
+
+            case 8:
+                result = getNation();
+                break;
+
+            case 9:
+                result = getDegree().getDegreeName();
+                break;
+
+            case 10:
+                result = getPosition().getPositionName();
+                break;
+
+            case 11:
+                result = getDepartment().getDepartmentName();
+                break;
+
+            case 12:
+                result = getSpecialty().getSpecialtyName();
+                break;
+
+            case 13:
+                result = getEmployStatus() ? "Đang làm việc" : "Đã nghỉ việc";
+                break;
+
+            default:
+                break;
+        }
+        return result;
     }
 }

@@ -130,4 +130,30 @@ public class AccountDAO {
         }
         return account;
     }
+
+    public Account getAccountByEmail(String email) {
+        dbConnection = new ConnectDB();
+        Account account = null;
+        try {
+            String query = "SELECT * FROM Account WHERE email = '" + email + "'";
+            ResultSet rs = dbConnection.sqlQuery(query);
+
+            if (rs.next()) {
+                String userId = rs.getString("userId"),
+                        username = rs.getString("username"),
+                        password = rs.getString("password"),
+                        avatar = rs.getString("avatar"),
+                        authorization = rs.getString("authorization");
+
+                account = new Account(new EmployeeDAO().getEmployeeById(userId), username, password,
+                        email, avatar, authorization);
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Account");
+        } finally {
+            dbConnection.closeConnect();
+        }
+        return account;
+    }
 }

@@ -3,7 +3,6 @@ package FrontEnd.RewardContentUI;
 import BackEnd.CriticismManagement.Criticism;
 import BackEnd.EmployeeManagement.Employee;
 import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticism;
-import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticismBUS;
 import FrontEnd.Redux.Redux;
 
 import java.awt.Color;
@@ -38,6 +37,15 @@ public class RewardEmployeePanel extends javax.swing.JPanel
     public RewardEmployeePanel() {
         initComponents();
 
+        if (!Redux.isAdmin) {
+            Redux.employeesRewardsCriticismBUS.getEmployeesRewardsByEmployeeId(Redux.userId);
+            addButton.setVisible(false);
+            updateButton.setVisible(false);
+            deleteButton.setVisible(false);
+            importExcel.setVisible(false);
+            exportExcel.setVisible(false);
+        }
+
         addButton.addActionListener(this);
         updateButton.addActionListener(this);
         deleteButton.addActionListener(this);
@@ -60,7 +68,12 @@ public class RewardEmployeePanel extends javax.swing.JPanel
         jTable1.setDefaultRenderer(String.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
 
-        tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
+        if (!Redux.isAdmin) {
+            tableInit(Redux.employeesRewardsCriticismBUS.getListEmployeeReward());
+        } else {
+            tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
+        }
+
         jTable1.getSelectionModel().addListSelectionListener(this);
         addMouseListener(this);
         setVisible(true);
@@ -81,12 +94,13 @@ public class RewardEmployeePanel extends javax.swing.JPanel
                             employeeRCBUS.get(i).getRewardCount(),
                             NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
                                     .setRegion("DE").build())
-                                    .format(employeeRCBUS.get(i).getRewardCount() * employeeRCBUS.get(i).getReward()
-                                            .getReward())
+                                    .format(employeeRCBUS.get(i).getRewardCount()
+                                            * employeeRCBUS.get(i)
+                                                    .getReward()
+                                                    .getReward())
                                     + " VNĐ",
-                            Employee.formatBirthDateToStandardTypeToStandardType(
-                                    employeeRCBUS.get(i).getCreatedAt()),
-                    });
+                            Employee.formatBirthDateToStandardType(
+                                    employeeRCBUS.get(i).getCreatedAt()), });
                 }
             }
         }
@@ -119,17 +133,24 @@ public class RewardEmployeePanel extends javax.swing.JPanel
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            Redux.employeesRewardsCriticismBUS.deleteEmployeesRewardsCriticism(Redux.employeesRewardsCriticismBUS
-                    .getEmployeesRewardsCriticism((String) selectedRowData[1],
-                            Redux.rewardBUS.getRewardByName((String) selectedRowData[3]).getRewardId(),
-                            new Criticism().getCriticismId(),
-                            Employee.formatBirthDateToDatabaseType((String) selectedRowData[6])));
+            Redux.employeesRewardsCriticismBUS
+                    .deleteEmployeesRewardsCriticism(Redux.employeesRewardsCriticismBUS
+                            .getEmployeesRewardsCriticism((String) selectedRowData[1],
+                                    Redux.rewardBUS.getRewardByName(
+                                            (String) selectedRowData[3])
+                                            .getRewardId(),
+                                    new Criticism().getCriticismId(),
+                                    Employee.formatBirthDateToDatabaseType(
+                                            (String) selectedRowData[6])));
             jTable1.revalidate();
             tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
         }
     }
 
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
@@ -197,7 +218,7 @@ public class RewardEmployeePanel extends javax.swing.JPanel
                                 .addContainerGap()
                                 .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(searchTextField)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(searchButton)
@@ -206,18 +227,16 @@ public class RewardEmployeePanel extends javax.swing.JPanel
                                 .addContainerGap()));
         jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(14, 14, 14)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(searchOptionComboBox, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(refreshButton, javax.swing.GroupLayout.Alignment.LEADING,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout
-                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(searchTextField)
+                                        .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(refreshButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap()));
 
         importExcel.setBackground(new java.awt.Color(13, 110, 253));
@@ -390,8 +409,11 @@ public class RewardEmployeePanel extends javax.swing.JPanel
         refreshButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Redux.employeesRewardsCriticismBUS.readDB();
-                tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
+                if (!Redux.isAdmin) {
+                    tableInit(Redux.employeesRewardsCriticismBUS.getListEmployeeReward());
+                } else {
+                    tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
+                }
                 searchTextField.setText("");
             }
         });

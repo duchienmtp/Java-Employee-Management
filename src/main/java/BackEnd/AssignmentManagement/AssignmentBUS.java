@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 public class AssignmentBUS {
     private AssignmentDAO asmD = new AssignmentDAO();
     private ArrayList<Assignment> list = new ArrayList<>();
+    private ArrayList<Assignment> employeeAssignmentList = new ArrayList<>();
 
     public AssignmentBUS() {
         list = asmD.getAllAssignments();
@@ -14,15 +15,6 @@ public class AssignmentBUS {
 
     public ArrayList<Assignment> getAssignmentsList() {
         return list;
-    }
-
-    public String getNextEmployeeID() {
-        String lastID = list.get(list.size() - 1).getEmployeeId();
-        String characterPart = lastID.substring(0, 2);
-        int numberPart = Integer.parseInt(lastID.substring(2));
-        numberPart++;
-        String nextID = characterPart + String.format("%03d", numberPart);
-        return nextID;
     }
 
     public String getNextProjectID() {
@@ -36,7 +28,7 @@ public class AssignmentBUS {
 
     public Assignment getAssignmentByEmployeeId(String employeeId) {
         for (Assignment it : list) {
-            if (it.getEmployeeId().equals(employeeId))
+            if (it.getEmployee().getId().equals(employeeId))
                 return it;
         }
         return null;
@@ -44,7 +36,7 @@ public class AssignmentBUS {
 
     public Assignment getAssignmentByProjectId(String projectId) {
         for (Assignment it : list) {
-            if (it.getProjectId().equals(projectId))
+            if (it.getProject().getProjectId().equals(projectId))
                 return it;
         }
         return null;
@@ -97,5 +89,13 @@ public class AssignmentBUS {
 
     public Assignment findAssignmentByEmployeeIdAndProjectId(String employeeId, String projectId) {
         return asmD.findAssignmentByEmployeeIdAndProjectId(employeeId, projectId);
+    }
+
+    public void getEmployeeAssignmentsByEmployeeId(String employeeId) {
+        employeeAssignmentList = asmD.getEmployeeAssignmentsByEmployeeId(employeeId);
+    }
+
+    public ArrayList<Assignment> getEmployeeAssignmentList() {
+        return employeeAssignmentList;
     }
 }

@@ -156,4 +156,30 @@ public class EmployeeSalaryDAO {
         }
         return salaryDetail;
     }
+
+    public ArrayList<EmployeeSalary> getEmployeeSalariesByEmployeeId(String employeeId) {
+        ArrayList<EmployeeSalary> employeeSalaries = new ArrayList<>();
+        dbConnection = new ConnectDB();
+        try {
+            String query = "SELECT * FROM EmployeeSalaries WHERE employeeId = '" + employeeId + "'";
+            ResultSet rs = dbConnection.sqlQuery(query);
+
+            if (rs != null) {
+                while (rs.next()) {
+                    String createdAt = rs.getString("createdAt");
+                    double insurance = rs.getDouble("insurance");
+                    double netSalary = rs.getDouble("netSalary");
+                    boolean deleteStatus = rs.getBoolean("deleteStatus");
+                    employeeSalaries.add(new EmployeeSalary(new EmployeeDAO().getEmployeeById(employeeId), insurance,
+                            netSalary, createdAt, deleteStatus));
+                }
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng EmployeeSalaries");
+        } finally {
+            dbConnection.closeConnect();
+        }
+        return employeeSalaries;
+    }
 }

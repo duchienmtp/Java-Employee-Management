@@ -55,10 +55,10 @@ public class Redux {
         employeesRewardsCriticismBUS = new EmployeesRewardsCriticismBUS();
     }
 
-    public static void handleLogin(String username, String password) {
+    public static void handleLogin(String email, String password) {
         dbConnection = new ConnectDB();
         try {
-            String query = "SELECT * FROM Account WHERE username = '" + username + "' AND password = '"
+            String query = "SELECT * FROM Account WHERE email = '" + email + "' AND password = '"
                     + password + "'";
             ResultSet rs = dbConnection.sqlQuery(query);
 

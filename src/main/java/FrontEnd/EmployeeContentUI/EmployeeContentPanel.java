@@ -4,6 +4,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import FrontEnd.Redux.Redux;
+
 public class EmployeeContentPanel extends javax.swing.JPanel implements ActionListener {
 
     DegreeContentPanel degreeContentPanel;
@@ -20,6 +22,13 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         employeeManagementContentPanel = new EmployeeManagementContentPanel();
 
         employeeContainer.setLayout(new GridLayout(1, 1));
+
+        if (!Redux.isAdmin) {
+            employeeButton.setVisible(false);
+            degreeButton.setVisible(false);
+            positionButton.setVisible(false);
+            specialtyButton.setVisible(false);
+        }
 
         showEmployeeManagementContentPanel();
 
@@ -105,6 +114,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         specialtyButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         specialtyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/specialty.png"))); // NOI18N
         specialtyButton.setText("Chuyên Môn");
+        specialtyButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         specialtyButton.setIconTextGap(10);
         specialtyButton.setName("specialtyButton"); // NOI18N
         specialtyButton.setPreferredSize(new java.awt.Dimension(160, 43));
@@ -113,6 +123,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         degreeButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         degreeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/degree.png"))); // NOI18N
         degreeButton.setText("Bằng Cấp");
+        degreeButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         degreeButton.setIconTextGap(10);
         degreeButton.setName("degreeButton"); // NOI18N
 
@@ -120,6 +131,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         employeeButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         employeeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/employee.png"))); // NOI18N
         employeeButton.setText("Nhân Viên");
+        employeeButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         employeeButton.setIconTextGap(10);
         employeeButton.setName("employeeButton"); // NOI18N
 
@@ -127,6 +139,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
         positionButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         positionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/position.png"))); // NOI18N
         positionButton.setText("Chức Vụ");
+        positionButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         positionButton.setIconTextGap(10);
         positionButton.setName("positionButton"); // NOI18N
 
@@ -141,7 +154,7 @@ public class EmployeeContentPanel extends javax.swing.JPanel implements ActionLi
                 .addComponent(positionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(66, 66, 66)
                 .addComponent(specialtyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(62, 62, 62)
                 .addComponent(degreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
         );

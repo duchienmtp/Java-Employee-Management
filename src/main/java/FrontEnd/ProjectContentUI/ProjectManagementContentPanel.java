@@ -90,9 +90,9 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
             if (!list.get(i).isDeleteStatus()) {
                 model.addRow(new Object[] { i + 1, list.get(i).getProjectId(),
                         list.get(i).getProjectName(), list.get(i).getPlace(),
-                        Employee.formatBirthDateToStandardTypeToStandardType(
+                        Employee.formatBirthDateToStandardType(
                                 list.get(i).getBeginAt()),
-                        Employee.formatBirthDateToStandardTypeToStandardType(
+                        Employee.formatBirthDateToStandardType(
                                 list.get(i).getCompleteAt()),
                         list.get(i).getDepartmentId()
                 });

@@ -8,6 +8,7 @@ import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticism;
 
 public class EmployeeSalaryBUS {
     ArrayList<EmployeeSalary> employeeSalaryList = new ArrayList<>();
+    ArrayList<EmployeeSalary> employeeSalaryListById = new ArrayList<>();
     EmployeeSalaryDAO employeeSalaryDAO = new EmployeeSalaryDAO();
 
     public EmployeeSalaryBUS() {
@@ -68,5 +69,13 @@ public class EmployeeSalaryBUS {
         salaryInfo.add(netSalary);
 
         return salaryInfo;
+    }
+
+    public void getEmployeeSalariesByEmployeeId(String employeeId) {
+        employeeSalaryListById = employeeSalaryDAO.getEmployeeSalariesByEmployeeId(employeeId);
+    }
+
+    public ArrayList<EmployeeSalary> getEmployeeSalaryListById() {
+        return employeeSalaryListById;
     }
 }

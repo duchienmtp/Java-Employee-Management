@@ -6,6 +6,8 @@ import javax.swing.JOptionPane;
 
 public class EmployeesRewardsCriticismBUS {
     private ArrayList<EmployeesRewardsCriticism> listEmployeeRC = new ArrayList<>();
+    private ArrayList<EmployeesRewardsCriticism> listEmployeeReward = new ArrayList<>();
+    private ArrayList<EmployeesRewardsCriticism> listEmployeeCriticism = new ArrayList<>();
     private EmployeesRewardsCriticismDAO employeeRCDAO = new EmployeesRewardsCriticismDAO();
 
     public EmployeesRewardsCriticismBUS() {
@@ -14,7 +16,6 @@ public class EmployeesRewardsCriticismBUS {
 
     public void readDB() {
         listEmployeeRC = employeeRCDAO.getAllEmployeesRewardsCriticism();
-
     }
 
     public String getNextID() {
@@ -30,26 +31,26 @@ public class EmployeesRewardsCriticismBUS {
 
         listEmployeeRC.forEach((id) -> {
             if (type.equals("Tất cả")) {
-                if (id.getEmployeeId().toLowerCase().contains(value.toLowerCase())
-                        || id.getRewardId().toLowerCase().contains(value.toLowerCase())
-                        || String.valueOf(id.getCriticismId()).toLowerCase().contains(value.toLowerCase())
+                if (id.getEmployee().getId().toLowerCase().contains(value.toLowerCase())
+                        || id.getReward().getRewardId().toLowerCase().contains(value.toLowerCase())
+                        || String.valueOf(id.getCriticism().getCriticismId()).toLowerCase().contains(value.toLowerCase())
                         || String.valueOf(id.getCreatedAt()).toLowerCase().contains(value.toLowerCase())) {
                     result.add(id);
                 }
             } else {
                 switch (type) {
                     case "Mã nhân viên":
-                        if (id.getEmployeeId().toLowerCase().contains(value.toLowerCase())) {
+                        if (id.getEmployee().getId().toLowerCase().contains(value.toLowerCase())) {
                             result.add(id);
                         }
                         break;
                     case "Mã khen thưởng":
-                        if (id.getRewardId().toLowerCase().contains(value.toLowerCase())) {
+                        if (id.getReward().getRewardId().toLowerCase().contains(value.toLowerCase())) {
                             result.add(id);
                         }
                         break;
                     case "Mã kỷ luật":
-                        if (String.valueOf(id.getCriticismId()).toLowerCase().contains(value.toLowerCase())) {
+                        if (String.valueOf(id.getCriticism().getCriticismId()).toLowerCase().contains(value.toLowerCase())) {
                             result.add(id);
                         }
                         break;
@@ -134,4 +135,19 @@ public class EmployeesRewardsCriticismBUS {
         }
     }
 
+    public void getEmployeesRewardsByEmployeeId(String employeeId) {
+        listEmployeeReward = employeeRCDAO.getEmployeesRewardsByEmployeeId(employeeId);
+    }
+
+    public ArrayList<EmployeesRewardsCriticism> getListEmployeeReward() {
+        return this.listEmployeeReward;
+    }
+
+    public void getEmployeesCriticismByEmployeeId(String employeeId) {
+        listEmployeeCriticism = employeeRCDAO.getEmployeesCriticismByEmployeeId(employeeId);
+    }
+
+    public ArrayList<EmployeesRewardsCriticism> getListEmployeeCriticism() {
+        return this.listEmployeeCriticism;
+    }
 }
