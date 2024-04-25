@@ -105,23 +105,25 @@ public class EmployeeBUS {
         }
     }
 
-    public ArrayList<Employee> searchEmployeeByName(String searchValue) {
+    public void searchEmployeeByName(String searchValue) {
         employeeSearchResult.clear();
         for (Employee employee : employeeList) {
             if (employee.getFullName().toLowerCase().contains(searchValue.toLowerCase())) {
                 employeeSearchResult.add(employee);
             }
         }
-        return employeeSearchResult;
     }
 
-    public ArrayList<Employee> searchEmployeeById(String searchValue) {
+    public void searchEmployeeById(String searchValue) {
         employeeSearchResult.clear();
         for (Employee employee : employeeList) {
             if (employee.getId().toLowerCase().contains(searchValue.toLowerCase())) {
                 employeeSearchResult.add(employee);
             }
         }
+    }
+
+    public ArrayList<Employee> getEmployeeSearchResult() {
         return employeeSearchResult;
     }
 }
