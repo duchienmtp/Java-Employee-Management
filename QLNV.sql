@@ -1,4 +1,4 @@
-use QLNV
+﻿use QLNV
 
 CREATE TABLE [Employees] (
   [id] nvarchar(255) PRIMARY KEY,
@@ -7,7 +7,7 @@ CREATE TABLE [Employees] (
   [birthDate] DATE not null,
   [phoneNumber] nvarchar(255) not null,
   [ethnicGroup] nvarchar(255) not null,
-  [typeId] nvarchar(255) not null,
+  [type] nvarchar(255) not null,
   [religion] nvarchar(255) not null,
   [degreeId] nvarchar(255) not null,
   [nation] nvarchar(255) not null,
@@ -27,13 +27,8 @@ CREATE TABLE [Account] (
   [email] nvarchar(255) not null,
   [avatar] nvarchar(255),
   [authorization] nvarchar(255) not null,
+  [accountStatus] bit not null,
   [deleteStatus] bit not null
-)
-GO
-
-CREATE TABLE [EmployeeType] (
-  [typeId] nvarchar(255) PRIMARY KEY ,
-  [typeName] nvarchar(255) not null
 )
 GO
 
@@ -47,13 +42,8 @@ GO
 CREATE TABLE [Positions] (
   [positionId] nvarchar(255) PRIMARY KEY,
   [positionName] nvarchar(255) not null,
-  [deleteStatus] bit not null
-)
-GO
-
-CREATE TABLE [PositionSalaries] (
-  [postionId] nvarchar(255) PRIMARY KEY,
   [positionSalaryAllowance] numeric(5,3) not null,
+  [deleteStatus] bit not null
 )
 GO
 
@@ -94,10 +84,9 @@ GO
 
 CREATE TABLE [EmployeeSalaries] (
   [employeeId] nvarchar(255),
-  [advance] int not null,
-  [insurance] decimal not null,
+  [insurance] decimal(18,1) not null,
   [netSalary] decimal not null,
-  [createdAt] DATETIME not null,
+  [createdAt] DATE not null,
   [deleteStatus] bit not null
   PRIMARY KEY ([employeeId], [createdAt])
 )
@@ -115,8 +104,8 @@ CREATE TABLE [Projects] (
   [projectId] nvarchar(255) PRIMARY KEY,
   [projectName] nvarchar(255) not null,
   [departmentId] nvarchar(255) not null,
-  [beginAt] DATETIME not null,
-  [completedAt] DATETIME not null,
+  [beginAt] DATE not null,
+  [completedAt] DATE not null,
   [place] nvarchar(255) not null,
   [deleteStatus] bit not null
 )
@@ -133,16 +122,10 @@ GO
 ALTER TABLE [Account] ADD FOREIGN KEY ([userId]) REFERENCES [Employees] ([id])
 GO
 
-ALTER TABLE [Employees] ADD FOREIGN KEY ([typeId]) REFERENCES [EmployeeType] ([typeId])
-GO
-
 ALTER TABLE [Employees] ADD FOREIGN KEY ([degreeId]) REFERENCES [Degrees] ([degreeId])
 GO
 
 ALTER TABLE [Employees] ADD FOREIGN KEY ([positionId]) REFERENCES [Positions] ([positionId])
-GO
-
-ALTER TABLE [PositionSalaries] ADD FOREIGN KEY ([postionId]) REFERENCES [Positions] ([positionId])
 GO
 
 ALTER TABLE [EmployeesRewardsCriticism] ADD FOREIGN KEY ([rewardId]) REFERENCES [Rewards] ([rewardId]);
@@ -154,7 +137,6 @@ GO
 
 ALTER TABLE [EmployeesRewardsCriticism] ADD FOREIGN KEY ([employeeId]) REFERENCES [Employees] ([id])
 GO
-
 
 ALTER TABLE [Employees] ADD FOREIGN KEY ([specialtyId]) REFERENCES [Specialties] ([specialtyId])
 GO

@@ -9,16 +9,20 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 public class ConnectDB {
+    static int countConection = 0;
+    static int countQuery = 0;
+    static int countUpdate = 0;
 
     // Tự setting theo máy của mỗi người
     private static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private static final String DB_URL = "jdbc:sqlserver://DESKTOP-41LFA40\\SQLEXPRESS:1433;databaseName=QLNV;encrypt=true;trustServerCertificate=true";
+    private static final String DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=QLNV;encrypt=true;trustServerCertificate=true";
     private static final String USER = "sa";
     private static final String PASSWORD = "123456789";
     private static final String DB_Name = "QLNV";
 
     Connection conn = null;
     Statement stmt = null;
+    PreparedStatement pstmt = null;
     ResultSet rset = null;
 
     public ConnectDB() {
@@ -35,7 +39,7 @@ public class ConnectDB {
     }
 
     public Boolean checkConnect() {
-        if (conn == null || stmt == null) {
+        if (conn == null) {
             JOptionPane.showMessageDialog(null,
                     "-- ERROR! Chưa thiết lập kết nối tới '" + DB_Name + "'. Vui lòng đăng nhập để thiết lập kết nối!");
             return false;
@@ -48,8 +52,6 @@ public class ConnectDB {
         try {
             Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-            stmt = conn.createStatement();
-            System.out.println("**\nSuccess! Đã kết nối tới '" + DB_Name + "'");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -58,10 +60,18 @@ public class ConnectDB {
         }
     }
 
+    public Connection getConnection() {
+        if (checkConnect()) {
+            return conn;
+        }
+        return null;
+    }
+
     public ResultSet sqlQuery(String qry) {
         if (checkConnect()) {
             try {
-                rset = stmt.executeQuery(qry);
+                pstmt = conn.prepareStatement(qry);
+                rset = pstmt.executeQuery();
                 return rset;
 
             } catch (SQLException ex) {
@@ -76,7 +86,8 @@ public class ConnectDB {
     public Boolean sqlUpdate(String qry) {
         if (checkConnect()) {
             try {
-                stmt.executeUpdate(qry);
+                pstmt = conn.prepareStatement(qry);
+                pstmt.executeUpdate();
                 return true;
 
             } catch (SQLException ex) {
@@ -96,14 +107,14 @@ public class ConnectDB {
             if (stmt != null) {
                 stmt.close();
             }
-            System.out.println("Success! Đóng kết nối tới '" + DB_Name + "' thành công.\n**");
+            if (pstmt != null) {
+                pstmt.close();
+            }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null,
                     "-- ERROR! Không thể đóng kết nối tới " + DB_Name + "\n" + ex.getLocalizedMessage());
         }
     }
+    
+ }
 
-    public PreparedStatement prepareStatement(String sql) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-}

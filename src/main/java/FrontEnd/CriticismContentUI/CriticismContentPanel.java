@@ -1,9 +1,10 @@
 package FrontEnd.CriticismContentUI;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import FrontEnd.Redux.Redux;
 
 public class CriticismContentPanel extends javax.swing.JPanel implements ActionListener {
 
@@ -12,6 +13,11 @@ public class CriticismContentPanel extends javax.swing.JPanel implements ActionL
 
     public CriticismContentPanel() {
         initComponents();
+
+        if (!Redux.isAdmin) {
+            criticismEmployeeBtn.setVisible(false);
+            typeCriticismBtn.setVisible(false);
+        }
 
         criticismEmployeePanel = new CriticismEmployeePanel();
         typeCriticismPanel = new TypeCriticismPanel();

@@ -2,15 +2,25 @@ package FrontEnd.SalaryContentUI;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticism;
+
 public class DetailSalaryInfo extends javax.swing.JFrame {
+
+    ArrayList<Object> salaryInfo;
 
     public DetailSalaryInfo() {
         initComponents();
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         detailSalaryTabelLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 
         jTable1.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -18,18 +28,56 @@ public class DetailSalaryInfo extends javax.swing.JFrame {
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         jTable1.setDefaultRenderer(String.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
-
-        tableInit();
     }
 
     public void tableInit() {
-        Object[] newRowData = {2, "Đi trễ", "3", "- 600000"};
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.addRow(new Object[]{1, "Lương cứng", "1", "20000000"});
-        model.addRow(newRowData);
+        model.setRowCount(0);
+        int count = 0;
+        model.addRow(new Object[]{++count, "Lương cơ bản", 1,
+            NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+            .setRegion("DE").build())
+            .format(this.salaryInfo.get(1))
+            + " VNĐ"});
+        ArrayList<EmployeesRewardsCriticism> list = (ArrayList<EmployeesRewardsCriticism>) this.salaryInfo.get(3);
+        for (EmployeesRewardsCriticism item : list) {
+            if (!item.getReward().getRewardId().equals("RE001")) {
+                String reward = " + " + NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+                        .setRegion("DE").build())
+                        .format((item.getReward().getReward() * item.getRewardCount()))
+                        + " VNĐ";
+                model.addRow(new Object[]{++count, item.getReward().getRewardName(), item.getRewardCount(), reward});
+            }
+
+            if (!item.getCriticism().getCriticismId().equals("CR001")) {
+                String judgement = " - " + NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+                        .setRegion("DE").build())
+                        .format((item.getCriticism().getJudgement() * item.getFaultCount()))
+                        + " VNĐ";
+                model.addRow(new Object[]{++count, item.getCriticism().getCriticismName(), item.getFaultCount(),
+                    judgement});
+            }
+        }
+        model.addRow(new Object[]{++count, "Trợ cấp chức vụ", 1,
+            String.format("%.1f%%", ((double) this.salaryInfo.get(2)) * 100)});
+
+        model.addRow(new Object[]{++count, "Tổng lương", 1,
+            NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+            .setRegion("DE").build())
+            .format(this.salaryInfo.get(4))
+            + " VNĐ"});
+
+        model.addRow(new Object[]{++count, "Bảo hiểm", 1, String.format("%.1f%%", 10.5)});
+
+        model.addRow(new Object[]{++count, "Thực lãnh", 1,
+            NumberFormat.getInstance(new Locale.Builder().setLanguage("de")
+            .setRegion("DE").build())
+            .format(this.salaryInfo.get(5))
+            + " VNĐ"});
     }
 
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -81,12 +129,12 @@ public class DetailSalaryInfo extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(detailSalaryTabelLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(detailSalaryTabelLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,4 +168,9 @@ public class DetailSalaryInfo extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
+    public void receiveData(ArrayList<Object> salaryInfo) {
+        this.salaryInfo = salaryInfo;
+        tableInit();
+    }
 }

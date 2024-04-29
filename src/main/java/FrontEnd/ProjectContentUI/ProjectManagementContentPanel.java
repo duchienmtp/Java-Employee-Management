@@ -1,6 +1,11 @@
 package FrontEnd.ProjectContentUI;
 
 import com.github.lgooddatepicker.components.DatePickerSettings;
+
+import BackEnd.EmployeeManagement.Employee;
+import BackEnd.ProjectsManagement.*;
+import FrontEnd.Redux.Redux;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -20,8 +25,10 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class ProjectManagementContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
+public class ProjectManagementContentPanel extends javax.swing.JPanel
+        implements ActionListener, ListSelectionListener, MouseListener {
 
+    ArrayList<Project> projectList;
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
@@ -30,6 +37,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
     public ProjectManagementContentPanel() {
         initComponents();
 
+        projectList = Redux.projectBUS.getProjectList();
         formData = new ArrayList<>();
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -37,6 +45,8 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         DatePickerSettings startDatePickerSettings = new DatePickerSettings();
         startDatePickerSettings.setFormatForDatesCommonEra(dtf);
         startDatePicker.setSettings(startDatePickerSettings);
+        LocalDate today = LocalDate.now();
+        startDatePickerSettings.setDateRangeLimits(today.minusDays(0), null);
 
         DatePickerSettings endDatePickerSettings = new DatePickerSettings();
         endDatePickerSettings.setFormatForDatesCommonEra(dtf);
@@ -58,30 +68,48 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
         jTable1.setDefaultRenderer(Double.class, centerRenderer);
 
-        tableInit();
+        formInit();
+        tableInit(projectList);
 
         jTable1.getSelectionModel().addListSelectionListener(this);
-//        jTable1.addMouseListener(this);
+        // jTable1.addMouseListener(this);
         jPanel1.addMouseListener(this);
+
         setVisible(true);
     }
 
-    public void tableInit() {
-        Object[] newRowData = {1, "DP001", "Java", "Hà Nội", "01/01/2024", "02/02/2024", "blablala"};
+    public void formInit() {
+        projectIDTextField.setText(Redux.projectBUS.getNextID());
+    }
+
+    public void tableInit(ArrayList<Project> list) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
+        model.setRowCount(0);
+
+        for (int i = 0; i < list.size(); i++) {
+            if (!list.get(i).isDeleteStatus()) {
+                model.addRow(new Object[] { i + 1, list.get(i).getProjectId(),
+                        list.get(i).getProjectName(), list.get(i).getPlace(),
+                        Employee.formatBirthDateToStandardType(
+                                list.get(i).getBeginAt()),
+                        Employee.formatBirthDateToStandardType(
+                                list.get(i).getCompleteAt()),
+                        list.get(i).getDepartmentId()
+                });
+            }
         }
     }
 
     public ArrayList<Object> getDataFromForm() {
         String projectID = projectIDTextField.getText(),
                 projectName = projectNameTextField.getText(),
-                startDate = startDatePicker.getText(),
-                endDate = endDatePicker.getText(),
+                departmentId = (String) DepartmentIdCombo.getSelectedItem(),
+                startDate = Employee.formatBirthDateToDatabaseType(startDatePicker.getText()),
+                endDate = Employee.formatBirthDateToDatabaseType(endDatePicker.getText()),
                 projectPlace = projectPlaceTextField.getText();
 
-        return new ArrayList<>(Arrays.asList(projectID, projectName, startDate, endDate, projectPlace));
+        return new ArrayList<>(
+                Arrays.asList(projectID, projectName, departmentId, startDate, endDate, projectPlace));
     }
 
     public void insertTableRow() {
@@ -93,8 +121,14 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            Project tmp = new Project((String) formData.get(0),
+                    (String) formData.get(1), (String) formData.get(2),
+                    (String) formData.get(3), (String) formData.get(4),
+                    (String) formData.get(5), false);
+            Redux.projectBUS.addProject(tmp);
             clearFormContent();
             jTable1.revalidate();
+            tableInit(Redux.projectBUS.getProjectList());
         }
     }
 
@@ -107,8 +141,14 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            Project tmp = new Project((String) formData.get(0),
+                    (String) formData.get(1), (String) formData.get(2),
+                    (String) formData.get(3), (String) formData.get(4),
+                    (String) formData.get(5), false);
+            Redux.projectBUS.updateProject(tmp);
             clearFormContent();
             jTable1.revalidate();
+            tableInit(Redux.projectBUS.getProjectList());
         }
     }
 
@@ -122,9 +162,11 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            model.removeRow(selectedRow);
+            String pjId = model.getValueAt(selectedRow, 1).toString();
+            Redux.projectBUS.deleteProject(pjId);
             clearFormContent();
             jTable1.revalidate();
+            tableInit(Redux.projectBUS.getProjectList());
         }
     }
 
@@ -137,11 +179,12 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
     }
 
     public void clearFormContent() {
-        projectIDTextField.setText("");
+        formInit();
         projectNameTextField.setText("");
         startDatePicker.setText("");
         endDatePicker.setText("");
         projectPlaceTextField.setText("");
+        addButton.setEnabled(true);
     }
 
     public boolean isFormFilled() {
@@ -153,15 +196,16 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
 
     @Override
     public void valueChanged(ListSelectionEvent event) {
-        if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
+        if (!event.getValueIsAdjusting()) { // Ensure selection is stable
             selectionConfirmed = true;
             selectedRow = jTable1.getSelectedRow();
-            if (selectedRow >= 0) {  // Check if a row is selected
+            if (selectedRow >= 0) { // Check if a row is selected
                 selectedRowData = new Object[jTable1.getColumnCount()];
                 for (int i = 0; i < jTable1.getColumnCount(); i++) {
                     selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
                 }
                 fillDataProjectForm(selectedRowData);
+                addButton.setEnabled(false);
             }
         }
     }
@@ -172,27 +216,32 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
             if (isFormFilled()) {
                 insertTableRow();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
                 deleteTableRow();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == updateButton) {
             if (selectedRow >= 0) {
                 if (isFormFilled()) {
                     updateTableRow();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == cancelButton) {
             clearFormContent();
         }
+        addButton.setEnabled(true);
     }
 
     @Override
@@ -221,7 +270,10 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -241,6 +293,8 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         endDatePicker = new com.github.lgooddatepicker.components.DatePicker();
         projectPlaceTextField = new javax.swing.JTextField();
         projectPlaceLabel = new javax.swing.JLabel();
+        DepartmentIdCombo = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
         projectTableContainer = new javax.swing.JPanel();
         projectTableLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -282,26 +336,25 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         projectNameTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         projectNameTextField.setBackground(new java.awt.Color(204, 204, 204));
         projectNameTextField.setCaretColor(new java.awt.Color(0, 0, 0));
-        projectNameTextField.setEnabled(false);
         projectNameTextField.setForeground(new java.awt.Color(0, 0, 0));
         projectNameTextField.setName("projectNameTextField"); // NOI18N
         projectNameTextField.setOpaque(true);
 
-        addButton.setBackground(new java.awt.Color(25, 135, 84));
-        addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        addButton.setForeground(new java.awt.Color(255, 255, 255));
         addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
         addButton.setText("Thêm");
+        addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        addButton.setForeground(new java.awt.Color(255, 255, 255));
         addButton.setIconTextGap(10);
         addButton.setName("addButton"); // NOI18N
 
-        deleteButton.setBackground(new java.awt.Color(220, 53, 69));
-        deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        deleteButton.setForeground(new java.awt.Color(255, 255, 255));
         deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
         deleteButton.setText("Xóa");
+        deleteButton.setBackground(new java.awt.Color(220, 53, 69));
         deleteButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        deleteButton.setForeground(new java.awt.Color(255, 255, 255));
         deleteButton.setIconTextGap(10);
         deleteButton.setName("deleteButton"); // NOI18N
         deleteButton.setOpaque(true);
@@ -342,9 +395,11 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         projectIDTextField.setName("projectIDTextField"); // NOI18N
         projectIDTextField.setOpaque(true);
 
+        startDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         startDatePicker.setName("startDatePicker"); // NOI18N
         startDatePicker.setToolTipText("");
 
+        endDatePicker.setForeground(new java.awt.Color(0, 0, 0));
         endDatePicker.setName("endDatePicker"); // NOI18N
 
         projectPlaceTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -362,81 +417,223 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         projectPlaceLabel.setName("projectPlaceLabel"); // NOI18N
         projectPlaceLabel.setOpaque(true);
 
+        DepartmentIdCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DP001" }));
+        DepartmentIdCombo.setBackground(new java.awt.Color(204, 204, 204));
+        DepartmentIdCombo.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        DepartmentIdCombo.setForeground(new java.awt.Color(0, 0, 0));
+
+        jLabel1.setText("Phòng Quản Lý :");
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+
         javax.swing.GroupLayout projectFormContainerLayout = new javax.swing.GroupLayout(projectFormContainer);
         projectFormContainer.setLayout(projectFormContainerLayout);
         projectFormContainerLayout.setHorizontalGroup(
-            projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectFormContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(projectLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addComponent(addButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
-                    .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addComponent(employeeNameLabel)
-                        .addGap(2, 2, 2)
-                        .addComponent(projectNameTextField))
-                    .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addComponent(projectIDLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(projectIDTextField))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectFormContainerLayout.createSequentialGroup()
-                        .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(startDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                            .addComponent(monthPickerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(endDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                            .addComponent(salarySumLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(projectFormContainerLayout.createSequentialGroup()
-                        .addComponent(projectPlaceLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(projectPlaceTextField)))
-                .addContainerGap())
-        );
+                projectFormContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(projectLabel,
+                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addGroup(projectFormContainerLayout
+                                                .createSequentialGroup()
+                                                .addComponent(addButton)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(deleteButton,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        105,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(updateButton,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        129,
+                                                        Short.MAX_VALUE))
+                                        .addGroup(projectFormContainerLayout
+                                                .createSequentialGroup()
+                                                .addComponent(employeeNameLabel)
+                                                .addGap(2, 2, 2)
+                                                .addComponent(projectNameTextField))
+                                        .addGroup(projectFormContainerLayout
+                                                .createSequentialGroup()
+                                                .addComponent(projectIDLabel)
+                                                .addPreferredGap(
+                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(projectIDTextField))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                projectFormContainerLayout
+                                                        .createSequentialGroup()
+                                                        .addGroup(projectFormContainerLayout
+                                                                .createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                                                        false)
+                                                                .addComponent(startDatePicker,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        171,
+                                                                        Short.MAX_VALUE)
+                                                                .addComponent(monthPickerLabel,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        Short.MAX_VALUE))
+                                                        .addPreferredGap(
+                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                Short.MAX_VALUE)
+                                                        .addGroup(projectFormContainerLayout
+                                                                .createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                                                        false)
+                                                                .addComponent(endDatePicker,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        171,
+                                                                        Short.MAX_VALUE)
+                                                                .addComponent(salarySumLabel,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        Short.MAX_VALUE)))
+                                        .addGroup(projectFormContainerLayout
+                                                .createSequentialGroup()
+                                                .addComponent(projectPlaceLabel)
+                                                .addPreferredGap(
+                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(projectPlaceTextField))
+                                        .addComponent(cancelButton,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addGroup(projectFormContainerLayout
+                                                .createSequentialGroup()
+                                                .addComponent(jLabel1,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        155,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(
+                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(DepartmentIdCombo,
+                                                        0,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        Short.MAX_VALUE)))
+                                .addContainerGap()));
         projectFormContainerLayout.setVerticalGroup(
-            projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectFormContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(projectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(projectIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(projectIDTextField))
-                .addGap(18, 18, 18)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(employeeNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(projectNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(monthPickerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(salarySumLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, 0)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(startDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                    .addComponent(endDatePicker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(projectPlaceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(projectPlaceTextField))
-                .addGap(18, 18, 18)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(updateButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
+                projectFormContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(projectFormContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(projectLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(projectIDLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40,
+                                                Short.MAX_VALUE)
+                                        .addComponent(projectIDTextField))
+                                .addGap(18, 18, 18)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(employeeNameLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(projectNameTextField,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40,
+                                                Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(monthPickerLabel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(salarySumLabel,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, 0)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(startDatePicker,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                34,
+                                                Short.MAX_VALUE)
+                                        .addComponent(endDatePicker,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(projectPlaceLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                40,
+                                                Short.MAX_VALUE)
+                                        .addComponent(projectPlaceTextField))
+                                .addGap(18, 18, 18)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(DepartmentIdCombo,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                36,
+                                                Short.MAX_VALUE)
+                                        .addComponent(jLabel1,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
+                                .addGap(22, 22, 22)
+                                .addComponent(cancelButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        60,
+                                        Short.MAX_VALUE)
+                                .addGroup(projectFormContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(updateButton,
+                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                projectFormContainerLayout
+                                                        .createParallelGroup(
+                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(deleteButton,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                50,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(addButton,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                50,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap()));
 
         projectTableContainer.setBackground(new java.awt.Color(255, 255, 255));
-        projectTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        projectTableContainer
+                .setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         projectTableContainer.setName("projectTableContainer"); // NOI18N
 
         projectTableLabel.setText("Bảng Dự Án");
@@ -447,26 +644,28 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
         projectTableLabel.setOpaque(true);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "STT", "ID", "Tên Dự Án", "Nơi Làm Việc", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Phòng Quản Lý"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
+                },
+                new String[] {
+                        "STT", "ID", "Tên Dự Án", "Nơi Làm Việc", "Ngày Bắt Đầu",
+                        "Ngày Kết Thúc", "Phòng Quản Lý"
+                }) {
+            Class[] types = new Class[] {
+                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class,
+                    java.lang.Object.class, java.lang.Object.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -477,66 +676,100 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel implements
             jTable1.getColumnModel().getColumn(5).setResizable(false);
         }
 
-        javax.swing.GroupLayout projectTableContainerLayout = new javax.swing.GroupLayout(projectTableContainer);
+        javax.swing.GroupLayout projectTableContainerLayout = new javax.swing.GroupLayout(
+                projectTableContainer);
         projectTableContainer.setLayout(projectTableContainerLayout);
         projectTableContainerLayout.setHorizontalGroup(
-            projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectTableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(projectTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                projectTableContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(projectTableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(projectTableContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(projectTableLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(jScrollPane1,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                513,
+                                                Short.MAX_VALUE))
+                                .addContainerGap()));
         projectTableContainerLayout.setVerticalGroup(
-            projectTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(projectTableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(projectTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 465, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+                projectTableContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(projectTableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(projectTableLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        54,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane1,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        465,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap()));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(projectFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addComponent(projectTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(50, 50, 50)
+                                .addComponent(projectFormContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        32,
+                                        Short.MAX_VALUE)
+                                .addComponent(projectTableContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(50, 50, 50)));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(projectFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
-                    .addComponent(projectTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(46, Short.MAX_VALUE))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(40, 40, 40)
+                                .addGroup(jPanel1Layout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(projectFormContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                560,
+                                                Short.MAX_VALUE)
+                                        .addComponent(projectTableContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
+                                .addContainerGap(40, Short.MAX_VALUE)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> DepartmentIdCombo;
     private javax.swing.JButton addButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteButton;
     private javax.swing.JLabel employeeNameLabel;
     private com.github.lgooddatepicker.components.DatePicker endDatePicker;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

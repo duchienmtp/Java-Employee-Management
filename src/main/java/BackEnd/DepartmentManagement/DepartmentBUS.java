@@ -1,18 +1,14 @@
 package BackEnd.DepartmentManagement;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
 public class DepartmentBUS {
-    private ArrayList<Department> departmentList;
-    private DepartmentDAO departmentDAO;
+
+    private ArrayList<Department> departmentList = new ArrayList<>();
+    private DepartmentDAO departmentDAO = new DepartmentDAO();
 
     public DepartmentBUS() {
-        departmentDAO = new DepartmentDAO();
         departmentList = departmentDAO.getAllDepartments();
     }
 
@@ -20,37 +16,35 @@ public class DepartmentBUS {
         return departmentList;
     }
 
+    public void readDB() {
+        departmentList = departmentDAO.getAllDepartments();
+    }
+
     public String getNextID() {
-        if (departmentList.isEmpty()) {
-            return "DP001"; // Assuming the first ID is DP001
-        } else {
-            String lastID = departmentList.get(departmentList.size() - 1).getDepartmentId();
-            String characterPart = lastID.substring(0, 2);
-            int numberPart = Integer.parseInt(lastID.substring(2)) + 1;
-            String nextID = characterPart + String.format("%03d", numberPart);
-            return nextID;
-        }
+        String lastID = departmentList.get(departmentList.size() - 1).getDepartmentId();
+        String characterPart = lastID.substring(0, 2);
+        int numberPart = Integer.parseInt(lastID.substring(2));
+        numberPart++;
+        String nextID = characterPart + String.format("%03d", numberPart);
+        return nextID;
     }
 
     public Department getDepartmentById(String departmentId) {
-        for (Department department : departmentList) {
-            if (department.getDepartmentId().equals(departmentId)) {
-                return department;
-            }
-        }
-        return null;
+        return departmentDAO.getDepartmentById(departmentId);
     }
 
-    public boolean addDepartment(Department department) {
-        boolean ok = departmentDAO.addNewDepartment(department);
+    public void addDepartment(Department department) {
+        Boolean ok = departmentDAO.addNewDepartment(department);
+
         if (ok) {
             departmentList.add(department);
+            JOptionPane.showMessageDialog(null, "Thêm mới thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
-        return ok;
     }
 
     public void updateDepartment(Department department) {
-        boolean ok = departmentDAO.updateDepartment(department);
+        Boolean ok = departmentDAO.updateDepartment(department);
+
         if (ok) {
             for (int i = 0; i < departmentList.size(); i++) {
                 if (departmentList.get(i).getDepartmentId().equals(department.getDepartmentId())) {
@@ -58,24 +52,25 @@ public class DepartmentBUS {
                     break;
                 }
             }
+            JOptionPane.showMessageDialog(null, "Cập nhật thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
     public void deleteDepartment(Department department) {
-        if (department == null) {
-            return;
-        }
-        boolean ok = departmentDAO.deleteDepartment(department);
+        Boolean ok = departmentDAO.deleteDepartment(department);
+
         if (ok) {
-            departmentList.removeIf(dep -> dep.getDepartmentId().equals(department.getDepartmentId()));
+            this.readDB();
+            JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
-    }
-public ArrayList<String> getAllEmployeeIDs() {
-        return departmentDAO.getAllEmployeeIDsAndNames();
-        
     }
 
-    public String getAllEmployeeIDs(String selectedEmployeeID) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Department getDepartmentByName(String departmentName) {
+        for (Department department : departmentList) {
+            if (department.getDepartmentName().equalsIgnoreCase(departmentName)) {
+                return department;
+            }
+        }
+        return null;
     }
 }

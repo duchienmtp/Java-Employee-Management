@@ -17,7 +17,11 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class PositionContentPanel extends javax.swing.JPanel implements ActionListener, ListSelectionListener, MouseListener {
+import BackEnd.PositionManagement.Position;
+import FrontEnd.Redux.Redux;
+
+public class PositionContentPanel extends javax.swing.JPanel
+        implements ActionListener, ListSelectionListener, MouseListener {
 
     int selectedRow = -1;
     boolean selectionConfirmed;
@@ -44,29 +48,73 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
         jTable1.setDefaultRenderer(Object.class, centerRenderer);
 
-        tableInit();
+        formInit();
+        tableInit(Redux.positionBUS.getPositionList());
         jTable1.getSelectionModel().addListSelectionListener(this);
         jPanel1.addMouseListener(this);
         setVisible(true);
     }
 
-    public void tableInit() {
-        Object[] newRowData = {1, "PO001", "Trưởng Phòng", "23/09/2004"};
+    public void formInit() {
+        positionIDTextField.setText(Redux.positionBUS.getNextID());
+    }
+
+    public void tableInit(ArrayList<Position> positionList) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        for (int i = 0; i < 10; i++) {
-            model.addRow(newRowData);
+        model.setRowCount(0);
+
+        for (int i = 0; i < positionList.size(); i++) {
+            if (!positionList.get(i).getDeleteStatus()) {
+                model.addRow(new Object[] {
+                        i + 1,
+                        positionList.get(i).getPositionId(),
+                        positionList.get(i).getPositionName(),
+                        String.format("%.0f%%",
+                                positionList.get(i).getPositionSalaryAllowance() * 100)
+                });
+            }
         }
     }
 
     public ArrayList<Object> getDataFromForm() {
         String positionID = positionIDTextField.getText(),
                 positionName = positionNameTextField.getText();
+        double positionSalaryAllowance = 0.0;
 
-        return new ArrayList<>(Arrays.asList(positionID, positionName));
+        if (positionName.matches(".*\\d.*")) {
+            // Show warning dialog
+            JOptionPane.showMessageDialog(null, "Tên chức vụ không thể chứa số !", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+
+        try {
+            positionSalaryAllowance = Double.parseDouble(positionSalaryAllowanceTextField.getText());
+            if (positionSalaryAllowance >= 1 || positionSalaryAllowance <= 0) {
+                // Show warning dialog
+                JOptionPane.showMessageDialog(null,
+                        "Trợ cấp phải là số thực nằm trong khoảng (0, 1) !",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            // Show warning dialog
+            JOptionPane.showMessageDialog(null,
+                    "Trợ cấp không hợp lệ vì không phải là số !", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+
+        return new ArrayList<>(Arrays.asList(positionID, positionName, positionSalaryAllowance));
     }
 
     public void insertTableRow() {
         formData = getDataFromForm();
+
+        if (formData == null) {
+            return;
+        }
 
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Bạn có muốn thêm mới dữ liệu chức vụ với ID " + formData.get(0) + " ?",
@@ -74,8 +122,14 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            Redux.positionBUS.addPosition(
+                    new Position((String) formData.get(0), (String) formData.get(1),
+                            (double) formData.get(2)));
             clearFormContent();
             jTable1.revalidate();
+            // Redux.getAllPositions();
+            // tableInit(Redux.positionList);
+            tableInit(Redux.positionBUS.getPositionList());
         }
     }
 
@@ -88,37 +142,50 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
+            Redux.positionBUS.updatePosition(
+                    new Position((String) formData.get(0), (String) formData.get(1),
+                            (double) formData.get(2)));
             clearFormContent();
             jTable1.revalidate();
+            // Redux.getAllPositions();
+            // tableInit(Redux.positionList);
+            tableInit(Redux.positionBUS.getPositionList());
         }
     }
 
     public void deleteTableRow() {
         formData = getDataFromForm();
 
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Bạn có muốn xóa bỏ dữ liệu chức vụ với ID " + formData.get(0) + " ?",
                 "XÓA BỎ ?",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            model.removeRow(selectedRow);
+            Redux.positionBUS.deletePosition(Redux.positionBUS.getPositionById((String) formData.get(0)));
             clearFormContent();
             jTable1.revalidate();
+            // Redux.getAllPositions();
+            // tableInit(Redux.positionList);
+            tableInit(Redux.positionBUS.getPositionList());
         }
     }
 
     public void fillDataPositionForm(Object[] selectedRowData) {
         positionIDTextField.setText((String) selectedRowData[1]);
         positionNameTextField.setText((String) selectedRowData[2]);
+        positionSalaryAllowanceTextField
+                .setText(Double.toString(
+                        Double.parseDouble(((String) selectedRowData[3]).replace("%", ""))
+                                / 100));
         positionIDTextField.setEnabled(false);
     }
 
     public void clearFormContent() {
-        positionIDTextField.setText("");
+        formInit();
         positionNameTextField.setText("");
-        positionIDTextField.setEnabled(true);
+        positionSalaryAllowanceTextField.setText("");
+        addButton.setEnabled(true);
     }
 
     public boolean isFormFilled() {
@@ -127,15 +194,16 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
 
     @Override
     public void valueChanged(ListSelectionEvent event) {
-        if (!event.getValueIsAdjusting()) {  // Ensure selection is stable
+        if (!event.getValueIsAdjusting()) { // Ensure selection is stable
             selectionConfirmed = true;
             selectedRow = jTable1.getSelectedRow();
-            if (selectedRow >= 0) {  // Check if a row is selected
+            if (selectedRow >= 0) { // Check if a row is selected
                 selectedRowData = new Object[jTable1.getColumnCount()];
                 for (int i = 0; i < jTable1.getColumnCount(); i++) {
                     selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
                 }
                 fillDataPositionForm(selectedRowData);
+                addButton.setEnabled(false);
             }
         }
     }
@@ -146,23 +214,27 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
             if (isFormFilled()) {
                 insertTableRow();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == deleteButton) {
             if (selectedRow >= 0) {
                 deleteTableRow();
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == updateButton) {
             if (selectedRow >= 0) {
                 if (isFormFilled()) {
                     updateTableRow();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Hãy nhập thông tin trước!", "CẢNH BÁO",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == cancelButton) {
             clearFormContent();
@@ -170,7 +242,11 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -185,6 +261,8 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         updateButton = new javax.swing.JButton();
+        positionSalaryAllowanceLabel = new javax.swing.JLabel();
+        positionSalaryAllowanceTextField = new javax.swing.JTextField();
         positionTableContainer = new javax.swing.JPanel();
         positionTableLabel = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -196,7 +274,8 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         positionFormContainer.setBackground(new java.awt.Color(255, 255, 255));
-        positionFormContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        positionFormContainer
+                .setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         positionFormContainer.setName("positionFormContainer"); // NOI18N
         positionFormContainer.setPreferredSize(new java.awt.Dimension(386, 336));
 
@@ -220,6 +299,7 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         positionIDTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         positionIDTextField.setForeground(new java.awt.Color(0, 0, 0));
         positionIDTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        positionIDTextField.setEnabled(false);
         positionIDTextField.setName("positionIDTextField"); // NOI18N
         positionIDTextField.setOpaque(true);
 
@@ -276,66 +356,151 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         updateButton.setName("updateButton"); // NOI18N
         updateButton.setOpaque(true);
 
+        positionSalaryAllowanceLabel.setBackground(new java.awt.Color(255, 255, 255));
+        positionSalaryAllowanceLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        positionSalaryAllowanceLabel.setForeground(new java.awt.Color(0, 0, 0));
+        positionSalaryAllowanceLabel.setText("Trợ Cấp Chức Vụ :");
+        positionSalaryAllowanceLabel.setName("positionSalaryAllowanceLabel"); // NOI18N
+        positionSalaryAllowanceLabel.setOpaque(true);
+
+        positionSalaryAllowanceTextField.setBackground(new java.awt.Color(204, 204, 204));
+        positionSalaryAllowanceTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        positionSalaryAllowanceTextField.setForeground(new java.awt.Color(0, 0, 0));
+        positionSalaryAllowanceTextField.setCaretColor(new java.awt.Color(0, 0, 0));
+        positionSalaryAllowanceTextField.setName("positionSalaryAllowanceTextField"); // NOI18N
+
         javax.swing.GroupLayout positionFormLayout = new javax.swing.GroupLayout(positionForm);
         positionForm.setLayout(positionFormLayout);
         positionFormLayout.setHorizontalGroup(
-            positionFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(positionIDTextField)
-            .addComponent(positionNameTextField)
-            .addComponent(positionIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(positionNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, positionFormLayout.createSequentialGroup()
-                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+                positionFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(positionIDTextField)
+                        .addComponent(positionNameTextField)
+                        .addComponent(positionIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(positionNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, positionFormLayout
+                                .createSequentialGroup()
+                                .addComponent(addButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(deleteButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        105,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(updateButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        119,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(positionSalaryAllowanceTextField)
+                        .addComponent(positionSalaryAllowanceLabel,
+                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         positionFormLayout.setVerticalGroup(
-            positionFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(positionFormLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(positionIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(positionIDTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(positionNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(positionNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(positionFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+                positionFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(positionFormLayout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addComponent(positionIDLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        40,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(positionIDTextField,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(positionNameLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        40,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(positionNameTextField,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(positionSalaryAllowanceLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        40,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(positionSalaryAllowanceTextField,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(cancelButton,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                        38,
+                                        Short.MAX_VALUE)
+                                .addGroup(positionFormLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(deleteButton,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(updateButton,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(addButton,
+                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap()));
 
-        javax.swing.GroupLayout positionFormContainerLayout = new javax.swing.GroupLayout(positionFormContainer);
+        javax.swing.GroupLayout positionFormContainerLayout = new javax.swing.GroupLayout(
+                positionFormContainer);
         positionFormContainer.setLayout(positionFormContainerLayout);
         positionFormContainerLayout.setHorizontalGroup(
-            positionFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(positionFormContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(positionFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(positionFormLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(positionForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+                positionFormContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(positionFormContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(positionFormContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(positionFormLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(positionForm,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap()));
         positionFormContainerLayout.setVerticalGroup(
-            positionFormContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(positionFormContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(positionFormLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(positionForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+                positionFormContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(positionFormContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(positionFormLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(positionForm,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        468, Short.MAX_VALUE)
+                                .addContainerGap()));
 
         positionTableContainer.setBackground(new java.awt.Color(255, 255, 255));
-        positionTableContainer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        positionTableContainer
+                .setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         positionTableContainer.setName("positionTableContainer"); // NOI18N
         positionTableContainer.setPreferredSize(new java.awt.Dimension(537, 540));
 
@@ -350,26 +515,26 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
 
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "STT", "Mã Chức Vụ", "Tên Chức Vụ"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                },
+                new String[] {
+                        "STT", "Mã Chức Vụ", "Tên Chức Vụ", "Trợ Cấp Chức Vụ"
+                }) {
+            Class[] types = new Class[] {
+                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         jTable1.setRowHeight(40);
@@ -378,74 +543,104 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
-        );
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addComponent(jScrollPane1,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        523, Short.MAX_VALUE)
+                                .addGap(0, 0, 0)));
         jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
-        );
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1,
+                                javax.swing.GroupLayout.Alignment.TRAILING));
 
-        javax.swing.GroupLayout positionTableContainerLayout = new javax.swing.GroupLayout(positionTableContainer);
+        javax.swing.GroupLayout positionTableContainerLayout = new javax.swing.GroupLayout(
+                positionTableContainer);
         positionTableContainer.setLayout(positionTableContainerLayout);
         positionTableContainerLayout.setHorizontalGroup(
-            positionTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(positionTableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(positionTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(positionTableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                positionTableContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(positionTableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(positionTableContainerLayout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(positionTableLabel,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(jPanel3,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE))
+                                .addContainerGap()));
         positionTableContainerLayout.setVerticalGroup(
-            positionTableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(positionTableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(positionTableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+                positionTableContainerLayout
+                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(positionTableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(positionTableLabel,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(
+                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanel3,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE)
+                                .addContainerGap()));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(positionFormContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(positionTableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(50, 50, 50)
+                                .addComponent(positionFormContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32)
+                                .addComponent(positionTableContainer,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(50, Short.MAX_VALUE)));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(positionTableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(positionFormContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE))
-                .addContainerGap(50, Short.MAX_VALUE))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(50, 50, 50)
+                                .addGroup(jPanel1Layout
+                                        .createParallelGroup(
+                                                javax.swing.GroupLayout.Alignment.LEADING,
+                                                false)
+                                        .addComponent(positionTableContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                544,
+                                                Short.MAX_VALUE)
+                                        .addComponent(positionFormContainer,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                544,
+                                                Short.MAX_VALUE))
+                                .addContainerGap(46, Short.MAX_VALUE)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_deleteButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_deleteButtonActionPerformed
+    }// GEN-LAST:event_deleteButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
@@ -462,6 +657,8 @@ public class PositionContentPanel extends javax.swing.JPanel implements ActionLi
     private javax.swing.JTextField positionIDTextField;
     private javax.swing.JLabel positionNameLabel;
     private javax.swing.JTextField positionNameTextField;
+    private javax.swing.JLabel positionSalaryAllowanceLabel;
+    private javax.swing.JTextField positionSalaryAllowanceTextField;
     private javax.swing.JPanel positionTableContainer;
     private javax.swing.JLabel positionTableLabel;
     private javax.swing.JButton updateButton;
