@@ -69,11 +69,20 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
             }
         }
         departmentIDComboBox.setModel(departmentModel);
-        departmentIDComboBox.setSelectedIndex(0);
-        departmentNameTextField.setText(Redux.departmentBUS.getDepartmentList().get(0).getDepartmentName());
-        departmentManagerNameTextField
-                .setText(Redux.departmentBUS.getDepartmentList().get(0).getDepartmentLeader().getFullName());
-
+//        
+//        departmentIDComboBox.setSelectedIndex(0);
+//        departmentNameTextField.setText(Redux.departmentBUS.getDepartmentList().get(0).getDepartmentName());
+//        departmentManagerNameTextField
+//                .setText(Redux.departmentBUS.getDepartmentList().get(0).getDepartmentLeader().getFullName());
+        if (departmentModel.getSize() > 0) {
+          departmentIDComboBox.setSelectedIndex(0);
+          Department firstDepartment = Redux.departmentBUS.getDepartmentList().get(0);
+          departmentNameTextField.setText(firstDepartment.getDepartmentName());
+          departmentManagerNameTextField.setText(firstDepartment.getDepartmentLeader().getFullName());
+        } else {
+          departmentNameTextField.setText("");
+          departmentManagerNameTextField.setText("");
+}
         departmentIDComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 String selectedDepartmentId = (String) departmentIDComboBox.getSelectedItem();
@@ -97,19 +106,26 @@ public class AddEmployeeToDepartmentContentPanel extends javax.swing.JPanel
             }
         }
         employeeIDComboBox.setModel(employeeModel);
-        employeeIDComboBox.setSelectedIndex(0);
-        employeeNameTextField.setText(Redux.employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem())
-                .getFullName());
-
-        if (employeeModel.getSize() == 1) {
-            String selectedEmployeeId = (String) employeeModel.getElementAt(0);
-            for (Employee employee : Redux.employeeBUS.getEmployeeList()) {
-                if (employee.getId().equalsIgnoreCase(selectedEmployeeId)) {
-                    employeeNameTextField.setText(employee.getFullName());
-                    break; // Break the loop once found
-                }
-            }
-        }
+//        employeeIDComboBox.setSelectedIndex(0);
+//        employeeNameTextField.setText(Redux.employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem())
+//                .getFullName());
+//
+//        if (employeeModel.getSize() == 1) {
+//            String selectedEmployeeId = (String) employeeModel.getElementAt(0);
+//            for (Employee employee : Redux.employeeBUS.getEmployeeList()) {
+//                if (employee.getId().equalsIgnoreCase(selectedEmployeeId)) {
+//                    employeeNameTextField.setText(employee.getFullName());
+//                    break; // Break the loop once found
+//                }
+//            }
+//        }
+         if (employeeModel.getSize() > 0) {
+         employeeIDComboBox.setSelectedIndex(0);
+         Employee firstEmployee = Redux.employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem());
+         employeeNameTextField.setText(firstEmployee.getFullName());
+         } else {
+         employeeNameTextField.setText("");
+}
 
         employeeIDComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {

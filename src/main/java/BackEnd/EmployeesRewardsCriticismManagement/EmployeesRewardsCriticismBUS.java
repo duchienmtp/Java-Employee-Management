@@ -8,6 +8,8 @@ public class EmployeesRewardsCriticismBUS {
     private ArrayList<EmployeesRewardsCriticism> listEmployeeRC = new ArrayList<>();
     private ArrayList<EmployeesRewardsCriticism> listEmployeeReward = new ArrayList<>();
     private ArrayList<EmployeesRewardsCriticism> listEmployeeCriticism = new ArrayList<>();
+    private ArrayList<EmployeesRewardsCriticism> employeeCriticismSearchResult = new ArrayList<>();
+
     private EmployeesRewardsCriticismDAO employeeRCDAO = new EmployeesRewardsCriticismDAO();
 
     public EmployeesRewardsCriticismBUS() {
@@ -25,48 +27,17 @@ public class EmployeesRewardsCriticismBUS {
     public ArrayList<EmployeesRewardsCriticism> getlistEmployeeRC() {
         return this.listEmployeeRC;
     }
+       public void addEmployeesRewardsCriticismExcel(EmployeesRewardsCriticism employeerc) {
+        Boolean ok = employeeRCDAO.addEmployeesRewardsCriticism(employeerc);
 
-    public ArrayList<EmployeesRewardsCriticism> search(String type, String value) {
-        ArrayList<EmployeesRewardsCriticism> result = new ArrayList<>();
-
-        listEmployeeRC.forEach((id) -> {
-            if (type.equals("Tất cả")) {
-                if (id.getEmployee().getId().toLowerCase().contains(value.toLowerCase())
-                        || id.getReward().getRewardId().toLowerCase().contains(value.toLowerCase())
-                        || String.valueOf(id.getCriticism().getCriticismId()).toLowerCase().contains(value.toLowerCase())
-                        || String.valueOf(id.getCreatedAt()).toLowerCase().contains(value.toLowerCase())) {
-                    result.add(id);
-                }
-            } else {
-                switch (type) {
-                    case "Mã nhân viên":
-                        if (id.getEmployee().getId().toLowerCase().contains(value.toLowerCase())) {
-                            result.add(id);
-                        }
-                        break;
-                    case "Mã khen thưởng":
-                        if (id.getReward().getRewardId().toLowerCase().contains(value.toLowerCase())) {
-                            result.add(id);
-                        }
-                        break;
-                    case "Mã kỷ luật":
-                        if (String.valueOf(id.getCriticism().getCriticismId()).toLowerCase().contains(value.toLowerCase())) {
-                            result.add(id);
-                        }
-                        break;
-                }
-            }
-
-        });
-        // Ngay lap, tong tien
-        for (int i = result.size() - 1; i >= 0; i--) {
-            EmployeesRewardsCriticism id = result.get(i);
-            String createdAt = id.getCreatedAt();
+        if (ok) {
+             listEmployeeRC.add(employeerc);
+              JOptionPane.showMessageDialog(null, "Thêm mới từ excel thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
 
         }
+       }
 
-        return result;
-    }
+
 
     public EmployeesRewardsCriticism getEmployeesRewardsCriticism(String employeeId, String rewardId,
             String criticismId,
@@ -150,4 +121,40 @@ public class EmployeesRewardsCriticismBUS {
     public ArrayList<EmployeesRewardsCriticism> getListEmployeeCriticism() {
         return this.listEmployeeCriticism;
     }
+    public void searchEmployeeCriticismByIDAndName(String searchValue) {
+    // Xóa kết quả tìm kiếm cũ để chuẩn bị cho lần tìm kiếm mới
+    employeeCriticismSearchResult.clear();
+    // Duyệt qua danh sách các đối tượng EmployeesRewardsCriticism
+    for (EmployeesRewardsCriticism employeeCriticism : listEmployeeRC) {
+        // Kiểm tra xem ID hoặc tên đầy đủ của nhân viên có chứa giá trị tìm kiếm hay không
+        if (employeeCriticism.getEmployee().getId().toLowerCase().contains(searchValue.toLowerCase()) || 
+             employeeCriticism.getEmployee().getFullName().toLowerCase().contains(searchValue.toLowerCase())) {
+            // Nếu có, thêm đối tượng này vào kết quả tìm kiếm
+            employeeCriticismSearchResult.add(employeeCriticism);
+        }
+    }
+}
+
+ public void searchEmployeeByCriticismName(String searchValue) {
+       employeeCriticismSearchResult.clear();
+        for (EmployeesRewardsCriticism employeeCriticism : listEmployeeRC) {
+            if ( employeeCriticism.getEmployee().getFullName().toLowerCase().contains(searchValue.toLowerCase())) {
+                employeeCriticismSearchResult.add(employeeCriticism);
+            }
+        }
+    }
+
+    public void searchEmployeeCriticismByID(String searchValue) {
+       employeeCriticismSearchResult.clear();
+        for (EmployeesRewardsCriticism employeeCriticism : listEmployeeRC) {
+            if ( employeeCriticism.getEmployee().getId().toLowerCase().contains(searchValue.toLowerCase())) {
+               employeeCriticismSearchResult.add(employeeCriticism);
+            }
+        }
+    }
+
+    public ArrayList<EmployeesRewardsCriticism> getEmployeeCriticismSearchResult() {
+        return employeeCriticismSearchResult;
+    }
+
 }
