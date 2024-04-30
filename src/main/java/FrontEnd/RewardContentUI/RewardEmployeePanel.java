@@ -227,7 +227,6 @@ public Boolean checkValidData(Employee employee, Criticism criticism, Reward rew
 
                  if (checkValidData(employee, criticism, reward)) {
                   EmployeesRewardsCriticism employeeRC = new EmployeesRewardsCriticism(employee, reward,rewardCount,criticism, faultCount,  createdAt);
-                criticism, (int) dataList.get(4), (String) dataList.get(5));
                       Redux.employeesRewardsCriticismBUS.addEmployeesRewardsCriticismExcel(employeeRC);
 }
 
