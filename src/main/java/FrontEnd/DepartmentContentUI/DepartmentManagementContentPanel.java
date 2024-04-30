@@ -20,15 +20,20 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.util.List;
 
 import BackEnd.DepartmentManagement.Department;
+import BackEnd.EmployeeManagement.Employee;
 
 import FrontEnd.Redux.Redux;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class DepartmentManagementContentPanel extends javax.swing.JPanel
@@ -54,6 +59,7 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
         editButton.addActionListener(this);
         deleteButton.addActionListener(this);
         exportExcel.addActionListener(this);
+        importExcel.addActionListener(this);
 
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1), // Line color and stroke size
@@ -101,9 +107,65 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
             }
         }else if (e.getSource() == exportExcel){
             exportToExcel();
+        }else if(e.getSource() == importExcel){
+            importFromExcel();
         }
         addButton.setEnabled(true);
     }
+    public void importFromExcel() {
+    try {
+        // Tạo một đối tượng JFileChooser
+        JFileChooser fileChooser = new JFileChooser();
+
+        // Thiết lập bộ lọc chỉ cho phép chọn các tệp có định dạng .xlsx
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx");
+        fileChooser.setFileFilter(filter);
+
+        // Hiển thị hộp thoại chọn tệp và kiểm tra xem người dùng đã chọn tệp nào chưa
+        int result = fileChooser.showOpenDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // Lấy đường dẫn tệp đã chọn
+            File selectedFile = fileChooser.getSelectedFile();
+
+            // Tiếp tục xử lý dữ liệu từ tệp đã chọn
+            FileInputStream file = new FileInputStream(selectedFile);
+
+            // Create Workbook instance holding reference to .xlsx file
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+
+            // Get first/desired sheet from the workbook
+            XSSFSheet sheet = workbook.getSheet("Department Sheet");
+
+            // Iterate through each rows one by one
+            for (Row row : sheet) {
+                // Skip the header row
+                if (row.getRowNum() == 0) {
+                    continue;
+                }
+                String departmentId = row.getCell(0).getStringCellValue();
+                String departmentName = row.getCell(1).getStringCellValue();
+                String departmentLeaderId = row.getCell(2).getStringCellValue();
+                boolean deleteStatus = row.getCell(3).getBooleanCellValue();
+
+                // Create a new Department object
+                Department department = new Department(departmentId, departmentName, new Employee(departmentLeaderId), deleteStatus);
+
+                // Add the department to the database
+                Redux.departmentBUS.addDepartmentExcel(department);
+            }
+            file.close();
+
+            // Update the table with the new data
+            tableInit(Redux.departmentBUS.getDepartmentList());
+            JOptionPane.showMessageDialog(null, "Data Imported Successfully");
+        } else {
+            // Người dùng đã hủy việc chọn tệp, bạn có thể xử lý tùy ý ở đây
+        }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Failed to import data from Excel file.");
+    }
+}
         public void exportToExcel() {
         DefaultTableModel model = (DefaultTableModel) tblDepartment.getModel();
         
@@ -150,7 +212,6 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-
     public void search(String searchText) {
         DefaultTableModel model = (DefaultTableModel) tblDepartment.getModel();
         int check = 0;
