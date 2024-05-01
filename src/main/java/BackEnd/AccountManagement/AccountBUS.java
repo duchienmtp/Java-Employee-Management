@@ -92,4 +92,11 @@ public class AccountBUS {
     public Boolean getAccountByEmail(String email) {
         return accountDAO.getAccountByEmail(email) != null;
     }
+    public void addAccountExcel(Account account) {
+        Boolean ok = accountDAO.addNewAccount(account);
+
+        if (ok) {
+            accountList.add(account);
+        }
+    }
 }
