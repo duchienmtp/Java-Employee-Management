@@ -119,6 +119,9 @@
         <Property name="iconTextGap" type="int" value="10"/>
         <Property name="name" type="java.lang.String" value="exportExcel" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportExcelActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="editButton">
       <Properties>
@@ -241,6 +244,9 @@
         <Property name="iconTextGap" type="int" value="10"/>
         <Property name="name" type="java.lang.String" value="importExcel" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="importExcelActionPerformed"/>
+      </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="tableContainer">
       <Properties>
@@ -289,9 +295,6 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="18" style="1"/>
             </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Danh s&#xe1;ch c&#xf4;ng t&#xe1;c c&#x1ee7;a nh&#xe2;n vi&#xea;n"/>
             <Property name="name" type="java.lang.String" value="tableLabel" noResource="true"/>
             <Property name="opaque" type="boolean" value="true"/>
@@ -306,6 +309,9 @@
           <SubComponents>
             <Component class="javax.swing.JTable" name="jTable1">
               <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="12" style="1"/>
+                </Property>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="6" rowCount="0">
                     <Column editable="false" title="STT" type="java.lang.Integer"/>
@@ -349,9 +355,6 @@
                       <Renderer/>
                     </Column>
                   </TableColumnModel>
-                </Property>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="1"/>
                 </Property>
                 <Property name="rowHeight" type="int" value="40"/>
                 <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">

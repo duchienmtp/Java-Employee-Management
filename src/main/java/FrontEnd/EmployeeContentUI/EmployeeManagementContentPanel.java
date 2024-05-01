@@ -217,6 +217,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
     }
 
     public void handleImportExcel() {
+        System.out.println("handleImportExcel");
         try {
 
             FileInputStream file = new FileInputStream(new File("src/main/resources/files/ImportFile.xlsx"));
