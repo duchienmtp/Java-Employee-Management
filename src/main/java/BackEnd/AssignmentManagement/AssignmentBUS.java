@@ -1,13 +1,16 @@
 package BackEnd.AssignmentManagement;
 
+import BackEnd.EmployeeManagement.*;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
 public class AssignmentBUS {
+    private EmployeeBUS emB = new EmployeeBUS();
     private AssignmentDAO asmD = new AssignmentDAO();
     private ArrayList<Assignment> list = new ArrayList<>();
     private ArrayList<Assignment> employeeAssignmentList = new ArrayList<>();
+    private ArrayList<Assignment> assignmentSearchresult = new ArrayList<>();
 
     public AssignmentBUS() {
         list = asmD.getAllAssignments();
@@ -42,10 +45,32 @@ public class AssignmentBUS {
         return null;
     }
 
+    public void searchAssignmentByName(String name){
+        assignmentSearchresult.clear();
+        for(Assignment asm : list){
+            if(asm.getEmployee().getFullName().toLowerCase().contains(name.toLowerCase())){
+                System.out.println(asm.getEmployee().getFullName());
+                assignmentSearchresult.add(asm);
+            }
+        }
+    }
+
+    public void searchAssignmentByProjectId(String projectId){
+        assignmentSearchresult.clear();
+        for(Assignment asm : list){
+            if(asm.getProject().getProjectId().toLowerCase().contains(projectId.toLowerCase())){
+                System.out.println(asm.getProject().getProjectId());
+                assignmentSearchresult.add(asm);
+            }
+        }
+    }
     public void addNewAssignment(Assignment asm) {
-        if (asmD.addNewAssignment(asm)) {
+        boolean flag = asmD.addNewAssignment(asm);
+        if (flag) {
             list.add(asm);
             JOptionPane.showMessageDialog(null, "Thêm mới thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
+        }else {
+            JOptionPane.showConfirmDialog(null, "Lỗi thêm mới phân công !","Cảnh báo",JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -86,7 +111,7 @@ public class AssignmentBUS {
         }
         return false;
     }
-
+  
     public Assignment findAssignmentByEmployeeIdAndProjectId(String employeeId, String projectId) {
         return asmD.findAssignmentByEmployeeIdAndProjectId(employeeId, projectId);
     }
@@ -97,5 +122,9 @@ public class AssignmentBUS {
 
     public ArrayList<Assignment> getEmployeeAssignmentList() {
         return employeeAssignmentList;
+    }
+
+    public ArrayList<Assignment> getAssignmentResultSearch(){
+        return assignmentSearchresult;
     }
 }
