@@ -44,6 +44,7 @@ public class AssignmentBUS {
         }
         return null;
     }
+
     public void searchAssignmentByName(String name){
         assignmentSearchresult.clear();
         for(Assignment asm : list){
@@ -110,7 +111,7 @@ public class AssignmentBUS {
         }
         return false;
     }
-
+  
     public Assignment findAssignmentByEmployeeIdAndProjectId(String employeeId, String projectId) {
         return asmD.findAssignmentByEmployeeIdAndProjectId(employeeId, projectId);
     }
@@ -122,6 +123,7 @@ public class AssignmentBUS {
     public ArrayList<Assignment> getEmployeeAssignmentList() {
         return employeeAssignmentList;
     }
+
     public ArrayList<Assignment> getAssignmentResultSearch(){
         return assignmentSearchresult;
     }

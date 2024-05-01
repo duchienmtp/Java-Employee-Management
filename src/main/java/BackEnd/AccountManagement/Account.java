@@ -1,6 +1,7 @@
 package BackEnd.AccountManagement;
 
 import BackEnd.EmployeeManagement.Employee;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -137,10 +138,12 @@ public class Account {
         }
 
     }
+
     public static ArrayList<String> getHeader() {
         return new ArrayList<>(Arrays.asList("Mã Nhân Viên", "Tên tài khoản", "Mật khẩu", "Email", "avatar",
                 "Phân quyền", "Trạng thái"));
     }
+  
     public Object getPropertyByIndex(int option) {
         String result = "";
         switch (option) {

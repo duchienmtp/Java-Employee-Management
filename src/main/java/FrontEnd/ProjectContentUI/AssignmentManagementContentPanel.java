@@ -66,7 +66,6 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
             exportExcel.setVisible(false);
         }
 
-        
         tableLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1), // Line color and stroke size
@@ -109,12 +108,10 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == addButton) {
-            System.out.println("insertTableRow");
             insertTableRow();
         } else if (e.getSource() == deleteButton) {
             System.out.println("deleteTableRow");
             if (selectedRow >= 0) {
-
                 deleteTableRow(selectedRow);
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
@@ -360,27 +357,27 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
 
         setBackground(new java.awt.Color(255, 255, 255));
 
+        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
+        addButton.setText("Thêm");
         addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         addButton.setForeground(new java.awt.Color(255, 255, 255));
-        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
-        addButton.setText("Thêm");
         addButton.setIconTextGap(10);
         addButton.setName("addButton"); // NOI18N
 
+        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
+        deleteButton.setText("Xóa");
         deleteButton.setBackground(new java.awt.Color(220, 53, 69));
         deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         deleteButton.setForeground(new java.awt.Color(255, 255, 255));
-        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
-        deleteButton.setText("Xóa");
         deleteButton.setIconTextGap(10);
         deleteButton.setName("deleteButton"); // NOI18N
 
+        exportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
+        exportExcel.setText("Xuất");
         exportExcel.setBackground(new java.awt.Color(13, 202, 240));
         exportExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         exportExcel.setForeground(new java.awt.Color(255, 255, 255));
-        exportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
-        exportExcel.setText("Xuất");
         exportExcel.setIconTextGap(10);
         exportExcel.setName("exportExcel"); // NOI18N
         exportExcel.addActionListener(new java.awt.event.ActionListener() {
@@ -389,30 +386,30 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
             }
         });
 
-        editButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        editButton.setForeground(new java.awt.Color(255, 255, 255));
         editButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
         editButton.setText("Sửa");
+        editButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        editButton.setForeground(new java.awt.Color(255, 255, 255));
         editButton.setIconTextGap(10);
         editButton.setName("editButton"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
+        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo Tên", "Theo Mã Công Tác" }));
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
-        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo Tên", "Theo Mã Công Tác" }));
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
-        searchTextField.setBackground(new java.awt.Color(204, 204, 204));
         searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        searchTextField.setBackground(new java.awt.Color(204, 204, 204));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
 
-        searchButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        searchButton.setForeground(new java.awt.Color(255, 255, 255));
         searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
         searchButton.setText("Tìm Kiếm");
+        searchButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        searchButton.setForeground(new java.awt.Color(255, 255, 255));
         searchButton.setIconTextGap(10);
         searchButton.setName("searchButton"); // NOI18N
 
@@ -440,11 +437,11 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 .addContainerGap())
         );
 
+        importExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
+        importExcel.setText("Nhập ");
         importExcel.setBackground(new java.awt.Color(13, 110, 253));
         importExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         importExcel.setForeground(new java.awt.Color(255, 255, 255));
-        importExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
-        importExcel.setText("Nhập ");
         importExcel.setIconTextGap(10);
         importExcel.setName("importExcel"); // NOI18N
         importExcel.addActionListener(new java.awt.event.ActionListener() {
@@ -457,13 +454,13 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         tableContainer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         tableContainer.setName("tableContainer"); // NOI18N
 
+        tableLabel.setText("Danh sách công tác của nhân viên");
         tableLabel.setBackground(new java.awt.Color(255, 255, 255));
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tableLabel.setText("Danh sách công tác của nhân viên");
+        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
         tableLabel.setName("tableLabel"); // NOI18N
         tableLabel.setOpaque(true);
 
-        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -487,6 +484,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setRowHeight(40);
         jScrollPane2.setViewportView(jTable1);
 
