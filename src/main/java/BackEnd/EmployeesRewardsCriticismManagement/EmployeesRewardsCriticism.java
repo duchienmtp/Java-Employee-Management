@@ -3,6 +3,8 @@ package BackEnd.EmployeesRewardsCriticismManagement;
 import BackEnd.CriticismManagement.Criticism;
 import BackEnd.EmployeeManagement.Employee;
 import BackEnd.RewardManagement.Reward;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class EmployeesRewardsCriticism {
 
@@ -41,7 +43,75 @@ public class EmployeesRewardsCriticism {
         this.criticism = employeeCriticism;
         this.faultCount = faultCount;
     }
+    
+    public static ArrayList<String> getHeaderReward() {
+        return new ArrayList<>(Arrays.asList("Mã Nhân Viên","Tên nhân viên" ,"Tên Khen Thưởng", "Số Lần","Tiền Thưởng","Ngày Tạo"));
+    }
+     public static ArrayList<String> getHeaderCriticism() {
+        return new ArrayList<>(Arrays.asList("Mã Nhân Viên","Tên nhân viên" ,"Tên Kỷ Luật", "Số Lần","Tiền Phạt","Ngày Tạo"));
+    }
+  
+      public Object getPropertyByIndexCriticism(int option) {
+        String result = "";
+        switch (option) {
+            case 0:
+                result = getEmployee().getId();
+                break;
 
+//            case 1:
+//                result = getReward().getRewardId();
+//                break;
+//            case 2:
+//                result = getReward().getRewardName();
+//                break;
+            case 1:
+                result = getEmployee().getFullName();
+                break; 
+            case 2:
+                result = getCriticism().getCriticismName();
+                break;     
+            case 3:
+                 result = String.valueOf(getFaultCount());
+            break;
+             case 4:
+                 result = String.valueOf(getCriticism().getJudgement());
+            break;
+            case 5:
+                 result = getCreatedAt();
+            break;
+
+            default:
+                break;
+        }
+        return result;
+    }
+       public Object getPropertyByIndexReward(int option) {
+        String result = "";
+        switch (option) {
+            case 0:
+                result = getEmployee().getId();
+                break;         
+            case 1:
+                result = getEmployee().getFullName();
+                break; 
+            case 2:
+                result = getReward().getRewardName();
+                break; 
+            case 3:
+                 result = String.valueOf(getRewardCount());
+            break;
+             case 4:
+                 result = String.valueOf(getReward().getReward());
+            break;
+            case 5:
+                 result = getCreatedAt();
+            break;
+
+            default:
+                break;
+        }
+        return result;
+    }
     public String getEmployeeId() {
         return employeeId;
     }
