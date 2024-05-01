@@ -15,6 +15,7 @@ import BackEnd.PositionManagement.PositionBUS;
 import BackEnd.ProjectsManagement.ProjectBUS;
 import BackEnd.RewardManagement.RewardBUS;
 import BackEnd.SpecialtyManagement.SpecialtyBUS;
+import BackEnd.StatisticsManagement.StatisticsBUS;
 import BackEnd.AccountManagement.Account;
 import BackEnd.AccountManagement.AccountBUS;
 import BackEnd.AssignmentManagement.AssignmentBUS;
@@ -40,6 +41,7 @@ public class Redux {
     public static RewardBUS rewardBUS;
     public static CriticismBUS criticismBUS;
     public static EmployeesRewardsCriticismBUS employeesRewardsCriticismBUS;
+    public static StatisticsBUS statisticsBUS;
 
     public Redux() {
         employeeBUS = new EmployeeBUS();
@@ -53,6 +55,7 @@ public class Redux {
         rewardBUS = new RewardBUS();
         criticismBUS = new CriticismBUS();
         employeesRewardsCriticismBUS = new EmployeesRewardsCriticismBUS();
+        statisticsBUS = new StatisticsBUS();
     }
 
     public static void handleLogin(String email, String password) {

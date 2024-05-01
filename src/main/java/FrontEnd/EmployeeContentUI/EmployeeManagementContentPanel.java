@@ -336,6 +336,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
     public void handleSearch() {
         String searchOption = (String) searchOptionComboBox.getSelectedItem();
         String searchValue = searchTextField.getText().trim();
+        System.out.println("Check search value: " + searchValue);
 
         if (searchValue.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Hãy nhập từ khóa tìm kiếm!", "CẢNH BÁO",
@@ -357,6 +358,10 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
 
             default:
                 break;
+        }
+
+        for (Employee employee : searchResult) {
+            System.out.println(employee.toString());
         }
 
         if (searchResult.isEmpty()) {
