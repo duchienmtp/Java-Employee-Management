@@ -1,6 +1,15 @@
 package FrontEnd.ProjectContentUI;
 
 import BackEnd.AssignmentManagement.Assignment;
+import BackEnd.ProjectsManagement.*;
+import BackEnd.DegreeManagement.Degree;
+import BackEnd.DepartmentManagement.Department;
+import BackEnd.EmployeeManagement.Employee;
+import BackEnd.PositionManagement.Position;
+import BackEnd.SpecialtyManagement.Specialty;
+import static FrontEnd.EmployeeContentUI.EmployeeManagementContentPanel.tableInit;
+import static FrontEnd.ProjectContentUI.AssignmentForm.employeeIDComboBox;
+import static FrontEnd.ProjectContentUI.AssignmentForm.projectIDComboBox;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -20,7 +29,22 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import FrontEnd.Redux.Redux;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Iterator;
+import javax.swing.JFileChooser;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.TableUI;
+import org.apache.poi.ss.usermodel.Cell;
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class AssignmentManagementContentPanel extends javax.swing.JPanel
         implements ActionListener, ListSelectionListener, MouseListener {
@@ -75,6 +99,9 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         addMouseListener(this);
         jTable1.addMouseListener(this);
 
+        importExcel.setEnabled(true);
+        exportExcel.setEnabled(true);
+        
         setVisible(true);
     }
 
@@ -83,14 +110,15 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         if (e.getSource() == addButton) {
             insertTableRow();
         } else if (e.getSource() == deleteButton) {
+            System.out.println("deleteTableRow");
             if (selectedRow >= 0) {
-
                 deleteTableRow(selectedRow);
             } else {
                 JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
                         JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == editButton) {
+            System.out.println("updateTableRow");
             if (selectedRow >= 0) {
                 updateTableRow(selectedRowData);
                 assignmentForm.setVisible(true);
@@ -99,44 +127,148 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                         JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == importExcel) {
-
+            System.out.println("handleImportExcel");
+            handleImportExcel();
         } else if (e.getSource() == exportExcel) {
-
+            System.out.println("handleExportExcel");
+            handleExportExcel();
         } else if (e.getSource() == searchButton) {
-            String tmp = searchTextField.getText().trim();
-            if (!tmp.isEmpty()) {
-                search(tmp);
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "Vui lòng nhập họ tên hoặc id hoặc mã công tác của nhân viên cần tìm kiếm!");
-            }
+            System.out.println("handleSearch");
+            handleSearch();
         }
     }
 
-    public void search(String searchText) {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        int check = 0;
-        for (int i = 0; i < jTable1.getRowCount(); i++) {
-            String btid = model.getValueAt(i, 1).toString().trim().toLowerCase();
-            String name = model.getValueAt(i, 3).toString().trim().toLowerCase(); // Lấy tên từ dòng hiện
-            // tại và chuyển
-            // thành chữ thường
-            String id = model.getValueAt(i, 2).toString().trim().toLowerCase(); // Lấy ID từ dòng hiện tại
-            // và chuyển
-            // thành chữ thường
-            if (name.contains(searchText.toLowerCase()) || id.contains(searchText.toLowerCase())
-                    || btid.contains(searchText.toLowerCase())) { // So sánh tên hoặc ID với nội
-                // dung tìm kiếm
-                jTable1.getSelectionModel().setSelectionInterval(i, i); // Chọn dòng tìm thấy
-                Rectangle rect = jTable1.getCellRect(i, 0, true);
-                jTable1.scrollRectToVisible(rect); // Cuộn tới dòng tìm thấy
-                check = 1;
-                break; // Kết thúc vòng lặp khi tìm thấy dòng phù hợp
+    public void handleImportExcel(){
+        System.out.println("handleImportExcel");
+        try {
+            FileInputStream file = new FileInputStream(new File("src/main/resources/files/Assignments.xlsx"));
+            if(file!=null){
+                System.out.println("Find path");
+            } else {
+                System.out.println("Not find path");
             }
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+            XSSFSheet sheet = workbook.getSheet("Assignmentsheet");
+            Iterator<Row> rowIterator = sheet.iterator();
+            while(rowIterator.hasNext()){
+                ArrayList<Object> dataList = new ArrayList<>();
+                Row row = rowIterator.next();
+                Iterator<Cell> cellIterator = row.cellIterator();
+                while(cellIterator.hasNext()){
+                    Cell cell = cellIterator.next();
+                    switch (cell.getCellType()) {
+                        case NUMERIC:
+                            dataList.add(cell.getNumericCellValue());
+                            break;
+                        case STRING:
+                            dataList.add(cell.getStringCellValue());
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                Project project = Redux.projectBUS.getProjectById(dataList.get(1).toString());
+                Employee employee = Redux.employeeBUS.getEmployeeById(dataList.get(0).toString());
+                
+                if(project != null || employee != null){
+                    System.out.println(employee.getId() + " " + project.getProjectId());
+//                    Assignment assingment = new Assignment(Redux.employeeBUS.getEmployeeById(dataList.get(0).toString()).getId(), Redux.projectBUS.getProjectById(dataList.get(1).toString()).getProjectId(), Boolean.valueOf(dataList.get(2).toString()));
+                    Assignment assignment = new Assignment(
+                        Redux.employeeBUS.getEmployeeById(dataList.get(0).toString()),
+                        Redux.projectBUS.getProjectById(dataList.get(1).toString()), false);
+                    Redux.assignmentBUS.addNewAssignment(assignment);
+                }
+            }
+            file.close();
+            tableInit(Redux.assignmentBUS.getAssignmentsList());
+            JOptionPane.showMessageDialog(null, "Data Imported Successfully");
+
+        } catch (Exception e) {
+            System.out.println("Can not imported data");
+            e.printStackTrace();
         }
-        if (check == 0) {
-            JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu.");
+    }
+   
+    
+    public void handleExportExcel(){
+        System.out.println("handleExprtExcel");
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx");
+            fileChooser.setFileFilter(filter);
+            fileChooser.setDialogTitle("Specify a file to save");
+
+            int userSelection = fileChooser.showSaveDialog(this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                String filePath = fileToSave.getAbsolutePath();
+                if (!filePath.endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+
+                XSSFWorkbook workbook = new XSSFWorkbook();
+                XSSFSheet sheet = workbook.createSheet("Assignmentsheet");
+
+                // Write column names to the first row of the sheet
+                XSSFRow headerRow = sheet.createRow(0);
+                for (int j = 0; j < Assignment.getHeader().size(); j++) {
+                    XSSFCell cell = headerRow.createCell(j);
+                    cell.setCellValue(Assignment.getHeader().get(j));
+                }
+
+                for (int i = 0; i < Redux.assignmentBUS.getAssignmentsList().size() - 1; i++) {
+                    XSSFRow row = sheet.createRow(i + 1);
+                    Assignment assisgnment = Redux.assignmentBUS.getAssignmentsList().get(i);
+                    for (int j = 0; j < Assignment.getHeader().size() ; j++) {
+                        Object value = assisgnment.getPropertyByIndex(j);
+                        String cellValue = (value != null) ? value.toString() : "";
+                        XSSFCell cell = row.createCell(j); // Tạo ô trong bảng tính
+                        cell.setCellValue(cellValue); // Ghi giá trị vào ô
+                    }
+                }
+
+                // Write the workbook to the file
+                FileOutputStream out = new FileOutputStream(new File(filePath));
+                workbook.write(out);
+                out.close();
+                workbook.close();
+
+                JOptionPane.showMessageDialog(null, "Data Exported Successfully");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Không export excel được");
+            ex.printStackTrace();
         }
+    }
+    
+    public void handleSearch() {
+        String searchOption = searchOptionComboBox.getSelectedItem().toString();
+        String searchValue = searchTextField.getText().trim();
+        if(searchValue.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Hãy nhập từ khóa tìm kiếm!", "CẢNH BÁO",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        ArrayList<Assignment> list = new ArrayList<>();
+        switch(searchOption){
+            case "Theo Tên":
+                Redux.assignmentBUS.searchAssignmentByName(searchValue);
+                list = Redux.assignmentBUS.getAssignmentResultSearch();
+                break;
+            case "Theo Mã Công Tác":
+                Redux.assignmentBUS.searchAssignmentByProjectId(searchValue);
+                list = Redux.assignmentBUS.getAssignmentResultSearch();
+                break;
+            default:
+                break;
+        }
+        
+        if(list.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả phù hợp!", "CẢNH BÁO",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            tableInit(list);
+        }       
     }
 
     public static void tableInit(ArrayList<Assignment> list) {
@@ -248,6 +380,11 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         exportExcel.setForeground(new java.awt.Color(255, 255, 255));
         exportExcel.setIconTextGap(10);
         exportExcel.setName("exportExcel"); // NOI18N
+        exportExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportExcelActionPerformed(evt);
+            }
+        });
 
         editButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
         editButton.setText("Sửa");
@@ -307,6 +444,11 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         importExcel.setForeground(new java.awt.Color(255, 255, 255));
         importExcel.setIconTextGap(10);
         importExcel.setName("importExcel"); // NOI18N
+        importExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importExcelActionPerformed(evt);
+            }
+        });
 
         tableContainer.setBackground(new java.awt.Color(255, 255, 255));
         tableContainer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
@@ -405,6 +547,16 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 .addGap(43, 43, 43))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void importExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExcelActionPerformed
+        System.out.println("handleImportExcel");
+        handleImportExcel();
+    }//GEN-LAST:event_importExcelActionPerformed
+
+    private void exportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportExcelActionPerformed
+        System.out.println("handleExportExcel");
+        handleExportExcel();
+    }//GEN-LAST:event_exportExcelActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;

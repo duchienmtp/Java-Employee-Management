@@ -40,7 +40,7 @@ public class AssignmentDAO {
         con = new ConnectDB();
         boolean flag = false;
         try {
-            String sql = "insert into Assignments values ('" + asm.getEmployee().getId() + "','"
+            String sql = "insert into Assignments(employeeId,projectId,deleteStatus) values ('" + asm.getEmployee().getId() + "','"
                     + asm.getProject().getProjectId()
                     + "','"
                     + asm.isDeleteStatus() + "')";

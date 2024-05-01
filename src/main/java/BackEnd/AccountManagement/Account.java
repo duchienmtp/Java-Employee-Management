@@ -1,6 +1,8 @@
 package BackEnd.AccountManagement;
 
 import BackEnd.EmployeeManagement.Employee;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -135,5 +137,47 @@ public class Account {
             return null;
         }
 
+    }
+
+    public static ArrayList<String> getHeader() {
+        return new ArrayList<>(Arrays.asList("Mã Nhân Viên", "Tên tài khoản", "Mật khẩu", "Email", "avatar",
+                "Phân quyền", "Trạng thái"));
+    }
+  
+    public Object getPropertyByIndex(int option) {
+        String result = "";
+        switch (option) {
+            case 0:
+                result = getEmployee().getId();
+                break;
+
+            case 1:
+                result = getUsername();
+                break;
+
+            case 2:
+                result = getPassword();
+                break;
+
+            case 3:
+                result = getEmail();
+                break;
+
+            case 4:
+                result = getAvatar();
+                break;
+
+            case 5:
+                result = getAuthorization();
+                break;
+
+            case 6:
+                result = getAccountStatus() ? "Đang hoạt động" : "Ngừng hoạt động";
+                break;
+
+            default:
+                break;
+        }
+        return result;
     }
 }
