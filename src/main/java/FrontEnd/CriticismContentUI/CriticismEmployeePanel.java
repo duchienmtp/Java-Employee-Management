@@ -1,9 +1,17 @@
 package FrontEnd.CriticismContentUI;
 
+import BackEnd.CriticismManagement.Criticism;
 import BackEnd.EmployeeManagement.Employee;
 import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticism;
 import BackEnd.RewardManagement.Reward;
 import FrontEnd.Redux.Redux;
+import static FrontEnd.Redux.Redux.employeesRewardsCriticismBUS;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Iterator;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 import java.awt.Color;
 import java.awt.Component;
@@ -12,12 +20,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.border.TitledBorder;
@@ -25,6 +35,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class CriticismEmployeePanel extends javax.swing.JPanel
         implements ActionListener, ListSelectionListener, MouseListener {
@@ -49,6 +66,10 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
         addButton.addActionListener(this);
         updateButton.addActionListener(this);
         deleteButton.addActionListener(this);
+        importExcel.addActionListener(this);
+        exportExcel.addActionListener(this);
+        searchButton.addActionListener(this);
+        refreshButton.addActionListener(this);
 
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1), // Line color and stroke size
@@ -146,7 +167,187 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
             tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
         }
     }
+public Boolean checkValidData(Employee employee, Criticism criticism, Reward reward) {
+        boolean flag = true;
+        if (employee == null || reward== null || criticism == null) {
+            JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ", "CẢNH BÁO",
+                    JOptionPane.INFORMATION_MESSAGE);
+            flag = false;
+        }
+        return flag;
+    }
 
+      public void handleImportExcel() {
+        try {
+
+            FileInputStream file = new FileInputStream(new File("src/main/resources/files/CriticismImportFile.xlsx"));
+
+            // Create Workbook instance holding reference to .xlsx file
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+
+            // Get first/desired sheet from the workbook
+            XSSFSheet sheet = workbook.getSheet("Criticism Employee Sheet");
+
+            // Iterate through each rows one by one
+            Iterator<Row> rowIterator = sheet.iterator();
+            while (rowIterator.hasNext()) {
+                ArrayList<Object> dataList = new ArrayList<>();
+
+                Row row = rowIterator.next();
+
+                // For each row, iterate through all the columns
+                Iterator<Cell> cellIterator = row.cellIterator();
+
+                while (cellIterator.hasNext()) {
+
+                    Cell cell = cellIterator.next();
+
+                    // Check the cell type and format accordingly
+                    switch (cell.getCellType()) {
+                        case NUMERIC:
+                            dataList.add(cell.getNumericCellValue());
+                            break;
+
+                        case STRING:
+                            dataList.add(cell.getStringCellValue());
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+               Employee employee = Redux.employeeBUS.getEmployeeById((String) dataList.get(0));
+               Criticism criticism = Redux.criticismBUS.getCriticismByName((String) dataList.get(3));
+               Reward reward = Redux.rewardBUS.getRewardByName((String) dataList.get(1));
+               int rewardCount = dataList.get(2) instanceof Number ? ((Number) dataList.get(2)).intValue() : 0;
+               int faultCount = dataList.get(4) instanceof Number ? ((Number) dataList.get(4)).intValue() : 0;
+               String createdAt = dataList.get(5) instanceof String ? (String) dataList.get(5) : "";
+
+//               if (!checkValidData(employee,criticism,reward)) {
+//                  EmployeesRewardsCriticism employeeRC = new EmployeesRewardsCriticism(employee, reward,(int) dataList.get(2),
+//                           criticism, (int) dataList.get(4), (String) dataList.get(5));
+//                    Redux.employeesRewardsCriticismBUS.addEmployeesRewardsCriticismExcel(employeeRC);
+//                }
+                 if (checkValidData(employee, criticism, reward)) {
+                  EmployeesRewardsCriticism employeeRC = new EmployeesRewardsCriticism(employee, reward,rewardCount,criticism, faultCount,  createdAt);
+
+//                      EmployeesRewardsCriticism employeeRC = new EmployeesRewardsCriticism(employee, reward, (int) dataList.get(2),
+//                                criticism, (int) dataList.get(4), (String) dataList.get(5));
+                      Redux.employeesRewardsCriticismBUS.addEmployeesRewardsCriticismExcel(employeeRC);
+}
+
+                  
+     
+            }
+            file.close();
+            tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
+            JOptionPane.showMessageDialog(null, "Data Imported Successfully");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void handleExportExcel() {
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx");
+            fileChooser.setFileFilter(filter);
+            fileChooser.setDialogTitle("Specify a file to save");
+
+            int userSelection = fileChooser.showSaveDialog(this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                String filePath = fileToSave.getAbsolutePath();
+                if (!filePath.endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+
+                XSSFWorkbook workbook = new XSSFWorkbook();
+                XSSFSheet sheet = workbook.createSheet("Employee Sheet");
+
+                // Write column names to the first row of the sheet
+                XSSFRow headerRow = sheet.createRow(0);
+                for (int j = 0; j < EmployeesRewardsCriticism.getHeaderCriticism().size(); j++) {
+                    XSSFCell cell = headerRow.createCell(j);
+                    cell.setCellValue(EmployeesRewardsCriticism.getHeaderCriticism().get(j));
+                }
+
+                for (int i = 0; i < Redux.employeesRewardsCriticismBUS.getlistEmployeeRC().size() - 1; i++) {
+                    XSSFRow row = sheet.createRow(i + 1);
+                    EmployeesRewardsCriticism employeeRC = Redux.employeesRewardsCriticismBUS.getlistEmployeeRC().get(i);
+                    for (int j = 0; j < employeeRC.getHeaderCriticism().size(); j++) {
+                        Object value =  employeeRC.getPropertyByIndexCriticism(j);
+                        String cellValue = (value != null) ? value.toString() : "";
+                        XSSFCell cell = row.createCell(j); // Tạo ô trong bảng tính
+                        cell.setCellValue(cellValue); // Ghi giá trị vào ô
+                    }
+                }
+
+                // Write the workbook to the file
+                FileOutputStream out = new FileOutputStream(new File(filePath));
+                workbook.write(out);
+                out.close();
+                workbook.close();
+
+                JOptionPane.showMessageDialog(null, "Data Exported Successfully");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void handleSearch() {
+        String searchOption = (String) searchOptionComboBox.getSelectedItem();
+        String searchValue = searchTextField.getText().trim();
+
+        if (searchValue.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Hãy nhập từ khóa tìm kiếm!", "CẢNH BÁO",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        ArrayList<EmployeesRewardsCriticism> searchResult = new ArrayList<>();
+        switch (searchOption) {
+            case "Tất cả":
+                 Redux.employeesRewardsCriticismBUS.searchEmployeeCriticismByIDAndName(searchValue);
+                searchResult = Redux.employeesRewardsCriticismBUS.getEmployeeCriticismSearchResult();
+                break;
+            case "Mã NV":
+                Redux.employeesRewardsCriticismBUS.searchEmployeeCriticismByID(searchValue);
+                searchResult = Redux.employeesRewardsCriticismBUS.getEmployeeCriticismSearchResult();
+                break;
+
+            case "Tên NV":
+                Redux.employeesRewardsCriticismBUS.searchEmployeeByCriticismName(searchValue);
+                searchResult = Redux.employeesRewardsCriticismBUS.getEmployeeCriticismSearchResult();
+                break;
+
+            default:
+                break;
+        }
+
+        if (searchResult.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả phù hợp!", "CẢNH BÁO",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            tableInit(searchResult);
+        }
+ }
+
+    @Override
+    public void valueChanged(ListSelectionEvent event) {
+        if (!event.getValueIsAdjusting()) { // Ensure selection is stable
+            selectionConfirmed = true;
+            selectedRow = jTable1.getSelectedRow();
+            if (selectedRow >= 0) { // Check if a row is selected
+                selectedRowData = new Object[jTable1.getColumnCount()];
+                for (int i = 0; i < jTable1.getColumnCount(); i++) {
+                    selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
+                }
+                addButton.setEnabled(false);
+            }
+        }
+    }
     public void refresh() {
         Redux.employeesRewardsCriticismBUS.readDB();
         tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
@@ -198,7 +399,7 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
 
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
-        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã Nhân Viên", "Mã Kỷ Luật" }));
+        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã NV", "Tên NV" }));
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
@@ -388,17 +589,17 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_searchButtonActionPerformed
         // TODO add your handling code here:
-        String searchType = searchOptionComboBox.getSelectedItem().toString();
-        String searchText = searchTextField.getText();
-        ArrayList<EmployeesRewardsCriticism> searchResult = Redux.employeesRewardsCriticismBUS
-                .search(searchType, searchText);
-        tableInit(searchResult);
+//        String searchType = searchOptionComboBox.getSelectedItem().toString();
+//        String searchText = searchTextField.getText();
+//        ArrayList<EmployeesRewardsCriticism> searchResult = Redux.employeesRewardsCriticismBUS
+//                .search(searchType, searchText);
+//        tableInit(searchResult);
     }// GEN-LAST:event_searchButtonActionPerformed
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_refreshButtonActionPerformed
@@ -458,33 +659,27 @@ public class CriticismEmployeePanel extends javax.swing.JPanel
                         JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == importExcel) {
-
+            handleImportExcel();
         } else if (e.getSource() == exportExcel) {
+             handleExportExcel();
 
         } else if (e.getSource() == searchButton) {
-            String searchType = searchOptionComboBox.getSelectedItem().toString();
-            String searchText = searchTextField.getText();
-            ArrayList<EmployeesRewardsCriticism> searchResult = Redux.employeesRewardsCriticismBUS.search(
-                    searchType,
-                    searchText);
-            tableInit(searchResult);
+//            String searchType = searchOptionComboBox.getSelectedItem().toString();
+//            String searchText = searchTextField.getText();
+//            ArrayList<EmployeesRewardsCriticism> searchResult = Redux.employeesRewardsCriticismBUS.search(
+//                    searchType,
+//                    searchText);
+           handleSearch();
+           //tableInit(searchResult);
+
         }
+//        else if (e.getSource() == refeshButton) {
+//            tableInit(searchResult);
+//        }
 
     }
 
-    @Override
-    public void valueChanged(ListSelectionEvent event) {
-        if (!event.getValueIsAdjusting()) { // Ensure selection is stable
-            selectionConfirmed = true;
-            selectedRow = jTable1.getSelectedRow();
-            if (selectedRow >= 0) { // Check if a row is selected
-                selectedRowData = new Object[jTable1.getColumnCount()];
-                for (int i = 0; i < jTable1.getColumnCount(); i++) {
-                    selectedRowData[i] = jTable1.getValueAt(selectedRow, i);
-                }
-            }
-        }
-    }
+    
 
     @Override
     public void mouseClicked(MouseEvent e) {

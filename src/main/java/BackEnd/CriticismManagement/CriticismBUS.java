@@ -46,45 +46,52 @@ public class CriticismBUS {
         return null;
     }
 
-    public ArrayList<Criticism> search(String type, String value) {
-        ArrayList<Criticism> result = new ArrayList<>();
-
-        listcriticism.forEach((id) -> {
-            if (type.equals("Tất cả")) {
-                if (String.valueOf(id.getCriticismId()).toLowerCase().contains(value.toLowerCase())
-                        || String.valueOf(id.getJudgement()).toLowerCase().contains(value.toLowerCase())) {
-                    result.add(id);
-                }
-            } else {
-                switch (type) {
-
-                    case "Mã kỷ luật":
-                        if (String.valueOf(id.getCriticismId()).toLowerCase().contains(value.toLowerCase())) {
-                            result.add(id);
-                        }
-                        break;
-                    case "Tiền phạt":
-                        if (String.valueOf(id.getJudgement()).toLowerCase().contains(value.toLowerCase())) {
-                            result.add(id);
-                        }
-                        break;
-                }
-            }
-
-        });
-        // Ngay lap, tong tien
-        for (int i = result.size() - 1; i >= 0; i--) {
-            Criticism id = result.get(i);
-        }
-
-        return result;
-    }
+//    public ArrayList<Criticism> search(String type, String value) {
+//        ArrayList<Criticism> result = new ArrayList<>();
+//
+//        listcriticism.forEach((id) -> {
+//            if (type.equals("Tất cả")) {
+//                if (String.valueOf(id.getCriticismId()).toLowerCase().contains(value.toLowerCase())
+//                        || String.valueOf(id.getJudgement()).toLowerCase().contains(value.toLowerCase())) {
+//                    result.add(id);
+//                }
+//            } else {
+//                switch (type) {
+//
+//                    case "Mã kỷ luật":
+//                        if (String.valueOf(id.getCriticismId()).toLowerCase().contains(value.toLowerCase())) {
+//                            result.add(id);
+//                        }
+//                        break;
+//                    case "Tiền phạt":
+//                        if (String.valueOf(id.getJudgement()).toLowerCase().contains(value.toLowerCase())) {
+//                            result.add(id);
+//                        }
+//                        break;
+//                }
+//            }
+//
+//        });
+//        // Ngay lap, tong tien
+//        for (int i = result.size() - 1; i >= 0; i--) {
+//            Criticism id = result.get(i);
+//        }
+//
+//        return result;
+//    }
 
     public void addCriticism(Criticism cr) {
         Boolean ok = criticismDAO.addNewCriticism(cr);
 
         if (ok) {
             listcriticism.add(cr);
+        }
+    }
+     public void addCriticismExcel(Criticism cr) {
+        Boolean ok = criticismDAO.addNewCriticism(cr);
+
+        if (ok) {
+           listcriticism.add(cr);
         }
     }
 

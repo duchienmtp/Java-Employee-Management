@@ -2,6 +2,7 @@ package BackEnd.AssignmentManagement;
 
 import BackEnd.EmployeeManagement.Employee;
 import BackEnd.ProjectsManagement.Project;
+import java.util.*;
 
 public class Assignment {
     private Employee employee;
@@ -77,5 +78,27 @@ public class Assignment {
                 ", projectPlace='" + getProject().getPlace() + "'" +
                 "}";
     }
+    
+    public static ArrayList<String> getHeader(){
+        return new ArrayList<>(Arrays.asList("Mã Nhân Viên", "Mã Dự Án", "Tình trạng làm việc"));
+    }
+    
+    public Object getPropertyByIndex(int option) {
+        String result = "";
+        switch (option) {
+            case 0:
+                result = getEmployeeId();
+                break;
 
+            case 1:
+                result = getProjectId();
+                break;
+                
+            case 2:
+                result = String.valueOf(deleteStatus);
+            default:
+                break;
+        }
+        return result;
+    }
 }

@@ -1,6 +1,9 @@
 
 package BackEnd.CriticismManagement;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Criticism {
 
     private String criticismId, criticismName;
@@ -13,6 +16,10 @@ public class Criticism {
         this.judgement = judgement;
         this.deleteStatus = false;
 
+    }
+     public static ArrayList<String> getHeader() {
+        return new ArrayList<>(Arrays.asList("Mã Kỷ Luật", "Tên Kỷ Luật", "Tiền Phạt"));
+        
     }
 
     public Criticism() {
@@ -52,5 +59,27 @@ public class Criticism {
 
     public void setDeleteStatus(boolean deleteStatus) {
         this.deleteStatus = deleteStatus;
+    }
+    
+      public Object getPropertyByIndex(int option) {
+        String result = "";
+        switch (option) {
+            case 0:
+                result = getCriticismId();
+                break;
+
+            case 1:
+                result = getCriticismName();
+                break;
+
+//            case 2:
+//                result = getJudgement()();
+//                break;
+
+       
+            default:
+                break;
+        }
+        return result;
     }
 }

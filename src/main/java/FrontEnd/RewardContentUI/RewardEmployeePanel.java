@@ -3,6 +3,8 @@ package FrontEnd.RewardContentUI;
 import BackEnd.CriticismManagement.Criticism;
 import BackEnd.EmployeeManagement.Employee;
 import BackEnd.EmployeesRewardsCriticismManagement.EmployeesRewardsCriticism;
+import BackEnd.RewardManagement.Reward;
+import static FrontEnd.CriticismContentUI.CriticismEmployeePanel.tableInit;
 import FrontEnd.Redux.Redux;
 
 import java.awt.Color;
@@ -17,6 +19,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Iterator;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.JFileChooser;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,6 +34,15 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.ss.usermodel.Cell;
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class RewardEmployeePanel extends javax.swing.JPanel
         implements ActionListener, ListSelectionListener, MouseListener {
@@ -49,7 +67,10 @@ public class RewardEmployeePanel extends javax.swing.JPanel
         addButton.addActionListener(this);
         updateButton.addActionListener(this);
         deleteButton.addActionListener(this);
-
+        importExcel.addActionListener(this);
+        exportExcel.addActionListener(this);
+        searchButton.addActionListener(this);
+        refreshButton.addActionListener(this);
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1), // Line color and stroke size
                 "Tìm kiếm",
@@ -146,6 +167,169 @@ public class RewardEmployeePanel extends javax.swing.JPanel
             tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
         }
     }
+public Boolean checkValidData(Employee employee, Criticism criticism, Reward reward) {
+        boolean flag = true;
+        if (employee == null || reward== null || criticism == null) {
+            JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ", "CẢNH BÁO",
+                    JOptionPane.INFORMATION_MESSAGE);
+            flag = false;
+        }
+        return flag;
+    }
+
+      public void handleImportExcel() {
+        try {
+
+            FileInputStream file = new FileInputStream(new File("src/main/resources/files/RewardImportFile.xlsx"));
+
+            // Create Workbook instance holding reference to .xlsx file
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+
+            // Get first/desired sheet from the workbook
+            XSSFSheet sheet = workbook.getSheet("Reward Employee Sheet");
+
+            // Iterate through each rows one by one
+            Iterator<Row> rowIterator = sheet.iterator();
+            while (rowIterator.hasNext()) {
+                ArrayList<Object> dataList = new ArrayList<>();
+
+                Row row = rowIterator.next();
+
+                // For each row, iterate through all the columns
+                Iterator<Cell> cellIterator = row.cellIterator();
+
+                while (cellIterator.hasNext()) {
+
+                    Cell cell = cellIterator.next();
+
+                    // Check the cell type and format accordingly
+                    switch (cell.getCellType()) {
+                        case NUMERIC:
+                            dataList.add(cell.getNumericCellValue());
+                            break;
+
+                        case STRING:
+                            dataList.add(cell.getStringCellValue());
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+               Employee employee = Redux.employeeBUS.getEmployeeById((String) dataList.get(0));
+               Criticism criticism = Redux.criticismBUS.getCriticismByName((String) dataList.get(3));
+               Reward reward = Redux.rewardBUS.getRewardByName((String) dataList.get(1));
+               int rewardCount = dataList.get(2) instanceof Number ? ((Number) dataList.get(2)).intValue() : 0;
+               int faultCount = dataList.get(4) instanceof Number ? ((Number) dataList.get(4)).intValue() : 0;
+               String createdAt = dataList.get(5) instanceof String ? (String) dataList.get(5) : "";
+
+
+                 if (checkValidData(employee, criticism, reward)) {
+                  EmployeesRewardsCriticism employeeRC = new EmployeesRewardsCriticism(employee, reward,rewardCount,criticism, faultCount,  createdAt);
+                      Redux.employeesRewardsCriticismBUS.addEmployeesRewardsCriticismExcel(employeeRC);
+}
+
+                  
+     
+            }
+            file.close();
+            tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
+            JOptionPane.showMessageDialog(null, "Data Imported Successfully");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void handleExportExcel() {
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx");
+            fileChooser.setFileFilter(filter);
+            fileChooser.setDialogTitle("Specify a file to save");
+
+            int userSelection = fileChooser.showSaveDialog(this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                String filePath = fileToSave.getAbsolutePath();
+                if (!filePath.endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+
+                XSSFWorkbook workbook = new XSSFWorkbook();
+                XSSFSheet sheet = workbook.createSheet("Reward Employee Sheet");
+              if (workbook.getSheet("Reward Employee Sheet") == null) {
+                JOptionPane.showMessageDialog(null, "Sheet không tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                 return; 
+              }
+
+                // Write column names to the first row of the sheet
+                XSSFRow headerRow = sheet.createRow(0);
+                for (int j = 0; j < EmployeesRewardsCriticism.getHeaderReward().size(); j++) {
+                    XSSFCell cell = headerRow.createCell(j);
+                    cell.setCellValue(EmployeesRewardsCriticism.getHeaderReward().get(j));
+                }
+
+                for (int i = 0; i < Redux.employeesRewardsCriticismBUS.getlistEmployeeRC().size() - 1; i++) {
+                    XSSFRow row = sheet.createRow(i + 1);
+                    EmployeesRewardsCriticism employeeRC = Redux.employeesRewardsCriticismBUS.getlistEmployeeRC().get(i);
+                    for (int j = 0; j < employeeRC.getHeaderReward().size(); j++) {
+                        Object value =  employeeRC.getPropertyByIndexReward(j);
+                        String cellValue = (value != null) ? value.toString() : "";
+                        XSSFCell cell = row.createCell(j); // Tạo ô trong bảng tính
+                        cell.setCellValue(cellValue); // Ghi giá trị vào ô
+                    }
+                }
+
+                // Write the workbook to the file
+                FileOutputStream out = new FileOutputStream(new File(filePath));
+                workbook.write(out);
+                out.close();
+                workbook.close();
+
+                JOptionPane.showMessageDialog(null, "Data Exported Successfully");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void handleSearch() {
+        String searchOption = (String) searchOptionComboBox.getSelectedItem();
+        String searchValue = searchTextField.getText().trim();
+
+        if (searchValue.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Hãy nhập từ khóa tìm kiếm!", "CẢNH BÁO",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        ArrayList<EmployeesRewardsCriticism> searchResult = new ArrayList<>();
+        switch (searchOption) {
+            case "Tất cả":
+                 Redux.employeesRewardsCriticismBUS.searchEmployeeCriticismByIDAndName(searchValue);
+                searchResult = Redux.employeesRewardsCriticismBUS.getEmployeeCriticismSearchResult();
+                break;
+            case "Mã NV":
+                Redux.employeesRewardsCriticismBUS.searchEmployeeCriticismByID(searchValue);
+                searchResult = Redux.employeesRewardsCriticismBUS.getEmployeeCriticismSearchResult();
+                break;
+
+            case "Tên NV":
+                Redux.employeesRewardsCriticismBUS.searchEmployeeByCriticismName(searchValue);
+                searchResult = Redux.employeesRewardsCriticismBUS.getEmployeeCriticismSearchResult();
+                break;
+
+            default:
+                break;
+        }
+
+        if (searchResult.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả phù hợp!", "CẢNH BÁO",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            tableInit(searchResult);
+        }
+ }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
@@ -153,7 +337,7 @@ public class RewardEmployeePanel extends javax.swing.JPanel
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -179,8 +363,7 @@ public class RewardEmployeePanel extends javax.swing.JPanel
 
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
-        searchOptionComboBox.setModel(
-                new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã Nhân Viên", "Mã Khen Thưởng" }));
+        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Mã NV", "Tên NV" }));
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
@@ -213,31 +396,29 @@ public class RewardEmployeePanel extends javax.swing.JPanel
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(searchTextField)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(searchButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(refreshButton)
-                                .addContainerGap()));
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(searchTextField)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(searchButton)
+                .addGap(18, 18, 18)
+                .addComponent(refreshButton)
+                .addContainerGap())
+        );
         jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(searchTextField)
-                                        .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(refreshButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap()));
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(searchTextField)
+                    .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
 
         importExcel.setBackground(new java.awt.Color(13, 110, 253));
         importExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -246,6 +427,11 @@ public class RewardEmployeePanel extends javax.swing.JPanel
         importExcel.setText("Nhập ");
         importExcel.setIconTextGap(10);
         importExcel.setName("importExcel"); // NOI18N
+        importExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importExcelActionPerformed(evt);
+            }
+        });
 
         tableContainer.setBackground(new java.awt.Color(255, 255, 255));
         tableContainer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
@@ -261,26 +447,26 @@ public class RewardEmployeePanel extends javax.swing.JPanel
 
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][] {
+            new Object [][] {
 
-                },
-                new String[] {
-                        "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Tên Khen Thưởng", "Số Lần", "Tiền Thưởng", "Ngày Tạo"
-                }) {
-            Class[] types = new Class[] {
-                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
-                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            },
+            new String [] {
+                "STT", "Mã Nhân Viên", "Tên Nhân Viên", "Tên Khen Thưởng", "Số Lần", "Tiền Thưởng", "Ngày Tạo"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean[] {
-                    false, false, false, false, false, false, false
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
+                return types [columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+                return canEdit [columnIndex];
             }
         });
         jTable1.setRowHeight(40);
@@ -289,26 +475,23 @@ public class RewardEmployeePanel extends javax.swing.JPanel
         javax.swing.GroupLayout tableContainerLayout = new javax.swing.GroupLayout(tableContainer);
         tableContainer.setLayout(tableContainerLayout);
         tableContainerLayout.setHorizontalGroup(
-                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(tableContainerLayout.createSequentialGroup()
-                                .addGap(25, 25, 25)
-                                .addGroup(tableContainerLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 811,
-                                                Short.MAX_VALUE)
-                                        .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(25, 25, 25)));
+            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tableContainerLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
+                    .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(25, 25, 25))
+        );
         tableContainerLayout.setVerticalGroup(
-                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(tableContainerLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(21, Short.MAX_VALUE)));
+            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tableContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
 
         addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -344,66 +527,56 @@ public class RewardEmployeePanel extends javax.swing.JPanel
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(96, 96, 96)
-                                .addGroup(jPanel1Layout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(63, 63, 63)
-                                                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(69, 69, 69)
-                                                .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(69, 69, 69)
-                                                .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(62, 62, 62)
-                                                .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(96, 96, 96)));
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(96, 96, 96)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(63, 63, 63)
+                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(69, 69, 69)
+                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(69, 69, 69)
+                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(62, 62, 62)
+                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(96, 96, 96))
+        );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(43, 43, 43)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(52, 52, 52)
-                                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(43, 43, 43)));
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(52, 52, 52)
+                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void importExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExcelActionPerformed
+          handleImportExcel();
+    }//GEN-LAST:event_importExcelActionPerformed
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_refreshButtonActionPerformed
         refreshButton.addActionListener(new ActionListener() {
@@ -421,12 +594,12 @@ public class RewardEmployeePanel extends javax.swing.JPanel
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_searchButtonActionPerformed
         // TODO add your handling code here:
-        String searchType = searchOptionComboBox.getSelectedItem().toString();
-        String searchText = searchTextField.getText();
-        ArrayList<EmployeesRewardsCriticism> searchResult = Redux.employeesRewardsCriticismBUS.search(
-                searchType,
-                searchText);
-        tableInit(searchResult);
+//        String searchType = searchOptionComboBox.getSelectedItem().toString();
+//        String searchText = searchTextField.getText();
+//        ArrayList<EmployeesRewardsCriticism> searchResult = Redux.employeesRewardsCriticismBUS.search(
+//                searchType,
+//                searchText);
+//        tableInit(searchResult);
     }// GEN-LAST:event_searchButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -467,8 +640,11 @@ public class RewardEmployeePanel extends javax.swing.JPanel
                         JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (e.getSource() == importExcel) {
-
+             handleImportExcel();
         } else if (e.getSource() == exportExcel) {
+            handleExportExcel();
+        }else if (e.getSource() == searchButton) {
+        handleSearch();
 
         }
         addButton.setEnabled(true);
