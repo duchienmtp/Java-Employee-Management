@@ -74,6 +74,14 @@ public class AssignmentBUS {
         }
     }
 
+    public void addAssignmentExcel(Assignment asm) {
+        Boolean ok = asmD.addNewAssignment(asm);
+
+        if (ok) {
+            list.add(asm);
+        }
+    }
+
     public void updateAssignment(ArrayList<Object> prevState, Assignment newasm) {
         if (asmD.updateAssignment(prevState, newasm)) {
             for (int i = 0; i < list.size(); i++) {

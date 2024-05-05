@@ -92,16 +92,19 @@ public class SalaryContentPanel extends javax.swing.JPanel
         if (!Redux.isAdmin) {
             model.addElement(Redux.userId);
         } else {
-            for (Employee employee : Redux.employeeBUS.getEmployeeNotHaveSalaryList()) {
-                if (!employee.getDeleteStatus()) {
-                    model.addElement(employee.getId());
+            if (Redux.employeeBUS.getEmployeeNotHaveSalaryList() != null) {
+                for (Employee employee : Redux.employeeBUS.getEmployeeNotHaveSalaryList()) {
+                    if (!employee.getDeleteStatus()) {
+                        model.addElement(employee.getId());
+                    }
                 }
+                employeeIDComboBox.setModel(model);
+                employeeIDComboBox.setSelectedIndex(0);
+                employeeNameTextField.setText(
+                        Redux.employeeBUS.getEmployeeById(
+                                (String) employeeIDComboBox.getSelectedItem())
+                                .getFullName());
             }
-            employeeIDComboBox.setModel(model);
-            employeeIDComboBox.setSelectedIndex(0);
-            employeeNameTextField.setText(
-                    Redux.employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem())
-                            .getFullName());
 
             if (model.getSize() == 1) {
                 String selectedEmployeeId = (String) model.getElementAt(0);

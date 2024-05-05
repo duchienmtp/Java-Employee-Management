@@ -224,11 +224,16 @@ public class EmployeeDAO {
         dbConnection = new ConnectDB();
         ArrayList<Employee> employeeList = new ArrayList<>();
         try {
-            String query = "SELECT E.id, E.deleteStatus " +
-                    "FROM Employees E " +
-                    "LEFT JOIN EmployeeSalaries ES ON E.id = ES.employeeId " +
-                    "WHERE E.id NOT LIKE 'ADM%' AND E.deleteStatus = 0 AND ES.employeeId IS NULL " +
-                    "OR (MONTH(ES.createdAt) != MONTH(GETDATE()) OR YEAR(ES.createdAt) != YEAR(GETDATE()));";
+            String query = "SELECT DISTINCT E.id, E.deleteStatus" +
+                    " FROM Employees E" +
+                    " WHERE E.id NOT LIKE 'ADM%' AND E.deleteStatus = 0 " +
+                    " AND NOT EXISTS (" +
+                    "     SELECT 1" +
+                    "     FROM EmployeeSalaries t1" +
+                    "     WHERE t1.employeeId = E.id" +
+                    "     AND MONTH(t1.createdAt) = MONTH(GETDATE())" +
+                    "     AND YEAR(t1.createdAt) = YEAR(GETDATE())" +
+                    " );";
             ResultSet rs = dbConnection.sqlQuery(query);
 
             if (rs != null) {

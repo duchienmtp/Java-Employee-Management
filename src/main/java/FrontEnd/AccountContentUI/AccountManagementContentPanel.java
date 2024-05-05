@@ -56,7 +56,6 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         deleteButton.addActionListener(this);
 
         // Đặt callback cho AccountForm
-        // accountForm.setSubmitCallback(this::onFormSubmit);
         TitledBorder titledBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1), // Line color and stroke size
                 "Tìm kiếm",
@@ -78,7 +77,6 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         // tableInit(Redux.accountList);
         tableInit(Redux.accountBUS.getAccountList());
         jTable1.getSelectionModel().addListSelectionListener(this);
-        jPanel1.addMouseListener(this);
         addMouseListener(this);
 
         setVisible(true);
@@ -102,7 +100,8 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
 
     public void insertTableRow() {
         accountForm = new AccountForm();
-        accountForm.setTitle("THÊM MỚI THÔNG TIN CÁ NHÂN CỦA NHÂN VIÊN");
+        accountForm.setTitle("THÊM MỚI THÔNG TIN TÀI KHOẢN CỦA NHÂN VIÊN");
+        accountForm.formInit();
         accountForm.setVisible(true);
     }
 
@@ -116,6 +115,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         dataList.addAll(accountPropertiesValue);
         accountForm = new AccountForm();
         accountForm.setTitle("CẬP NHẬT THÔNG TIN TÀI KHOẢN CỦA NHÂN VIÊN");
+        accountForm.formInit();
         accountForm.setVisible(true);
         accountForm.showFormWithData(dataList);
 
@@ -174,12 +174,14 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         }
         addButton.setEnabled(true);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         tableContainer = new javax.swing.JPanel();
@@ -206,23 +208,24 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         tableContainer.setPreferredSize(new java.awt.Dimension(863, 364));
 
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
         tableLabel.setText("Danh sách tài khoản của nhân viên");
         tableLabel.setName("tableLabel"); // NOI18N
 
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "STT", "Mã Nhân Viên", "Tên Tài Khoản", "Email", "Phân Quyền", "Trạng Thái"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                },
+                new String[] {
+                        "STT", "Mã Nhân Viên", "Tên Tài Khoản", "Email", "Phân Quyền", "Trạng Thái"
+                }) {
+            Class[] types = new Class[] {
+                    java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class,
+                    java.lang.String.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -239,16 +242,15 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         javax.swing.GroupLayout tableContainerLayout = new javax.swing.GroupLayout(tableContainer);
         tableContainer.setLayout(tableContainerLayout);
         tableContainerLayout.setHorizontalGroup(
-            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
-                .addGap(25, 25, 25))
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(tableContainerLayout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
+                                .addGap(25, 25, 25))
+                        .addGroup(tableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
+                                .addContainerGap()));
         tableContainerLayout.setVerticalGroup(
                 tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(tableContainerLayout.createSequentialGroup()
@@ -319,6 +321,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
 
         searchTextField.setBackground(new java.awt.Color(204, 204, 204));
         searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        searchTextField.setForeground(new java.awt.Color(0, 0, 0));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
         searchTextField.addActionListener(new java.awt.event.ActionListener() {
@@ -417,39 +420,20 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
                                 .addGap(43, 43, 43)));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void importExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExcelActionPerformed
-        // TODO add your handling code here:
-        // Sử dụng JFileChooser để người dùng chọn tệp Excel
-    JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setDialogTitle("Chọn tệp Excel"); // Tiêu đề của hộp thoại
-    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); // Chỉ cho phép chọn tệp
-    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Tệp Excel", "xlsx")); // Chỉ chấp nhận tệp xlsx
-    
-    int userSelection = fileChooser.showOpenDialog(null); // Mở hộp thoại để người dùng chọn tệp
+    private void importExcelActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_importExcelActionPerformed
+        try {
+            FileInputStream file = new FileInputStream(new File("src/main/resources/files/ImportFile.xlsx"));
 
-    if (userSelection == JFileChooser.APPROVE_OPTION) { // Nếu người dùng chọn tệp
-        File selectedFile = fileChooser.getSelectedFile(); // Lấy tệp được chọn
-        
-        try (FileInputStream fileInputStream = new FileInputStream(selectedFile);
-             XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream)) {
+            // Create Workbook instance holding reference to .xlsx file
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
 
-            // Lấy sheet đầu tiên hoặc sheet theo tên
+            // Get first/desired sheet from the workbook
             XSSFSheet sheet = workbook.getSheet("Account Sheet");
-            if (sheet == null) {
-                JOptionPane.showMessageDialog(null, "Sheet 'Account Sheet' không tìm thấy trong tệp Excel.");
-                return;
-            }
 
-            boolean isFirstRow = true;
             Iterator<Row> rowIterator = sheet.iterator();
 
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-
-                if (isFirstRow) { // Bỏ qua tiêu đề
-                    isFirstRow = false;
-                    continue;
-                }
 
                 List<Object> dataList = new ArrayList<>();
                 Iterator<Cell> cellIterator = row.cellIterator();
@@ -471,10 +455,6 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
                     }
                 }
 
-                if (dataList.size() < 6) { // Đảm bảo đủ dữ liệu
-                    continue; // Bỏ qua hàng thiếu dữ liệu
-                }
-
                 String employeeId = dataList.get(0).toString();
 
                 // Kiểm tra xem Employee có tồn tại không
@@ -485,32 +465,24 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
 
                 if (checkValidData(employee)) {
                     Account account = new Account(
-                        employee,
-                        dataList.get(1).toString(),
-                        dataList.get(2).toString(),
-                        dataList.get(3).toString(),
-                        dataList.get(4).toString(),
-                        dataList.get(5).toString()
-                    );
+                            employee,
+                            dataList.get(1).toString(),
+                            dataList.get(2).toString(),
+                            dataList.get(3).toString(),
+                            dataList.get(4).toString(),
+                            dataList.get(5).toString());
 
                     Redux.accountBUS.addAccountExcel(account);
                 }
             }
-
+            file.close();
             tableInit(Redux.accountBUS.getAccountList());
             JOptionPane.showMessageDialog(null, "Dữ liệu đã được nhập thành công!");
-        
+
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Lỗi trong quá trình đọc tệp Excel: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Lỗi khi nhập dữ liệu: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "Bạn đã hủy chọn tệp.");
-    }
-    }//GEN-LAST:event_importExcelActionPerformed
+    }// GEN-LAST:event_importExcelActionPerformed
 
     private void exportExcelActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exportExcelActionPerformed
         JFileChooser fileChooser = new JFileChooser();
@@ -531,18 +503,17 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
             // Kiểm tra nếu tệp đã tồn tại và hỏi người dùng nếu muốn ghi đè
             if (new File(filePath).exists()) {
                 int confirm = JOptionPane.showConfirmDialog(
-                    this,
-                    "Tệp đã tồn tại. Bạn có muốn ghi đè không?",
-                    "Xác nhận",
-                    JOptionPane.YES_NO_OPTION
-                );
+                        this,
+                        "Tệp đã tồn tại. Bạn có muốn ghi đè không?",
+                        "Xác nhận",
+                        JOptionPane.YES_NO_OPTION);
                 if (confirm != JOptionPane.YES_OPTION) {
                     return; // Nếu người dùng không muốn ghi đè, thoát khỏi phương thức
                 }
             }
 
             try (XSSFWorkbook workbook = new XSSFWorkbook();
-                 FileOutputStream out = new FileOutputStream(new File(filePath))) {
+                    FileOutputStream out = new FileOutputStream(new File(filePath))) {
 
                 XSSFSheet sheet = workbook.createSheet("Account Sheet");
 
@@ -573,11 +544,10 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
             } catch (IOException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(
-                    this,
-                    "Lỗi khi ghi tệp Excel: " + ex.getMessage(),
-                    "Lỗi",
-                    JOptionPane.ERROR_MESSAGE
-                );
+                        this,
+                        "Lỗi khi ghi tệp Excel: " + ex.getMessage(),
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }// GEN-LAST:event_exportExcelActionPerformed
@@ -586,7 +556,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         // TODO add your handling code here:
     }// GEN-LAST:event_searchTextFieldActionPerformed
 
-// nút tìm kiếm 
+    // nút tìm kiếm
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_searchButtonActionPerformed
         // TODO add your handling code here:
         String searchText = searchTextField.getText().trim();
@@ -616,7 +586,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         }
     }// GEN-LAST:event_searchButtonActionPerformed
 
-// bảng sau khi nhập ký tự cần tìm 
+    // bảng sau khi nhập ký tự cần tìm
     public void tableInit(List<Account> accounts) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
@@ -633,7 +603,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         }
     }
 
-    //kiểm tra dữ liệu từ excel
+    // kiểm tra dữ liệu từ excel
     public Boolean checkValidData(Employee employee) {
         boolean flag = true;
         if (employee == null) {
@@ -643,33 +613,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         }
         return flag;
     }
- 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == addButton) {
-            insertTableRow();
-        } else if (e.getSource() == deleteButton) {
-            if (selectedRow >= 0) {
-                deleteTableRow();
-            } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else if (e.getSource() == editButton) {
-            if (selectedRow >= 0) {
-                updateTableRow();
-            } else {
-                JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trước!", "CẢNH BÁO",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else if (e.getSource() == importExcel) {
-            //handleImportExcel();
-        } else if (e.getSource() == exportExcel) {
 
-        }
-        addButton.setEnabled(true);
-    }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JButton deleteButton;
@@ -688,15 +632,8 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
     // End of variables declaration//GEN-END:variables
     @Override
     public void mouseClicked(MouseEvent e) {
-        // if (e.getSource() == this) {
-        // Component clickedComponent = this.getComponentAt(this.getMousePosition());
-        // if (clickedComponent != jTable1 && selectionConfirmed) {
-        // jTable1.getSelectionModel().clearSelection();
-        // selectionConfirmed = false;
-        // }
-        // }
 
-        Component clickedComponent = jPanel1.getComponentAt(jPanel1.getMousePosition());
+        Component clickedComponent = this.getComponentAt(this.getMousePosition());
         if (clickedComponent != jTable1 && selectionConfirmed) {
             jTable1.getSelectionModel().clearSelection();
             selectionConfirmed = false;

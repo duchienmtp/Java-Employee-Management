@@ -2,6 +2,7 @@ package FrontEnd.ProjectContentUI;
 
 import com.github.lgooddatepicker.components.DatePickerSettings;
 
+import BackEnd.DepartmentManagement.Department;
 import BackEnd.EmployeeManagement.Employee;
 import BackEnd.ProjectsManagement.*;
 import FrontEnd.Redux.Redux;
@@ -18,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -67,8 +69,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
         jTable1.setDefaultRenderer(Object.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
         jTable1.setDefaultRenderer(Double.class, centerRenderer);
-
-        formInit();
+        
         tableInit(projectList);
 
         jTable1.getSelectionModel().addListSelectionListener(this);
@@ -80,6 +81,13 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
 
     public void formInit() {
         projectIDTextField.setText(Redux.projectBUS.getNextID());
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        for (Department department : Redux.departmentBUS.getDepartmentList()) {
+            if (!department.isDeleteStatus()) {
+                model.addElement(department.getDepartmentId());
+            }
+        }
+        DepartmentIdCombo.setModel(model);
     }
 
     public void tableInit(ArrayList<Project> list) {
@@ -273,6 +281,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -340,21 +349,21 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
         projectNameTextField.setName("projectNameTextField"); // NOI18N
         projectNameTextField.setOpaque(true);
 
-        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
-        addButton.setText("Thêm");
         addButton.setBackground(new java.awt.Color(25, 135, 84));
-        addButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         addButton.setForeground(new java.awt.Color(255, 255, 255));
+        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
+        addButton.setText("Thêm");
+        addButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         addButton.setIconTextGap(10);
         addButton.setName("addButton"); // NOI18N
 
-        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
-        deleteButton.setText("Xóa");
         deleteButton.setBackground(new java.awt.Color(220, 53, 69));
-        deleteButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         deleteButton.setForeground(new java.awt.Color(255, 255, 255));
+        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
+        deleteButton.setText("Xóa");
+        deleteButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         deleteButton.setIconTextGap(10);
         deleteButton.setName("deleteButton"); // NOI18N
         deleteButton.setOpaque(true);
@@ -417,7 +426,6 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
         projectPlaceLabel.setName("projectPlaceLabel"); // NOI18N
         projectPlaceLabel.setOpaque(true);
 
-        DepartmentIdCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DP001" }));
         DepartmentIdCombo.setBackground(new java.awt.Color(204, 204, 204));
         DepartmentIdCombo.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         DepartmentIdCombo.setForeground(new java.awt.Color(0, 0, 0));
@@ -536,8 +544,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                                                 false)
                                         .addComponent(projectIDLabel,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                40,
-                                                Short.MAX_VALUE)
+                                                40, Short.MAX_VALUE)
                                         .addComponent(projectIDTextField))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
@@ -550,8 +557,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                                                 Short.MAX_VALUE)
                                         .addComponent(projectNameTextField,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                40,
-                                                Short.MAX_VALUE))
+                                                40, Short.MAX_VALUE))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
                                         .createParallelGroup(
@@ -571,8 +577,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                                                 false)
                                         .addComponent(startDatePicker,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                34,
-                                                Short.MAX_VALUE)
+                                                34, Short.MAX_VALUE)
                                         .addComponent(endDatePicker,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
@@ -584,8 +589,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                                                 false)
                                         .addComponent(projectPlaceLabel,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                40,
-                                                Short.MAX_VALUE)
+                                                40, Short.MAX_VALUE)
                                         .addComponent(projectPlaceTextField))
                                 .addGap(18, 18, 18)
                                 .addGroup(projectFormContainerLayout
@@ -594,8 +598,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                                                 false)
                                         .addComponent(DepartmentIdCombo,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                36,
-                                                Short.MAX_VALUE)
+                                                36, Short.MAX_VALUE)
                                         .addComponent(jLabel1,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
@@ -607,8 +610,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(
                                         javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                        60,
-                                        Short.MAX_VALUE)
+                                        60, Short.MAX_VALUE)
                                 .addGroup(projectFormContainerLayout
                                         .createParallelGroup(
                                                 javax.swing.GroupLayout.Alignment.LEADING)
@@ -653,8 +655,8 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                 }) {
             Class[] types = new Class[] {
                     java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
-                    java.lang.String.class,
-                    java.lang.Object.class, java.lang.Object.class, java.lang.String.class
+                    java.lang.String.class, java.lang.Object.class, java.lang.Object.class,
+                    java.lang.String.class
             };
             boolean[] canEdit = new boolean[] {
                     false, false, false, false, false, false, false
@@ -693,8 +695,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                                                 Short.MAX_VALUE)
                                         .addComponent(jScrollPane1,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                513,
-                                                Short.MAX_VALUE))
+                                                513, Short.MAX_VALUE))
                                 .addContainerGap()));
         projectTableContainerLayout.setVerticalGroup(
                 projectTableContainerLayout
@@ -725,8 +726,7 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(
                                         javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                        32,
-                                        Short.MAX_VALUE)
+                                        32, Short.MAX_VALUE)
                                 .addComponent(projectTableContainer,
                                         javax.swing.GroupLayout.PREFERRED_SIZE,
                                         javax.swing.GroupLayout.DEFAULT_SIZE,
@@ -736,14 +736,12 @@ public class ProjectManagementContentPanel extends javax.swing.JPanel
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(40, 40, 40)
-                                .addGroup(jPanel1Layout
-                                        .createParallelGroup(
-                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                false)
+                                .addGroup(jPanel1Layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                        false)
                                         .addComponent(projectFormContainer,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                560,
-                                                Short.MAX_VALUE)
+                                                560, Short.MAX_VALUE)
                                         .addComponent(projectTableContainer,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE,

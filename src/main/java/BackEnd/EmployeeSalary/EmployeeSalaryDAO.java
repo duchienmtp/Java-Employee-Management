@@ -24,7 +24,7 @@ public class EmployeeSalaryDAO {
         ArrayList<EmployeeSalary> employeeSalaryList = new ArrayList<>();
         dbConnection = new ConnectDB();
         try {
-            String query = "SELECT * FROM EmployeeSalaries";
+            String query = "SELECT * FROM EmployeeSalaries ORDER BY createdAt DESC";
             ResultSet rs = dbConnection.sqlQuery(query);
 
             if (rs != null) {
@@ -102,17 +102,22 @@ public class EmployeeSalaryDAO {
         ArrayList<Object> salaryDetail = new ArrayList<>();
         dbConnection = new ConnectDB();
         try {
-            String query = "SELECT E.id, S.baseSalary, P.positionSalaryAllowance, ERC.rewardId, R.rewardName, ERC.rewardCount, R.reward, ERC.criticismId, C.criticismName, ERC.faultCount, C.judgement"
+            String query = "SELECT DISTINCT E.id, S.baseSalary, P.positionSalaryAllowance, ERC.rewardId, R.rewardName, "
                     +
-                    " FROM Employees E" +
-                    " INNER JOIN Specialties S on E.specialtyId = S.specialtyId" +
-                    " INNER JOIN Positions P on E.positionId = P.positionId" +
-                    " INNER JOIN EmployeesRewardsCriticism ERC on E.id = ERC.employeeId" +
-                    " INNER JOIN Rewards R on ERC.rewardId = R.rewardId" +
-                    " INNER JOIN Criticism C on ERC.criticismId = C.criticismId" +
-                    " LEFT JOIN EmployeeSalaries ES on E.id = ES.employeeId" +
-                    " WHERE E.id NOT LIKE 'ADM%' AND E.id = '" + employeeId
-                    + "' AND E.deleteStatus = 0  AND (MONTH(ERC.createdAt) = MONTH(GETDATE()) AND (YEAR(ERC.createdAt) = YEAR(GETDATE())));";
+                    "ERC.rewardCount, R.reward, ERC.criticismId, C.criticismName, ERC.faultCount, C.judgement " +
+                    "FROM Employees E " +
+                    "INNER JOIN Specialties S ON E.specialtyId = S.specialtyId " +
+                    "INNER JOIN Positions P ON E.positionId = P.positionId " +
+                    "LEFT JOIN " +
+                    "(SELECT employeeId, rewardId, rewardCount, criticismId, faultCount, createdAt " +
+                    "FROM EmployeesRewardsCriticism " +
+                    "WHERE MONTH(createdAt) = MONTH(GETDATE()) AND YEAR(createdAt) = YEAR(GETDATE())) " +
+                    "ERC ON E.id = ERC.employeeId " +
+                    "LEFT JOIN Rewards R ON ERC.rewardId = R.rewardId " +
+                    "LEFT JOIN Criticism C ON ERC.criticismId = C.criticismId " +
+                    "LEFT JOIN EmployeeSalaries ES ON E.id = ES.employeeId " +
+                    "WHERE E.id NOT LIKE 'ADM%' AND E.id = '" + employeeId + "' AND E.deleteStatus = 0;";
+
             ResultSet rs = dbConnection.sqlQuery(query);
             if (rs != null) {
                 String empId = "";
@@ -124,15 +129,17 @@ public class EmployeeSalaryDAO {
                     baseSalary = rs.getInt("baseSalary");
                     positionSalaryAllowance = rs.getDouble("positionSalaryAllowance");
 
-                    String rewardId = rs.getString("rewardId"),
-                            rewardName = rs.getString("rewardName");
-                    int rewardCount = rs.getInt("rewardCount"),
-                            reward = rs.getInt("reward");
+                    String rewardId = rs.getString("rewardId") != null ? rs.getString("rewardId") : "RE001";
+                    String rewardName = rs.getString("rewardName") != null ? rs.getString("rewardName")
+                            : "Không có thưởng";
+                    int rewardCount = rs.getObject("rewardCount") != null ? rs.getInt("rewardCount") : 0;
+                    int reward = rs.getObject("reward") != null ? rs.getInt("reward") : 0;
 
-                    String criticismId = rs.getString("criticismId"),
-                            criticismName = rs.getString("criticismName");
-                    int faultCount = rs.getInt("faultCount"),
-                            judgement = rs.getInt("judgement");
+                    String criticismId = rs.getString("criticismId") != null ? rs.getString("criticismId") : "CR001";
+                    String criticismName = rs.getString("criticismName") != null ? rs.getString("criticismName")
+                            : "Không có lỗi";
+                    int faultCount = rs.getObject("faultCount") != null ? rs.getInt("faultCount") : 0;
+                    int judgement = rs.getObject("judgement") != null ? rs.getInt("judgement") : 0;
 
                     Reward employeeReward = new Reward(rewardId, rewardName, reward);
                     Criticism employeeCriticism = new Criticism(criticismId, criticismName, judgement);

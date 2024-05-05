@@ -27,17 +27,14 @@ public class EmployeesRewardsCriticismBUS {
     public ArrayList<EmployeesRewardsCriticism> getlistEmployeeRC() {
         return this.listEmployeeRC;
     }
-       public void addEmployeesRewardsCriticismExcel(EmployeesRewardsCriticism employeerc) {
+
+    public void addEmployeesRewardsCriticismExcel(EmployeesRewardsCriticism employeerc) {
         Boolean ok = employeeRCDAO.addEmployeesRewardsCriticism(employeerc);
 
         if (ok) {
-             listEmployeeRC.add(employeerc);
-              JOptionPane.showMessageDialog(null, "Thêm mới từ excel thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
-
+            listEmployeeRC.add(employeerc);
         }
-       }
-
-
+    }
 
     public EmployeesRewardsCriticism getEmployeesRewardsCriticism(String employeeId, String rewardId,
             String criticismId,
@@ -121,34 +118,36 @@ public class EmployeesRewardsCriticismBUS {
     public ArrayList<EmployeesRewardsCriticism> getListEmployeeCriticism() {
         return this.listEmployeeCriticism;
     }
+
     public void searchEmployeeCriticismByIDAndName(String searchValue) {
-    // Xóa kết quả tìm kiếm cũ để chuẩn bị cho lần tìm kiếm mới
-    employeeCriticismSearchResult.clear();
-    // Duyệt qua danh sách các đối tượng EmployeesRewardsCriticism
-    for (EmployeesRewardsCriticism employeeCriticism : listEmployeeRC) {
-        // Kiểm tra xem ID hoặc tên đầy đủ của nhân viên có chứa giá trị tìm kiếm hay không
-        if (employeeCriticism.getEmployee().getId().toLowerCase().contains(searchValue.toLowerCase()) || 
-             employeeCriticism.getEmployee().getFullName().toLowerCase().contains(searchValue.toLowerCase())) {
-            // Nếu có, thêm đối tượng này vào kết quả tìm kiếm
-            employeeCriticismSearchResult.add(employeeCriticism);
+        // Xóa kết quả tìm kiếm cũ để chuẩn bị cho lần tìm kiếm mới
+        employeeCriticismSearchResult.clear();
+        // Duyệt qua danh sách các đối tượng EmployeesRewardsCriticism
+        for (EmployeesRewardsCriticism employeeCriticism : listEmployeeRC) {
+            // Kiểm tra xem ID hoặc tên đầy đủ của nhân viên có chứa giá trị tìm kiếm hay
+            // không
+            if (employeeCriticism.getEmployee().getId().toLowerCase().contains(searchValue.toLowerCase()) ||
+                    employeeCriticism.getEmployee().getFullName().toLowerCase().contains(searchValue.toLowerCase())) {
+                // Nếu có, thêm đối tượng này vào kết quả tìm kiếm
+                employeeCriticismSearchResult.add(employeeCriticism);
+            }
         }
     }
-}
 
- public void searchEmployeeByCriticismName(String searchValue) {
-       employeeCriticismSearchResult.clear();
+    public void searchEmployeeByCriticismName(String searchValue) {
+        employeeCriticismSearchResult.clear();
         for (EmployeesRewardsCriticism employeeCriticism : listEmployeeRC) {
-            if ( employeeCriticism.getEmployee().getFullName().toLowerCase().contains(searchValue.toLowerCase())) {
+            if (employeeCriticism.getEmployee().getFullName().toLowerCase().contains(searchValue.toLowerCase())) {
                 employeeCriticismSearchResult.add(employeeCriticism);
             }
         }
     }
 
     public void searchEmployeeCriticismByID(String searchValue) {
-       employeeCriticismSearchResult.clear();
+        employeeCriticismSearchResult.clear();
         for (EmployeesRewardsCriticism employeeCriticism : listEmployeeRC) {
-            if ( employeeCriticism.getEmployee().getId().toLowerCase().contains(searchValue.toLowerCase())) {
-               employeeCriticismSearchResult.add(employeeCriticism);
+            if (employeeCriticism.getEmployee().getId().toLowerCase().contains(searchValue.toLowerCase())) {
+                employeeCriticismSearchResult.add(employeeCriticism);
             }
         }
     }

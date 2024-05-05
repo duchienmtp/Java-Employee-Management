@@ -19,9 +19,6 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
             projectButton.setVisible(false);
         }
 
-        assignmentManagementContentPanel = new AssignmentManagementContentPanel();
-        projectManagementContentPanel = new ProjectManagementContentPanel();
-
         assignmentContainer.setLayout(new GridLayout(1, 1));
 
         showAssignmentContentPanel();
@@ -49,6 +46,7 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
 
     private void showAssignmentContentPanel() {
         clearAppContentPanel();
+        assignmentManagementContentPanel = new AssignmentManagementContentPanel();
         assignmentContainer.add(assignmentManagementContentPanel);
         validate();
         repaint();
@@ -56,6 +54,8 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
 
     private void showProjectContentPanel() {
         clearAppContentPanel();
+        projectManagementContentPanel = new ProjectManagementContentPanel();
+        projectManagementContentPanel.formInit();
         assignmentContainer.add(projectManagementContentPanel);
         validate();
         repaint();
@@ -63,7 +63,8 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         appSubMenu = new javax.swing.JPanel();
@@ -99,23 +100,24 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
         javax.swing.GroupLayout appSubMenuLayout = new javax.swing.GroupLayout(appSubMenu);
         appSubMenu.setLayout(appSubMenuLayout);
         appSubMenuLayout.setHorizontalGroup(
-            appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(appSubMenuLayout.createSequentialGroup()
-                .addGap(96, 96, 96)
-                .addComponent(assignmentButton)
-                .addGap(86, 86, 86)
-                .addComponent(projectButton)
-                .addGap(529, 529, 529))
-        );
+                appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(appSubMenuLayout.createSequentialGroup()
+                                .addGap(96, 96, 96)
+                                .addComponent(assignmentButton)
+                                .addGap(86, 86, 86)
+                                .addComponent(projectButton)
+                                .addGap(529, 529, 529)));
         appSubMenuLayout.setVerticalGroup(
-            appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(appSubMenuLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(assignmentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(projectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23))
-        );
+                appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(appSubMenuLayout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addGroup(
+                                        appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .addComponent(assignmentButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(projectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(23, 23, 23)));
 
         assignmentContainer.setBackground(new java.awt.Color(255, 255, 255));
         assignmentContainer.setAlignmentX(0.0F);
@@ -126,28 +128,28 @@ public class AssignmentContentPanel extends javax.swing.JPanel implements Action
         javax.swing.GroupLayout assignmentContainerLayout = new javax.swing.GroupLayout(assignmentContainer);
         assignmentContainer.setLayout(assignmentContainerLayout);
         assignmentContainerLayout.setHorizontalGroup(
-            assignmentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1055, Short.MAX_VALUE)
-        );
+                assignmentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1055, Short.MAX_VALUE));
         assignmentContainerLayout.setVerticalGroup(
-            assignmentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
-        );
+                assignmentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 640, Short.MAX_VALUE));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(appSubMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(assignmentContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(appSubMenu, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(assignmentContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(appSubMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(assignmentContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(appSubMenu, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(0, 0, 0)
+                                .addComponent(assignmentContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

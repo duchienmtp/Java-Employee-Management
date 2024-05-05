@@ -47,7 +47,6 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
     }
 
     public void formInit() {
-
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         for (Degree degree : Redux.degreeBUS.getDegreeList()) {
             if (!degree.getDeleteStatus()) {
@@ -71,7 +70,6 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
     public void handleSubmitForm() {
         formData = getDataFromForm();
-
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Xác nhận thao tác ?",
                 "XÁC NHẬN ?",

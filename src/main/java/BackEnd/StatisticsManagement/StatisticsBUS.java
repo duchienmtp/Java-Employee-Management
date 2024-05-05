@@ -25,7 +25,7 @@ public class StatisticsBUS {
     }
 
     public ArrayList<Object> getTop5HighestSalaryEmployees() {
-        return listTop5HighestSalaryEmployees;
+        return listTop5HighestSalaryEmployees.size() > 0 ? listTop5HighestSalaryEmployees : null;
     }
 
     public ArrayList<Object> getEmployeeDegree() {

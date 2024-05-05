@@ -1,5 +1,8 @@
 package FrontEnd.DepartmentContentUI;
 
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -10,6 +13,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,9 +24,11 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.util.List;
 
+import BackEnd.DegreeManagement.Degree;
 import BackEnd.DepartmentManagement.Department;
 import BackEnd.EmployeeManagement.Employee;
-
+import BackEnd.PositionManagement.Position;
+import BackEnd.SpecialtyManagement.Specialty;
 import FrontEnd.Redux.Redux;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,6 +37,8 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -105,30 +114,17 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
                 JOptionPane.showMessageDialog(this, "Hãy chọn một dòng trước!", "Cảnh Báo",
                         JOptionPane.INFORMATION_MESSAGE);
             }
-        }else if (e.getSource() == exportExcel){
+        } else if (e.getSource() == exportExcel) {
             exportToExcel();
-        }else if(e.getSource() == importExcel){
+        } else if (e.getSource() == importExcel) {
             importFromExcel();
         }
         addButton.setEnabled(true);
     }
+
     public void importFromExcel() {
-    try {
-        // Tạo một đối tượng JFileChooser
-        JFileChooser fileChooser = new JFileChooser();
-
-        // Thiết lập bộ lọc chỉ cho phép chọn các tệp có định dạng .xlsx
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx");
-        fileChooser.setFileFilter(filter);
-
-        // Hiển thị hộp thoại chọn tệp và kiểm tra xem người dùng đã chọn tệp nào chưa
-        int result = fileChooser.showOpenDialog(null);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            // Lấy đường dẫn tệp đã chọn
-            File selectedFile = fileChooser.getSelectedFile();
-
-            // Tiếp tục xử lý dữ liệu từ tệp đã chọn
-            FileInputStream file = new FileInputStream(selectedFile);
+        try {
+            FileInputStream file = new FileInputStream(new File("src/main/resources/files/ImportFile.xlsx"));
 
             // Create Workbook instance holding reference to .xlsx file
             XSSFWorkbook workbook = new XSSFWorkbook(file);
@@ -137,52 +133,75 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
             XSSFSheet sheet = workbook.getSheet("Department Sheet");
 
             // Iterate through each rows one by one
-            for (Row row : sheet) {
-                // Skip the header row
-                if (row.getRowNum() == 0) {
-                    continue;
+            Iterator<Row> rowIterator = sheet.iterator();
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+
+                ArrayList<Object> dataList = new ArrayList<>();
+
+                // For each row, iterate through all the columns
+                Iterator<Cell> cellIterator = row.cellIterator();
+
+                while (cellIterator.hasNext()) {
+
+                    Cell cell = cellIterator.next();
+
+                    // Check the cell type and format accordingly
+                    switch (cell.getCellType()) {
+                        case NUMERIC:
+                            dataList.add(cell.getNumericCellValue());
+                            break;
+
+                        case STRING:
+                            dataList.add(cell.getStringCellValue());
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
-                String departmentId = row.getCell(0).getStringCellValue();
-                String departmentName = row.getCell(1).getStringCellValue();
-                String departmentLeaderId = row.getCell(2).getStringCellValue();
-                boolean deleteStatus = row.getCell(3).getBooleanCellValue();
 
-                // Create a new Department object
-                Department department = new Department(departmentId, departmentName, new Employee(departmentLeaderId), deleteStatus);
+                String employeeId = dataList.get(2).toString();
 
-                // Add the department to the database
+                // Kiểm tra xem Employee có tồn tại không
+                Employee employee = Redux.employeeBUS.getEmployeeById(employeeId);
+                if (employee == null) {
+                    continue; // Bỏ qua nếu không có Employee
+                }
+
+                Department department = new Department((String) dataList.get(0), (String) dataList.get(1),
+                        employee, false);
+
                 Redux.departmentBUS.addDepartmentExcel(department);
+
             }
             file.close();
 
-            // Update the table with the new data
             tableInit(Redux.departmentBUS.getDepartmentList());
             JOptionPane.showMessageDialog(null, "Data Imported Successfully");
-        } else {
-            // Người dùng đã hủy việc chọn tệp, bạn có thể xử lý tùy ý ở đây
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Failed to import data from Excel file.");
     }
-}
-        public void exportToExcel() {
+
+    public void exportToExcel() {
         DefaultTableModel model = (DefaultTableModel) tblDepartment.getModel();
-        
+
         try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("Department Data");
+            Sheet sheet = workbook.createSheet("Department Sheet");
 
             // Tiêu đề của các cột
             Row headerRow = sheet.createRow(0);
-            for (int i = 0; i < model.getColumnCount(); i++) {
-                headerRow.createCell(i).setCellValue(model.getColumnName(i));
+            for (int i = 0; i < Department.getHeader().size(); i++) {
+                headerRow.createCell(i).setCellValue(Department.getHeader().get(i));
             }
 
             // Dữ liệu từ bảng
-            for (int row = 0; row < model.getRowCount(); row++) {
+            for (int row = 0; row < Redux.departmentBUS.getDepartmentList().size(); row++) {
                 Row excelRow = sheet.createRow(row + 1);
+                Department department = Redux.departmentBUS.getDepartmentList().get(row);
                 for (int col = 0; col < model.getColumnCount(); col++) {
-                    Object cellValue = model.getValueAt(row, col);
+                    Object cellValue = department.getPropertyByIndex(col);
                     if (cellValue != null) {
                         excelRow.createCell(col).setCellValue(cellValue.toString());
                     } else {
@@ -197,7 +216,10 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
             int userSelection = fileChooser.showSaveDialog(this);
             if (userSelection == JFileChooser.APPROVE_OPTION) {
                 String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                try (FileOutputStream outputStream = new FileOutputStream(filePath + ".xlsx")) {
+                if (!filePath.endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+                try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
                     workbook.write(outputStream);
                     JOptionPane.showMessageDialog(this, "Xuất file Excel thành công!");
                 } catch (IOException ex) {
@@ -212,6 +234,7 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
                     JOptionPane.ERROR_MESSAGE);
         }
     }
+
     public void search(String searchText) {
         DefaultTableModel model = (DefaultTableModel) tblDepartment.getModel();
         int check = 0;
@@ -317,8 +340,8 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
-
     private void initComponents() {
 
         addButton = new javax.swing.JButton();
@@ -380,6 +403,7 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
 
         searchTextField.setBackground(new java.awt.Color(204, 204, 204));
         searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        searchTextField.setForeground(new java.awt.Color(0, 0, 0));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
 
@@ -398,27 +422,29 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(searchButton)
-                .addContainerGap())
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 544,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(searchButton)
+                                .addContainerGap()));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap()));
 
         importExcel.setBackground(new java.awt.Color(13, 110, 253));
         importExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -441,18 +467,18 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
 
         tblDepartment.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         tblDepartment.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "STT", "Mã Phòng Ban", "Tên Phòng Ban", "Mã Quản Lý", "Tên Quản Lý", "Số Thành Viên"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                },
+                new String[] {
+                        "STT", "Mã Phòng Ban", "Tên Phòng Ban", "Mã Quản Lý", "Tên Quản Lý", "Số Thành Viên"
+                }) {
+            Class[] types = new Class[] {
+                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -469,15 +495,15 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
         javax.swing.GroupLayout tableContainerLayout = new javax.swing.GroupLayout(tableContainer);
         tableContainer.setLayout(tableContainerLayout);
         tableContainerLayout.setHorizontalGroup(
-            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
-                    .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(25, 25, 25))
-        );
-
+                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(tableContainerLayout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addGroup(tableContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane2)
+                                        .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(25, 25, 25)));
         tableContainerLayout.setVerticalGroup(
                 tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(tableContainerLayout.createSequentialGroup()
@@ -492,24 +518,30 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(96, 96, 96)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(63, 63, 63)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69)
-                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69)
-                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
-                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(96, 96, 96))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(96, 96, 96)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(63, 63, 63)
+                                                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(69, 69, 69)
+                                                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(69, 69, 69)
+                                                .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(62, 62, 62)
+                                                .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(96, 96, 96)));
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
@@ -534,7 +566,7 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
                                 .addGap(43, 43, 43)));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_searchButtonActionPerformed
         // TODO add your handling code here:
         String searchText = searchTextField.getText().trim();
         String searchOption = (String) searchOptionComboBox.getSelectedItem();
@@ -561,7 +593,7 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
             }
             tableInit(searchResults);
         }
-    }//GEN-LAST:event_searchButtonActionPerformed
+    }// GEN-LAST:event_searchButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
@@ -582,7 +614,6 @@ public class DepartmentManagementContentPanel extends javax.swing.JPanel
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == tblDepartment) {
-
 
         } else {
             Component clickedComponent = this.getComponentAt(this.getMousePosition());

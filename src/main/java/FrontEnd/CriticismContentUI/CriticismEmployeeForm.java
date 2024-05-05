@@ -236,6 +236,7 @@ public class CriticismEmployeeForm extends javax.swing.JFrame implements ActionL
                                 Redux.criticismBUS.getCriticismById((String) formData.get(2)),
                                 (int) formData.get(4), (String) formData.get(5)));
             }
+            Redux.employeesRewardsCriticismBUS.readDB();
             CriticismEmployeePanel.tableInit(Redux.employeesRewardsCriticismBUS.getlistEmployeeRC());
             dispose();
         }
@@ -281,6 +282,7 @@ public class CriticismEmployeeForm extends javax.swing.JFrame implements ActionL
     }
 
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -328,7 +330,7 @@ public class CriticismEmployeeForm extends javax.swing.JFrame implements ActionL
         criticsimIDComboBox.setEditable(true);
         criticsimIDComboBox.setBackground(new java.awt.Color(204, 204, 204));
         criticsimIDComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        criticsimIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        criticsimIDComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         criticsimIDComboBox.setForeground(new java.awt.Color(0, 51, 51));
         criticsimIDComboBox.setName("criticsimIDComboBox"); // NOI18N
         criticsimIDComboBox.setOpaque(true);
@@ -537,7 +539,7 @@ public class CriticismEmployeeForm extends javax.swing.JFrame implements ActionL
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(moneyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73,
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72,
                                         Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,

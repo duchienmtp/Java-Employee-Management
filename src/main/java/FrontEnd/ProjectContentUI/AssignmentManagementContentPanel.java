@@ -101,7 +101,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
 
         importExcel.setEnabled(true);
         exportExcel.setEnabled(true);
-        
+
         setVisible(true);
     }
 
@@ -138,23 +138,20 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         }
     }
 
-    public void handleImportExcel(){
-        System.out.println("handleImportExcel");
+    public void handleImportExcel() {
         try {
-            FileInputStream file = new FileInputStream(new File("src/main/resources/files/Assignments.xlsx"));
-            if(file!=null){
-                System.out.println("Find path");
-            } else {
-                System.out.println("Not find path");
-            }
+            FileInputStream file = new FileInputStream(new File("src/main/resources/files/ImportFile.xlsx"));
+
             XSSFWorkbook workbook = new XSSFWorkbook(file);
-            XSSFSheet sheet = workbook.getSheet("Assignmentsheet");
+
+            XSSFSheet sheet = workbook.getSheet("Assignment Sheet");
+
             Iterator<Row> rowIterator = sheet.iterator();
-            while(rowIterator.hasNext()){
+            while (rowIterator.hasNext()) {
                 ArrayList<Object> dataList = new ArrayList<>();
                 Row row = rowIterator.next();
                 Iterator<Cell> cellIterator = row.cellIterator();
-                while(cellIterator.hasNext()){
+                while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
                     switch (cell.getCellType()) {
                         case NUMERIC:
@@ -169,14 +166,12 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 }
                 Project project = Redux.projectBUS.getProjectById(dataList.get(1).toString());
                 Employee employee = Redux.employeeBUS.getEmployeeById(dataList.get(0).toString());
-                
-                if(project != null || employee != null){
-                    System.out.println(employee.getId() + " " + project.getProjectId());
-//                    Assignment assingment = new Assignment(Redux.employeeBUS.getEmployeeById(dataList.get(0).toString()).getId(), Redux.projectBUS.getProjectById(dataList.get(1).toString()).getProjectId(), Boolean.valueOf(dataList.get(2).toString()));
+
+                if (project != null || employee != null) {
                     Assignment assignment = new Assignment(
-                        Redux.employeeBUS.getEmployeeById(dataList.get(0).toString()),
-                        Redux.projectBUS.getProjectById(dataList.get(1).toString()), false);
-                    Redux.assignmentBUS.addNewAssignment(assignment);
+                            Redux.employeeBUS.getEmployeeById(dataList.get(0).toString()),
+                            Redux.projectBUS.getProjectById(dataList.get(1).toString()), false);
+                    Redux.assignmentBUS.addAssignmentExcel(assignment);
                 }
             }
             file.close();
@@ -188,10 +183,8 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
             e.printStackTrace();
         }
     }
-   
-    
-    public void handleExportExcel(){
-        System.out.println("handleExprtExcel");
+
+    public void handleExportExcel() {
         try {
             JFileChooser fileChooser = new JFileChooser();
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx");
@@ -207,7 +200,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 }
 
                 XSSFWorkbook workbook = new XSSFWorkbook();
-                XSSFSheet sheet = workbook.createSheet("Assignmentsheet");
+                XSSFSheet sheet = workbook.createSheet("Assignment Sheet");
 
                 // Write column names to the first row of the sheet
                 XSSFRow headerRow = sheet.createRow(0);
@@ -219,7 +212,7 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
                 for (int i = 0; i < Redux.assignmentBUS.getAssignmentsList().size() - 1; i++) {
                     XSSFRow row = sheet.createRow(i + 1);
                     Assignment assisgnment = Redux.assignmentBUS.getAssignmentsList().get(i);
-                    for (int j = 0; j < Assignment.getHeader().size() ; j++) {
+                    for (int j = 0; j < Assignment.getHeader().size(); j++) {
                         Object value = assisgnment.getPropertyByIndex(j);
                         String cellValue = (value != null) ? value.toString() : "";
                         XSSFCell cell = row.createCell(j); // Tạo ô trong bảng tính
@@ -240,17 +233,17 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
             ex.printStackTrace();
         }
     }
-    
+
     public void handleSearch() {
         String searchOption = searchOptionComboBox.getSelectedItem().toString();
         String searchValue = searchTextField.getText().trim();
-        if(searchValue.isEmpty()){
+        if (searchValue.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Hãy nhập từ khóa tìm kiếm!", "CẢNH BÁO",
                     JOptionPane.INFORMATION_MESSAGE);
             return;
         }
         ArrayList<Assignment> list = new ArrayList<>();
-        switch(searchOption){
+        switch (searchOption) {
             case "Theo Tên":
                 Redux.assignmentBUS.searchAssignmentByName(searchValue);
                 list = Redux.assignmentBUS.getAssignmentResultSearch();
@@ -262,25 +255,25 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
             default:
                 break;
         }
-        
-        if(list.isEmpty()){
+
+        if (list.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả phù hợp!", "CẢNH BÁO",
                     JOptionPane.INFORMATION_MESSAGE);
         } else {
             tableInit(list);
-        }       
+        }
     }
 
     public static void tableInit(ArrayList<Assignment> list) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
         for (int i = 0; i < list.size(); i++) {
-            model.addRow(new Object[]{i + 1,
-                list.get(i).getEmployee().getId(),
-                list.get(i).getEmployee().getFullName(),
-                list.get(i).getProject().getProjectId(),
-                list.get(i).getProject().getProjectName(),
-                list.get(i).getProject().getPlace()
+            model.addRow(new Object[] { i + 1,
+                    list.get(i).getEmployee().getId(),
+                    list.get(i).getEmployee().getFullName(),
+                    list.get(i).getProject().getProjectId(),
+                    list.get(i).getProject().getProjectName(),
+                    list.get(i).getProject().getPlace()
             });
         }
     }
@@ -338,7 +331,8 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         addButton = new javax.swing.JButton();
@@ -357,27 +351,27 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
-        addButton.setText("Thêm");
         addButton.setBackground(new java.awt.Color(25, 135, 84));
         addButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         addButton.setForeground(new java.awt.Color(255, 255, 255));
+        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
+        addButton.setText("Thêm");
         addButton.setIconTextGap(10);
         addButton.setName("addButton"); // NOI18N
 
-        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
-        deleteButton.setText("Xóa");
         deleteButton.setBackground(new java.awt.Color(220, 53, 69));
         deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         deleteButton.setForeground(new java.awt.Color(255, 255, 255));
+        deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
+        deleteButton.setText("Xóa");
         deleteButton.setIconTextGap(10);
         deleteButton.setName("deleteButton"); // NOI18N
 
-        exportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
-        exportExcel.setText("Xuất");
         exportExcel.setBackground(new java.awt.Color(13, 202, 240));
         exportExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         exportExcel.setForeground(new java.awt.Color(255, 255, 255));
+        exportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
+        exportExcel.setText("Xuất");
         exportExcel.setIconTextGap(10);
         exportExcel.setName("exportExcel"); // NOI18N
         exportExcel.addActionListener(new java.awt.event.ActionListener() {
@@ -386,62 +380,66 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
             }
         });
 
-        editButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
-        editButton.setText("Sửa");
         editButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         editButton.setForeground(new java.awt.Color(255, 255, 255));
+        editButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
+        editButton.setText("Sửa");
         editButton.setIconTextGap(10);
         editButton.setName("editButton"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        searchOptionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo Tên", "Theo Mã Công Tác" }));
         searchOptionComboBox.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchOptionComboBox.setForeground(new java.awt.Color(255, 255, 255));
+        searchOptionComboBox
+                .setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Theo Tên", "Theo Mã Công Tác" }));
         searchOptionComboBox.setName("searchOptionComboBox"); // NOI18N
         searchOptionComboBox.setOpaque(true);
 
-        searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchTextField.setBackground(new java.awt.Color(204, 204, 204));
+        searchTextField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        searchTextField.setForeground(new java.awt.Color(0, 0, 0));
         searchTextField.setName("searchTextField"); // NOI18N
         searchTextField.setOpaque(true);
 
-        searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
-        searchButton.setText("Tìm Kiếm");
         searchButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         searchButton.setForeground(new java.awt.Color(255, 255, 255));
+        searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
+        searchButton.setText("Tìm Kiếm");
         searchButton.setIconTextGap(10);
         searchButton.setName("searchButton"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(searchOptionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap()));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(searchOptionComboBox)
-                    .addComponent(searchTextField)
-                    .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(searchOptionComboBox)
+                                        .addComponent(searchTextField)
+                                        .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, 49,
+                                                Short.MAX_VALUE))
+                                .addContainerGap()));
 
-        importExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
-        importExcel.setText("Nhập ");
         importExcel.setBackground(new java.awt.Color(13, 110, 253));
         importExcel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         importExcel.setForeground(new java.awt.Color(255, 255, 255));
+        importExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/excel.png"))); // NOI18N
+        importExcel.setText("Nhập ");
         importExcel.setIconTextGap(10);
         importExcel.setName("importExcel"); // NOI18N
         importExcel.addActionListener(new java.awt.event.ActionListener() {
@@ -454,34 +452,33 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         tableContainer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         tableContainer.setName("tableContainer"); // NOI18N
 
-        tableLabel.setText("Danh sách công tác của nhân viên");
         tableLabel.setBackground(new java.awt.Color(255, 255, 255));
         tableLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        tableLabel.setForeground(new java.awt.Color(0, 0, 0));
+        tableLabel.setText("Danh sách công tác của nhân viên");
         tableLabel.setName("tableLabel"); // NOI18N
         tableLabel.setOpaque(true);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "STT", "ID", "Họ và Tên", "Mã Công Tác", "Tên Công Tác", "Nơi Công Tác"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                },
+                new String[] {
+                        "STT", "ID", "Họ và Tên", "Mã Công Tác", "Tên Công Tác", "Nơi Công Tác"
+                }) {
+            Class[] types = new Class[] {
+                    java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
+                    java.lang.String.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -491,72 +488,86 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
         javax.swing.GroupLayout tableContainerLayout = new javax.swing.GroupLayout(tableContainer);
         tableContainer.setLayout(tableContainerLayout);
         tableContainerLayout.setHorizontalGroup(
-            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
-                    .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(25, 25, 25))
-        );
+                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(tableContainerLayout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addGroup(tableContainerLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane2)
+                                        .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(25, 25, 25)));
         tableContainerLayout.setVerticalGroup(
-            tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tableContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
+                tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(tableContainerLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(tableLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(21, Short.MAX_VALUE)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(96, 96, 96)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(63, 63, 63)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69)
-                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69)
-                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
-                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(96, 96, 96))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(96, 96, 96)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(63, 63, 63)
+                                                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(69, 69, 69)
+                                                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(69, 69, 69)
+                                                .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(62, 62, 62)
+                                                .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(96, 96, 96)));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
-                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(43, 43, 43)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(importExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(exportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(52, 52, 52)
+                                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(43, 43, 43)));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void importExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExcelActionPerformed
+    private void importExcelActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_importExcelActionPerformed
         System.out.println("handleImportExcel");
         handleImportExcel();
-    }//GEN-LAST:event_importExcelActionPerformed
+    }// GEN-LAST:event_importExcelActionPerformed
 
-    private void exportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportExcelActionPerformed
+    private void exportExcelActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exportExcelActionPerformed
         System.out.println("handleExportExcel");
         handleExportExcel();
-    }//GEN-LAST:event_exportExcelActionPerformed
+    }// GEN-LAST:event_exportExcelActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;

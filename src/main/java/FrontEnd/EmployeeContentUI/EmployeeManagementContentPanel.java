@@ -218,7 +218,6 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
 
     public void handleImportExcel() {
         try {
-
             FileInputStream file = new FileInputStream(new File("src/main/resources/files/ImportFile.xlsx"));
 
             // Create Workbook instance holding reference to .xlsx file
@@ -230,9 +229,9 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
             // Iterate through each rows one by one
             Iterator<Row> rowIterator = sheet.iterator();
             while (rowIterator.hasNext()) {
-                ArrayList<Object> dataList = new ArrayList<>();
-
                 Row row = rowIterator.next();
+
+                ArrayList<Object> dataList = new ArrayList<>();
 
                 // For each row, iterate through all the columns
                 Iterator<Cell> cellIterator = row.cellIterator();

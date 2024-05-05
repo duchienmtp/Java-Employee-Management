@@ -32,7 +32,7 @@ public class EmployeeBUS {
 
     public ArrayList<Employee> getEmployeeNotHaveAccountIdList() {
         getNotHaveAccount();
-        return employeeNotHaveAccountIdList;
+        return employeeNotHaveAccountIdList.size() > 0 ? employeeNotHaveAccountIdList : null;
     }
 
     public void getNotHaveAccount() {
@@ -41,7 +41,7 @@ public class EmployeeBUS {
 
     public ArrayList<Employee> getEmployeeNotHaveSalaryList() {
         getNotHaveSalary();
-        return employeeNotHaveSalaryList;
+        return employeeNotHaveSalaryList.size() > 0 ? employeeNotHaveSalaryList : null;
     }
 
     public void getNotHaveSalary() {

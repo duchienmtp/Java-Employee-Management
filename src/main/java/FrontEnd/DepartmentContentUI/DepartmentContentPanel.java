@@ -14,9 +14,6 @@ public class DepartmentContentPanel extends javax.swing.JPanel implements Action
     public DepartmentContentPanel() {
         initComponents();
 
-        departmentManagementContentPanel = new DepartmentManagementContentPanel();
-        employeeDepartmentContentPanel = new AddEmployeeToDepartmentContentPanel();
-
         departmentContainer.setLayout(new GridLayout(1, 1));
 
         if (!Redux.isAdmin) {
@@ -48,6 +45,7 @@ public class DepartmentContentPanel extends javax.swing.JPanel implements Action
 
     private void showDepartmentManagementContentPanel() {
         clearAppContentPanel();
+        departmentManagementContentPanel = new DepartmentManagementContentPanel();
         departmentContainer.add(departmentManagementContentPanel);
         validate();
         repaint();
@@ -55,6 +53,8 @@ public class DepartmentContentPanel extends javax.swing.JPanel implements Action
 
     private void showEmployeeDepartmentContentPanel() {
         clearAppContentPanel();
+        employeeDepartmentContentPanel = new AddEmployeeToDepartmentContentPanel();
+        employeeDepartmentContentPanel.formInit();
         departmentContainer.add(employeeDepartmentContentPanel);
         validate();
         repaint();
@@ -62,7 +62,8 @@ public class DepartmentContentPanel extends javax.swing.JPanel implements Action
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         appSubMenu = new javax.swing.JPanel();
@@ -97,23 +98,24 @@ public class DepartmentContentPanel extends javax.swing.JPanel implements Action
         javax.swing.GroupLayout appSubMenuLayout = new javax.swing.GroupLayout(appSubMenu);
         appSubMenu.setLayout(appSubMenuLayout);
         appSubMenuLayout.setHorizontalGroup(
-            appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(appSubMenuLayout.createSequentialGroup()
-                .addGap(96, 96, 96)
-                .addComponent(departmentButton)
-                .addGap(77, 77, 77)
-                .addComponent(employeeButton)
-                .addGap(465, 465, 465))
-        );
+                appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(appSubMenuLayout.createSequentialGroup()
+                                .addGap(96, 96, 96)
+                                .addComponent(departmentButton)
+                                .addGap(77, 77, 77)
+                                .addComponent(employeeButton)
+                                .addGap(465, 465, 465)));
         appSubMenuLayout.setVerticalGroup(
-            appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(appSubMenuLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(departmentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(employeeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23))
-        );
+                appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(appSubMenuLayout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addGroup(
+                                        appSubMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .addComponent(departmentButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(employeeButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(23, 23, 23)));
 
         departmentContainer.setBackground(new java.awt.Color(255, 255, 255));
         departmentContainer.setAlignmentX(0.0F);
@@ -124,28 +126,28 @@ public class DepartmentContentPanel extends javax.swing.JPanel implements Action
         javax.swing.GroupLayout departmentContainerLayout = new javax.swing.GroupLayout(departmentContainer);
         departmentContainer.setLayout(departmentContainerLayout);
         departmentContainerLayout.setHorizontalGroup(
-            departmentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1055, Short.MAX_VALUE)
-        );
+                departmentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1055, Short.MAX_VALUE));
         departmentContainerLayout.setVerticalGroup(
-            departmentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
-        );
+                departmentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 640, Short.MAX_VALUE));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(appSubMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(departmentContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(appSubMenu, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(departmentContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(appSubMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(departmentContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(appSubMenu, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(departmentContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

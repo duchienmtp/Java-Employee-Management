@@ -78,24 +78,34 @@ public class Assignment {
                 ", projectPlace='" + getProject().getPlace() + "'" +
                 "}";
     }
-    
-    public static ArrayList<String> getHeader(){
-        return new ArrayList<>(Arrays.asList("Mã Nhân Viên", "Mã Dự Án", "Tình trạng làm việc"));
+
+    public static ArrayList<String> getHeader() {
+        return new ArrayList<>(Arrays.asList("Mã Nhân Viên", "Tên Nhân Viên", "Mã Dự Án", "Tên Dự Án", "Nơi Công Tác"));
     }
-    
+
     public Object getPropertyByIndex(int option) {
         String result = "";
         switch (option) {
             case 0:
-                result = getEmployeeId();
+                result = getEmployee().getId();
                 break;
 
             case 1:
-                result = getProjectId();
+                result = getEmployee().getFullName();
                 break;
-                
+
             case 2:
-                result = String.valueOf(deleteStatus);
+                result = getProject().getProjectId();
+                break;
+
+            case 3:
+                result = getProject().getProjectName();
+                break;
+
+            case 4:
+                result = getProject().getPlace();
+                break;
+
             default:
                 break;
         }

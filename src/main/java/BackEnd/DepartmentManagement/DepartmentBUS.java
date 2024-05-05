@@ -41,7 +41,8 @@ public class DepartmentBUS {
             JOptionPane.showMessageDialog(null, "Thêm mới thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-        public void addDepartmentExcel(Department department) {
+
+    public void addDepartmentExcel(Department department) {
         Boolean ok = departmentDAO.addNewDepartment(department);
 
         if (ok) {

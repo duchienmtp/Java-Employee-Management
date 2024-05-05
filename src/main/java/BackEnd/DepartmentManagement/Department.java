@@ -1,6 +1,8 @@
 package BackEnd.DepartmentManagement;
 
 import BackEnd.EmployeeManagement.Employee;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -85,7 +87,8 @@ public class Department {
 
     public List<Object> toList() {
         try {
-            return Arrays.asList(departmentId, departmentName, departmentLeader.getId(), deleteStatus, numberOfMembers);
+            return Arrays.asList(departmentId, departmentName, departmentLeader.getId(), departmentLeader.getFullName(),
+                    deleteStatus, numberOfMembers);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -100,5 +103,39 @@ public class Department {
                 ", departmentLeaderName='" + departmentLeaderName + "'" +
                 ", deleteStatus='" + deleteStatus + "'" +
                 "}";
+    }
+
+    public static ArrayList<String> getHeader() {
+        return new ArrayList<>(
+                Arrays.asList("Mã Phòng Ban", "Tên Phòng Ban", "Mã Trưởng Phòng", "Tên Trưởng Phòng", "Trạng Thái"));
+    }
+
+    public Object getPropertyByIndex(int option) {
+        String result = "";
+        switch (option) {
+            case 0:
+                result = getDepartmentId();
+                break;
+
+            case 1:
+                result = getDepartmentName();
+                break;
+
+            case 2:
+                result = getDepartmentLeader().getId();
+                break;
+
+            case 3:
+                result = getDepartmentLeader().getFullName();
+                break;
+
+            case 4:
+                result = isDeleteStatus() ? "Dừng Hoạt Động" : "Đang Hoạt Động";
+                break;
+
+            default:
+                break;
+        }
+        return result;
     }
 }

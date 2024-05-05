@@ -28,7 +28,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
     public UserInfoContentPanel() {
         initComponents();
 
-        formInit();
         showFormWithData();
 
         updateButton.addActionListener(this);
