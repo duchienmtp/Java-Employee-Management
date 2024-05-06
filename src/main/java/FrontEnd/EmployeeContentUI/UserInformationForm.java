@@ -128,14 +128,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                     Redux.accountBUS.updateAccount(account);
                     AccountManagementContentPanel.tableInit(Redux.accountBUS.getAccountList());
                 }
-                // for (Account account : Redux.accountBUS.getAccountList()) {
-                // if (account.getEmployee().getId().equals(employeeID)) {
-                // account.setEmployee(employee);
-                // }
-                // }
             }
-            // Redux.getAllEmployees();
-            // EmployeeManagementContentPanel.tableInit(Redux.employeeList);
             EmployeeManagementContentPanel.tableInit(Redux.employeeBUS.getEmployeeList());
             UserInfoContentPanel.formInit();
             UserInfoContentPanel.showFormWithData();
