@@ -66,7 +66,7 @@ public class StatisticsDAO {
                     topEmployees.add(employee);
                 }
             }
-            rs.close();
+//            rs.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "-- ERROR! Lỗi đọc dữ liệu bảng Employees và EmployeeSalaries");
         } finally {

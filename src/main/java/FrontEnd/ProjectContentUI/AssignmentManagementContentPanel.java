@@ -53,7 +53,8 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
     int selectedRow = -1;
     boolean selectionConfirmed;
     Object[] selectedRowData;
-
+    int clickCount = 0;
+    UserAssignmentInformation userAssignmentInformation;
     public AssignmentManagementContentPanel() {
         initComponents();
 
@@ -588,7 +589,25 @@ public class AssignmentManagementContentPanel extends javax.swing.JPanel
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == jTable1) {
-
+            if(Redux.isAdmin){
+                if(e.getClickCount() == 2){
+                    clickCount++;
+                    if(clickCount % 2 == 0){
+                        selectedRow = jTable1.getSelectedRow();
+                        for(Object it : selectedRowData){
+                                    System.out.println(it + " ");
+                                }
+                        if(selectedRow!=-1){
+                            Assignment assignment = Redux.assignmentBUS.findAssignmentByEmployeeIdAndProjectId(selectedRowData[1].toString(),selectedRowData[3].toString());
+                            if(assignment!=null){
+                                userAssignmentInformation = new UserAssignmentInformation();
+                                userAssignmentInformation.setVisible(true);
+                                userAssignmentInformation.showFormWithData(assignment);
+                            }
+                        }
+                    }
+                }
+            }
         } else {
             Component clickedComponent = this.getComponentAt(this.getMousePosition());
             if (clickedComponent != jTable1 && selectionConfirmed) {

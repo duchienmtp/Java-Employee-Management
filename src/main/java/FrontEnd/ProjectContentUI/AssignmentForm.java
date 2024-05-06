@@ -20,7 +20,7 @@ public class AssignmentForm extends javax.swing.JFrame implements ActionListener
     ArrayList<Object> prevState;
 
     public AssignmentForm() {
-        initComponents();
+        initComponents();   
 
         formData = new ArrayList<>();
         prevState = new ArrayList<>();

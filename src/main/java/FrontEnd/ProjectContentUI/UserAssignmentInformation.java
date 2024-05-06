@@ -1,8 +1,6 @@
 package FrontEnd.ProjectContentUI;
 
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
+import BackEnd.AssignmentManagement.Assignment;
 import javax.swing.*;
 
 public class UserAssignmentInformation extends javax.swing.JFrame {
@@ -13,18 +11,15 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 
-    public void showFormWithData(ArrayList<Object> data) {
-        if (data != null) {
-            employeeID.setText("EM001");
-            employeeName.setText("Lữ Thị Cẩm Tri");
-            projectID.setText("BT001");
-            projectName.setText("Java");
-            startDate.setText("10/04/2024");
-            endDate.setText("10/05/2024");
-            projectPlace.setText("Hải Phòng");
-        }
+    public void showFormWithData(Assignment asm){
+        employeeID.setText(asm.getEmployee().getId());
+        employeeName.setText(asm.getEmployee().getFullName());
+        projectID.setText(asm.getProject().getProjectId());
+        projectName.setText(asm.getProject().getProjectName());
+        startDate.setText(asm.getProject().getBeginAt());
+        endDate.setText(asm.getProject().getCompleteAt());
+        projectPlace.setText(asm.getProject().getPlace());
     }
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -59,7 +54,6 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Thông Tin Công Tác Của Nhân Viên");
         jLabel1.setOpaque(true);
 
@@ -68,7 +62,6 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
 
         employeeIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeIDLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeIDLabel.setLabelFor(employeeID);
         employeeIDLabel.setText("Mã Nhân Viên : ");
         employeeIDLabel.setName("employeeIDLabel"); // NOI18N
@@ -76,7 +69,6 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
 
         startDateLabel.setBackground(new java.awt.Color(255, 255, 255));
         startDateLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        startDateLabel.setForeground(new java.awt.Color(0, 0, 0));
         startDateLabel.setLabelFor(startDate);
         startDateLabel.setText("Ngày Bắt Đầu :");
         startDateLabel.setName("startDateLabel"); // NOI18N
@@ -84,7 +76,6 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
 
         projectPlaceLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectPlaceLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        projectPlaceLabel.setForeground(new java.awt.Color(0, 0, 0));
         projectPlaceLabel.setLabelFor(projectPlace);
         projectPlaceLabel.setText("Dự Án Tại :");
         projectPlaceLabel.setName("projectPlaceLabel"); // NOI18N
@@ -92,37 +83,27 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
 
         projectIDLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        projectIDLabel.setForeground(new java.awt.Color(0, 0, 0));
         projectIDLabel.setLabelFor(projectID);
         projectIDLabel.setText("Mã Dự Án : ");
         projectIDLabel.setName("projectIDLabel"); // NOI18N
         projectIDLabel.setOpaque(true);
 
         startDate.setBackground(new java.awt.Color(255, 255, 255));
-        startDate.setForeground(new java.awt.Color(0, 0, 0));
-        startDate.setText("04/02/2024");
         startDate.setName("startDate"); // NOI18N
         startDate.setOpaque(true);
 
         employeeID.setBackground(new java.awt.Color(255, 255, 255));
-        employeeID.setForeground(new java.awt.Color(0, 0, 0));
-        employeeID.setText("EM001");
         employeeID.setName("employeeName"); // NOI18N
         employeeID.setOpaque(true);
 
         projectID.setBackground(new java.awt.Color(255, 255, 255));
-        projectID.setForeground(new java.awt.Color(0, 0, 0));
-        projectID.setText("BT001");
         projectID.setName("projectID"); // NOI18N
         projectID.setOpaque(true);
 
-        projectPlace.setForeground(new java.awt.Color(0, 0, 0));
-        projectPlace.setText("Hải Phòng");
         projectPlace.setName("projectPlace"); // NOI18N
 
         employeeNameLabel.setBackground(new java.awt.Color(255, 255, 255));
         employeeNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        employeeNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         employeeNameLabel.setLabelFor(employeeName);
         employeeNameLabel.setText("Tên Nhân Viên :");
         employeeNameLabel.setName("employeeNameLabel"); // NOI18N
@@ -130,7 +111,6 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
 
         projectNameLabel.setBackground(new java.awt.Color(255, 255, 255));
         projectNameLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        projectNameLabel.setForeground(new java.awt.Color(0, 0, 0));
         projectNameLabel.setLabelFor(projectName);
         projectNameLabel.setText("Tên Dự Án :");
         projectNameLabel.setName("projectNameLabel"); // NOI18N
@@ -138,27 +118,20 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
 
         endDateLabel.setBackground(new java.awt.Color(255, 255, 255));
         endDateLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        endDateLabel.setForeground(new java.awt.Color(0, 0, 0));
         endDateLabel.setLabelFor(endDate);
         endDateLabel.setText("Ngày Kết Thúc :");
         endDateLabel.setName("endDateLabel"); // NOI18N
         endDateLabel.setOpaque(true);
 
         employeeName.setBackground(new java.awt.Color(255, 255, 255));
-        employeeName.setForeground(new java.awt.Color(0, 0, 0));
-        employeeName.setText("Kagami");
         employeeName.setName("employeeName"); // NOI18N
         employeeName.setOpaque(true);
 
         projectName.setBackground(new java.awt.Color(255, 255, 255));
-        projectName.setForeground(new java.awt.Color(0, 0, 0));
-        projectName.setText("Java");
         projectName.setName("projectName"); // NOI18N
         projectName.setOpaque(true);
 
         endDate.setBackground(new java.awt.Color(255, 255, 255));
-        endDate.setForeground(new java.awt.Color(0, 0, 0));
-        endDate.setText("10/04/2024");
         endDate.setName("endDate"); // NOI18N
         endDate.setOpaque(true);
 
@@ -186,20 +159,24 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(projectID, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(110, 110, 110)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(employeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(endDateLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(projectNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(projectName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(endDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(employeeNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(employeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(41, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(endDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(projectName, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(22, Short.MAX_VALUE))))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,7 +218,7 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
                 .addGroup(userInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGap(9, 9, 9))
         );
         userInfoPanelLayout.setVerticalGroup(
             userInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -260,7 +237,7 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(userInfoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,7 +257,7 @@ public class UserAssignmentInformation extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+                .addGap(0, 7, Short.MAX_VALUE))
         );
 
         pack();
