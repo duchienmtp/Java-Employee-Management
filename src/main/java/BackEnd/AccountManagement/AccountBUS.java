@@ -31,7 +31,13 @@ public class AccountBUS {
     }
 
     public Account getAccountById(String userId) {
-        return accountDAO.getAccountById(userId);
+        Account account = null;
+        for (Account acc : accountList) {
+            if (acc.getEmployee().getId().equals(userId)) {
+                account = acc;
+            }
+        }
+        return account;
     }
 
     public Boolean addAccount(Account account) {
@@ -66,31 +72,15 @@ public class AccountBUS {
             JOptionPane.showMessageDialog(null, "Xóa thành công !", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    // public void deleteAccount(Account account) {
-    // // Kiểm tra tính hợp lệ của tham số đầu vào
-    // if (account == null) {
-    // return;
-    // }
-    //
-    // // Xóa tài khoản từ cơ sở dữ liệu
-    // Boolean ok = accountDAO.deleteAccount(account);
-    //
-    // // Kiểm tra kết quả từ phương thức deleteAccount
-    // if (ok != null && ok) {
-    // // Sử dụng Iterator để duyệt qua danh sách và xóa tài khoản
-    // Iterator<Account> iterator = accountList.iterator();
-    // while (iterator.hasNext()) {
-    // Account currentAccount = iterator.next();
-    // if (currentAccount.getUserId().equals(account.getUserId())) {
-    // iterator.remove(); // Loại bỏ tài khoản một cách an toàn
-    // break;
-    // }
-    // }
-    // }
-    // }
 
     public Boolean getAccountByEmail(String email) {
-        return accountDAO.getAccountByEmail(email) != null;
+        Account account = null;
+        for (Account acc : accountList) {
+            if (acc.getEmail().equals(email)) {
+                account = acc;
+            }
+        }
+        return account != null;
     }
 
     public void addAccountExcel(Account account) {

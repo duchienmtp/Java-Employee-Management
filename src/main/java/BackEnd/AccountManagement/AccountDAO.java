@@ -118,9 +118,11 @@ public class AccountDAO {
                         email = rs.getString("email"),
                         avatar = rs.getString("avatar"),
                         authorization = rs.getString("authorization");
+                boolean accountStatus = rs.getBoolean("accountStatus"),
+                        deleteStatus = rs.getBoolean("deleteStatus");
 
                 account = new Account(new EmployeeDAO().getEmployeeById(userId), username, password,
-                        email, avatar, authorization);
+                        email, avatar, authorization, accountStatus, deleteStatus);
             }
             rs.close();
         } catch (SQLException ex) {
@@ -144,9 +146,11 @@ public class AccountDAO {
                         password = rs.getString("password"),
                         avatar = rs.getString("avatar"),
                         authorization = rs.getString("authorization");
+                boolean accountStatus = rs.getBoolean("accountStatus"),
+                        deleteStatus = rs.getBoolean("deleteStatus");
 
                 account = new Account(new EmployeeDAO().getEmployeeById(userId), username, password,
-                        email, avatar, authorization);
+                        email, avatar, authorization, accountStatus, deleteStatus);
             }
             rs.close();
         } catch (SQLException ex) {

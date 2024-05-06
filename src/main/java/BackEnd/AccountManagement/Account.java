@@ -143,7 +143,7 @@ public class Account {
         return new ArrayList<>(Arrays.asList("Mã Nhân Viên", "Tên tài khoản", "Mật khẩu", "Email", "avatar",
                 "Phân quyền", "Trạng thái"));
     }
-  
+
     public Object getPropertyByIndex(int option) {
         String result = "";
         switch (option) {
@@ -180,4 +180,19 @@ public class Account {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                " employee='" + getEmployee() + "'" +
+                ", username='" + getUsername() + "'" +
+                ", password='" + getPassword() + "'" +
+                ", email='" + getEmail() + "'" +
+                ", avatar='" + getAvatar() + "'" +
+                ", authorization='" + getAuthorization() + "'" +
+                ", accountStatus='" + getAccountStatus() + "'" +
+                ", deleteStatus='" + getDeleteStatus() + "'" +
+                "}";
+    }
+
 }

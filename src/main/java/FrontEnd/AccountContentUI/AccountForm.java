@@ -78,15 +78,22 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
             }
         } else {
             if (Redux.employeeBUS.getEmployeeNotHaveAccountIdList() != null) {
-                for (Employee employee : Redux.employeeBUS.getEmployeeNotHaveAccountIdList()) {
-                    if (!employee.getDeleteStatus()) {
-                        model.addElement(employee.getId());
+                try {
+                    for (Employee employee : Redux.employeeBUS.getEmployeeNotHaveAccountIdList()) {
+                        if (!employee.getDeleteStatus()) {
+                            model.addElement(employee.getId());
+                        }
                     }
+                    employeeIDComboBox.setModel(model);
+                    if (model.getSize() > 0) {
+                        employeeIDComboBox.setSelectedIndex(0);
+                        employeeNameTextField.setText(
+                                Redux.employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem())
+                                        .getFullName());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                employeeIDComboBox.setModel(model);
-                employeeIDComboBox.setSelectedIndex(0);
-                employeeNameTextField.setText(
-                        Redux.employeeBUS.getEmployeeById((String) employeeIDComboBox.getSelectedItem()).getFullName());
             }
         }
 
@@ -343,8 +350,8 @@ public class AccountForm extends javax.swing.JFrame implements ActionListener, W
         return new ArrayList<>(
                 Arrays.asList(employeeID, employeeName, password, email, fileName, confirmPassword,
                         selectedValue,
-                        accountStatus == "Đang hoạt động" ? true : false,
-                        accountStatus == "Ngừng hoạt động" ? false : true));
+                        accountStatus.equalsIgnoreCase("Đang hoạt động") ? true : false,
+                        accountStatus.equalsIgnoreCase("Ngừng hoạt động") ? false : true));
     }
 
     @SuppressWarnings("unchecked")

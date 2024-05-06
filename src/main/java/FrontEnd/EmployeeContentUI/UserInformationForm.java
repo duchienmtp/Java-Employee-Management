@@ -1,5 +1,6 @@
 package FrontEnd.EmployeeContentUI;
 
+import FrontEnd.AccountContentUI.AccountManagementContentPanel;
 import FrontEnd.Redux.Redux;
 import FrontEnd.UserInfoContentUI.UserInfoContentPanel;
 
@@ -116,11 +117,22 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                         (boolean) formData.get(11),
                         (boolean) formData.get(12));
                 Redux.employeeBUS.updateEmployee(employee);
-                for (Account account : Redux.accountBUS.getAccountList()) {
-                    if (account.getEmployee().getId().equals(employeeID)) {
-                        account.setEmployee(employee);
-                    }
+                if ((boolean) formData.get(12)) {
+                    Account account = Redux.accountBUS.getAccountById(employeeID);
+                    Redux.accountBUS.deleteAccount(account);
+                    AccountManagementContentPanel.tableInit(Redux.accountBUS.getAccountList());
+                } else {
+                    Account account = Redux.accountBUS.getAccountById(employeeID);
+                    account.setAccountStatus(true);
+                    account.setDeleteStatus(false);
+                    Redux.accountBUS.updateAccount(account);
+                    AccountManagementContentPanel.tableInit(Redux.accountBUS.getAccountList());
                 }
+                // for (Account account : Redux.accountBUS.getAccountList()) {
+                // if (account.getEmployee().getId().equals(employeeID)) {
+                // account.setEmployee(employee);
+                // }
+                // }
             }
             // Redux.getAllEmployees();
             // EmployeeManagementContentPanel.tableInit(Redux.employeeList);
@@ -225,8 +237,8 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
 
         return new ArrayList<>(Arrays.asList(employeeName, gender, birthdate, phoneNumber,
                 ethicGroup, employeeType, religion, degree, nation, position, specialty,
-                employStatus == "Đang làm việc" ? true : false,
-                employStatus == "Đang làm việc" ? false : true));
+                employStatus.equalsIgnoreCase("Đang làm việc") ? true : false,
+                employStatus.equalsIgnoreCase("Đang làm việc") ? false : true));
     }
 
     @SuppressWarnings("unchecked")

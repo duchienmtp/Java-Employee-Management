@@ -62,7 +62,13 @@ public class EmployeeBUS {
     }
 
     public Employee getEmployeeById(String employeeId) {
-        return employeeDAO.getEmployeeById(employeeId);
+        Employee employee = null;
+        for (Employee emp : employeeList) {
+            if (emp.getId().equals(employeeId)) {
+                employee = emp;
+            }
+        }
+        return employee;
     }
 
     public void addEmployee(Employee employee) {

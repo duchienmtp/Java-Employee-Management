@@ -62,7 +62,7 @@ public class Redux {
         dbConnection = new ConnectDB();
         try {
             String query = "SELECT * FROM Account WHERE email = '" + email + "' AND password = '"
-                    + password + "'";
+                    + password + "' AND deleteStatus = 0";
             ResultSet rs = dbConnection.sqlQuery(query);
 
             if (rs.next()) {

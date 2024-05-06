@@ -33,11 +33,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.List;
 
+import BackEnd.AccountManagement.Account;
 import BackEnd.DegreeManagement.Degree;
 import BackEnd.DepartmentManagement.Department;
 import BackEnd.EmployeeManagement.Employee;
 import BackEnd.PositionManagement.Position;
 import BackEnd.SpecialtyManagement.Specialty;
+import FrontEnd.AccountContentUI.AccountManagementContentPanel;
 import FrontEnd.Redux.Redux;
 
 public class EmployeeManagementContentPanel extends javax.swing.JPanel
@@ -162,6 +164,7 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
             } else {
                 switch (i) {
                     case 13:
+                        System.out.println("Check value employStatus: " + (boolean) value);
                         employeePropertiesValue.set(i,
                                 (boolean) value ? "Đang làm việc" : "Đã nghỉ việc");
                         break;
@@ -193,9 +196,9 @@ public class EmployeeManagementContentPanel extends javax.swing.JPanel
         if (confirmation == JOptionPane.YES_OPTION) {
             Redux.employeeBUS
                     .deleteEmployee(Redux.employeeBUS.getEmployeeById((String) selectedRowData[1]));
+            Redux.accountBUS.deleteAccount(Redux.accountBUS.getAccountById((String) selectedRowData[1]));
+            AccountManagementContentPanel.tableInit(Redux.accountBUS.getAccountList());
             jTable1.revalidate();
-            // Redux.getAllEmployees();
-            // tableInit(Redux.employeeList);
             tableInit(Redux.employeeBUS.getEmployeeList());
         }
     }
