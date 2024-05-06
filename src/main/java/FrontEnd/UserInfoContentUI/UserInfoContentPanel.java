@@ -28,8 +28,6 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
     public UserInfoContentPanel() {
         initComponents();
 
-        showFormWithData();
-
         updateButton.addActionListener(this);
         exportPDFButton.addActionListener(this);
 
@@ -66,33 +64,38 @@ public class UserInfoContentPanel extends javax.swing.JPanel implements ActionLi
     }
 
     public static void showFormWithData() {
-        String fileName = (String) dataList.get(14);
-        if (fileName != null && !fileName.isEmpty()) {
-            String imagePath = "/avatars/" + fileName;
-            URL location = UserInfoContentPanel.class.getResource(imagePath);
-            if (location != null) {
-                ImageIcon icon = new ImageIcon(location);
-                avatarLabel.setIcon(icon);
+        try {
+            String fileName = (String) dataList.get(14);
+            if (fileName != null && !fileName.isEmpty()) {
+                String imagePath = "/avatars/" + fileName;
+                URL location = UserInfoContentPanel.class.getResource(imagePath);
+                if (location != null) {
+                    ImageIcon icon = new ImageIcon(location);
+                    avatarLabel.setIcon(icon);
+                } else {
+                    avatarLabel.setIcon(null);
+                }
             } else {
                 avatarLabel.setIcon(null);
             }
-        } else {
-            avatarLabel.setIcon(null);
+
+            employeeID.setText((String) dataList.get(0));
+            employeeName.setText((String) dataList.get(1));
+            employeeGender.setText((String) dataList.get(2));
+            employeeBirthdate.setText((String) dataList.get(3));
+            employeePhoneNumber.setText((String) dataList.get(4));
+            employeeEthicGroup.setText((String) dataList.get(5));
+            employeeType.setText((String) dataList.get(6));
+            employeeReligion.setText((String) dataList.get(7));
+            employeeNation.setText((String) dataList.get(8));
+            employeeDegree.setText((String) dataList.get(9));
+            employeePosition.setText((String) dataList.get(10));
+            departmentName.setText((String) dataList.get(11));
+            employeeSpecialty.setText((String) dataList.get(12));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        employeeID.setText((String) dataList.get(0));
-        employeeName.setText((String) dataList.get(1));
-        employeeGender.setText((String) dataList.get(2));
-        employeeBirthdate.setText((String) dataList.get(3));
-        employeePhoneNumber.setText((String) dataList.get(4));
-        employeeEthicGroup.setText((String) dataList.get(5));
-        employeeType.setText((String) dataList.get(6));
-        employeeReligion.setText((String) dataList.get(7));
-        employeeNation.setText((String) dataList.get(8));
-        employeeDegree.setText((String) dataList.get(9));
-        employeePosition.setText((String) dataList.get(10));
-        departmentName.setText((String) dataList.get(11));
-        employeeSpecialty.setText((String) dataList.get(12));
     }
 
     public void updateTableRow() {
