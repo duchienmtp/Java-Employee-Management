@@ -125,6 +125,7 @@ public class UserInformationForm extends javax.swing.JFrame implements ActionLis
                     Account account = Redux.accountBUS.getAccountById(employeeID);
                     account.setAccountStatus(true);
                     account.setDeleteStatus(false);
+                    account.setEmployee(employee);
                     Redux.accountBUS.updateAccount(account);
                     AccountManagementContentPanel.tableInit(Redux.accountBUS.getAccountList());
                 }

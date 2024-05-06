@@ -73,6 +73,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         jTable1.setDefaultRenderer(String.class, centerRenderer);
         jTable1.setDefaultRenderer(Integer.class, centerRenderer);
+        jTable1.setDefaultRenderer(Object.class, centerRenderer);
 
         // tableInit(Redux.accountList);
         tableInit(Redux.accountBUS.getAccountList());
@@ -181,6 +182,7 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -243,14 +245,15 @@ public class AccountManagementContentPanel extends javax.swing.JPanel
         tableContainer.setLayout(tableContainerLayout);
         tableContainerLayout.setHorizontalGroup(
                 tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(tableContainerLayout.createSequentialGroup()
-                                .addGap(25, 25, 25)
-                                .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
-                                .addGap(25, 25, 25))
-                        .addGroup(tableContainerLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
-                                .addContainerGap()));
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                tableContainerLayout.createSequentialGroup()
+                                        .addGap(25, 25, 25)
+                                        .addGroup(tableContainerLayout
+                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(jScrollPane2)
+                                                .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 811,
+                                                        Short.MAX_VALUE))
+                                        .addGap(25, 25, 25)));
         tableContainerLayout.setVerticalGroup(
                 tableContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(tableContainerLayout.createSequentialGroup()
